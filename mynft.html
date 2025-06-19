@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My NFT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-dark: #0f0f0f;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --card-bg: rgba(255, 255, 255, 0.07);
+      --accent-gradient: linear-gradient(135deg, #a78bfa, #8b5cf6);
+      --font-color: #ffffff;
+      --radius: 20px;
+      --blur: blur(16px);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--font-color);
+      padding-bottom: 100px;
+    }
+
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.2rem;
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      position: sticky; top: 0; z-index: 10;
+    }
+
+    .balance { font-size: 1.2rem; font-weight: 600; }
+
+    .deposit-btn {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .deposit-btn:hover {
+      opacity: 0.95;
+      transform: scale(1.05);
+    }
+
+    .search-bar {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.9rem 1rem;
+      width: calc(100% - 2.4rem);
+      border-radius: 16px;
+      background: var(--glass-bg);
+      border: 1px solid #333;
+      color: white;
+      font-size: 1rem;
+      backdrop-filter: var(--blur);
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem;
+    }
+
+    .tabs button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 0.6rem 0;
+      background: var(--glass-bg);
+      border: none;
+      border-radius: 999px;
+      color: #ccc;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: #7c3aed;
+      color: white;
+    }
+
+    .tab-content {
+      padding: 1rem;
+    }
+
+    .tab-content.hidden {
+      display: none;
+    }
+
+    .empty-msg {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 3rem 1rem 1.5rem;
+    }
+
+    .instructions {
+      background: var(--glass-bg);
+      border: 1px solid #444;
+      margin: 0 1rem;
+      border-radius: 20px;
+      padding: 1.2rem;
+      font-size: 1rem;
+    }
+
+    .instructions p {
+      margin: 0.8rem 0;
+      line-height: 1.6;
+    }
+
+    .instructions b, .instructions a {
+      color: #a78bfa;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(24, 24, 24, 0.95);
+      backdrop-filter: var(--blur);
+      padding: 0.8rem 0;
+      border-top: 1px solid #333;
+      z-index: 1000;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: white;
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .bottom-nav a:hover {
+      color: #bbb;
+    }
+
+    .bottom-nav a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 0.2rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: var(--blur);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 24px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 30px rgba(255, 110, 196, 0.2);
+      text-align: center;
+    }
+
+    .modal-box h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-box input {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 12px;
+      background: var(--glass-bg);
+      border: 1px solid #666;
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-box .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .modal-box button {
+      flex: 1;
+      padding: 0.7rem;
+      border-radius: 999px;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .confirm-btn { background: var(--accent-gradient); color: white; }
+    .cancel-btn { background: #333; color: #ccc; }
+
+    .close-x {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.3rem;
+      color: white;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="balance">Balance: 0</div>
+    <button class="deposit-btn" onclick="toggleModal('depositModal', true)">+ Deposit</button>
+  </div>
+
+  <input type="text" class="search-bar" placeholder="Search" />
+
+  <div class="tabs">
+    <button onclick="switchTab('pack')">Sticker Pack</button>
+    <button class="active" onclick="switchTab('storage')">Storage</button>
+    <button onclick="switchTab('sale')">On Sale</button>
+  </div>
+
+  <div class="tab-content hidden" id="tab-pack">
+    <div class="empty-msg">Your collection is empty</div>
+  </div>
+
+  <div class="tab-content" id="tab-storage">
+    <div class="empty-msg">Your collection is empty</div>
+    <div class="instructions">
+      <p>1. Press <b>Start</b></p>
+      <p>2. Send your sticker to <b>@palacerelayer</b> in <b>@sticker_bot</b></p>
+      <p>3. Top up your wallet with <b>0.1 TON</b> to activate it</p>
+      <p>4. Now you can list your sticker on the marketplace!</p>
+    </div>
+  </div>
+
+  <div class="tab-content hidden" id="tab-sale">
+    <div class="empty-msg">No items on sale yet.</div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="/"><img src="https://cdn-icons-png.flaticon.com/512/1946/1946433.png" alt="Market" /><span>Market</span></a>
+    <a href="/mynft.html"><img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="My NFT" /><span>My NFT</span></a>
+    <a href="/profile.html"><img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile" /><span>Profile</span></a>
+  </nav>
+
+  <!-- Deposit Modal -->
+  <div class="modal" id="depositModal">
+    <div class="modal-box">
+      <button class="close-x" onclick="toggleModal('depositModal', false)">✕</button>
+      <h2>Deposit TON</h2>
+      <input type="number" id="tonAmount" placeholder="Enter TON amount" />
+      <div class="actions">
+        <button class="cancel-btn" onclick="toggleModal('depositModal', false)">Cancel</button>
+        <button class="confirm-btn" onclick="submitDeposit()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleModal(id, show) {
+      document.getElementById(id).classList.toggle("active", show);
+    }
+
+    function submitDeposit() {
+      const TON_ADDRESS = "UQAnasqvWONrKkRrxKOoXiKWLQaRy5eY1Nq93L41zw6-nJPw";
+      const MESSAGE_ID = "fb72628f0425";
+      const tonAmount = parseFloat(document.getElementById("tonAmount").value);
+      if (isNaN(tonAmount) || tonAmount <= 0) return alert("Enter valid TON amount");
+      const nanoTON = BigInt(Math.floor(tonAmount * 1e9));
+      window.location.href = `ton://transfer/${TON_ADDRESS}?amount=${nanoTON}&text=${MESSAGE_ID}`;
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+    }
+
+    // Set default tab to Storage
+    window.addEventListener("DOMContentLoaded", () => {
+      switchTab('storage');
+    });
+  </script>
+
+</body>
+</html>
