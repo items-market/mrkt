@@ -283,11 +283,28 @@
 
   <script>
     const collections = [
-      "Pudgy & Friends", "Azuki", "DOGS OG", "Bored Stickers", "Pudgy Penguins",
-      "Lil Pudgys", "Not Pixel", "Doodles", "Notcoin", "DOGS Rewards",
-      "Smeshariki", "SUNDOG", "Rare Apepe YC", "Cool Cats", "Moonbirds",
-      "World of Women", "Goblintown", "Renga", "Invisible Friends", "Creature World",
-      "OnChainMonkeys", "Crypto Unicorns"
+      { name: "Pudgy & Friends", img: "https://cdn.stickerdom.store/16/c/cover.png?v=1" },
+      { name: "Azuki", img: "https://cdn.stickerdom.store/24/c/cover.png?v=5" },
+      { name: "DOGS OG", img: "https://cdn.stickerdom.store/1/c/cover.png?v=5" },
+      { name: "Bored Stickers", img: "https://cdn.stickerdom.store/3/c/cover.png?v=6" },
+      { name: "Pudgy Penguins", img: "https://cdn.stickerdom.store/2/c/cover.png?v=12" },
+      { name: "Lil Pudgys", img: "https://cdn.stickerdom.store/17/c/cover.png?v=0" },
+      { name: "Not Pixel", img: "https://cdn.stickerdom.store/8/c/cover.png?v=8" },
+      { name: "Doodles", img: "https://cdn.stickerdom.store/18/c/91e7e16_cover.png?v=1" },
+      { name: "Notcoin", img: "https://i.imgur.com/Hs8FvLe.png" },
+      { name: "DOGS Rewards", img: "https://i.imgur.com/ewgrHgI.png" },
+      { name: "Smeshariki", img: "https://i.imgur.com/W6nlY5H.png" },
+      { name: "SUNDOG", img: "https://i.imgur.com/L2r9ZSv.png" },
+      { name: "Rare Apepe YC", img: "https://i.imgur.com/bUbgCKs.png" },
+      { name: "Cool Cats", img: "https://i.imgur.com/RO9dzOt.png" },
+      { name: "Moonbirds", img: "https://i.imgur.com/YJeQSMF.png" },
+      { name: "World of Women", img: "https://i.imgur.com/kYHnK61.png" },
+      { name: "Goblintown", img: "https://i.imgur.com/jJwwVWW.png" },
+      { name: "Renga", img: "https://i.imgur.com/FBkoO38.png" },
+      { name: "Invisible Friends", img: "https://i.imgur.com/dlE9nmT.png" },
+      { name: "Creature World", img: "https://i.imgur.com/hm5P9Xg.png" },
+      { name: "OnChainMonkeys", img: "https://i.imgur.com/YceCrqM.png" },
+      { name: "Crypto Unicorns", img: "https://i.imgur.com/vKScaUZ.png" }
     ];
 
     const grid = document.getElementById("nftGrid");
@@ -296,13 +313,13 @@
     function renderCollections(filter = "") {
       grid.innerHTML = "";
       collections
-        .filter(name => name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(name => {
+        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(c => {
           const card = document.createElement("div");
           card.className = "collection-card";
           card.innerHTML = `
-            <img src="https://placehold.co/300x140/2a2a2a/ffffff?text=${encodeURIComponent(name)}" alt="${name} Cover" />
-            <p>${name}</p>`;
+            <img src="${c.img}" alt="${c.name}" />
+            <p>${c.name}</p>`;
           grid.appendChild(card);
         });
     }
