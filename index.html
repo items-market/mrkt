@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -14,157 +15,171 @@
       --muted: #a0a4b8;
       --radius: 18px;
       --border: rgba(255, 255, 255, 0.08);
-    }* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
-  color: var(--text);
-  padding-bottom: 100px;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.2rem;
-  background: rgba(22, 26, 34, 0.85);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      padding-bottom: 100px;
+    }
 
-.balance {
-  font-size: 1rem;
-  font-weight: 600;
-}
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.2rem;
+      background: rgba(22, 26, 34, 0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-.deposit-btn,
-.withdraw-btn {
-  background: var(--accent);
-  color: white;
-  padding: 0.5rem 1.2rem;
-  border-radius: 999px;
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 10px;
-  transition: all 0.3s ease;
-}
+    .balance {
+      font-size: 1rem;
+      font-weight: 600;
+    }
 
-.deposit-btn:hover,
-.withdraw-btn:hover {
-  opacity: 0.9;
-}
+    .deposit-btn,
+    .withdraw-btn {
+      background: var(--accent);
+      color: white;
+      padding: 0.5rem 1.2rem;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 10px;
+      transition: all 0.3s ease;
+    }
 
-.search-bar {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.9rem 1rem;
-  width: calc(100% - 2.4rem);
-  border-radius: 14px;
-  background: var(--glass-bg);
-  border: 1px solid var(--border);
-  color: white;
-  font-size: 1rem;
-}
+    .deposit-btn:hover,
+    .withdraw-btn:hover {
+      opacity: 0.9;
+    }
 
-h2 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  padding: 0 1.2rem;
-  margin-top: 1rem;
-  margin-bottom: 0.8rem;
-}
+    .search-bar {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.9rem 1rem;
+      width: calc(100% - 2.4rem);
+      border-radius: 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: white;
+      font-size: 1rem;
+    }
 
-.collection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: 1.2rem;
-  padding: 0 1.2rem;
-}
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      padding: 0 1.2rem;
+      margin-top: 1rem;
+      margin-bottom: 0.8rem;
+    }
 
-.collection-card {
-  background: var(--glass-bg);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  backdrop-filter: blur(16px);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 1.2rem;
+      padding: 0 1.2rem;
+    }
 
-.collection-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-4px);
-  border-color: var(--accent);
-}
+    .collection-card {
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
 
-.collection-card a {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
+    .collection-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
 
-.collection-card img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  display: block;
-}
+    .collection-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
 
-.collection-card p {
-  text-align: center;
-  padding: 0.7rem;
-  font-weight: 500;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+    .collection-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  background: rgba(22, 26, 34, 0.95);
-  backdrop-filter: blur(12px);
-  padding: 0.8rem 0;
-  border-top: 1px solid var(--border);
-  z-index: 1000;
-}
+    .collection-card p {
+      text-align: center;
+      padding: 0.7rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-.bottom-nav a {
-  text-decoration: none;
-  color: var(--muted);
-  font-size: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-weight: 500;
-  transition: color 0.3s;
-}
+    .coming-soon-overlay {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 8px;
+      z-index: 2;
+    }
 
-.bottom-nav a:hover,
-.bottom-nav a.active {
-  color: var(--accent);
-}
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 0.8rem 0;
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+    }
 
-.bottom-nav a img {
-  width: 24px;
-  height: 24px;
-  margin-bottom: 0.2rem;
-}
+    .bottom-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
 
+    .bottom-nav a:hover,
+    .bottom-nav a.active {
+      color: var(--accent);
+    }
+
+    .bottom-nav a img {
+      width: 24px;
+      height: 24px;
+      margin-bottom: 0.2rem;
+    }
   </style>
 </head>
 <body>
@@ -174,9 +189,13 @@ h2 {
       <button class="deposit-btn">+ Deposit</button>
       <button class="withdraw-btn">Withdraw</button>
     </div>
-  </div>  <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..."/>
+  </div>
+
+  <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..." />
   <h2>Sticker Collections (22)</h2>
-  <main class="collection-grid" id="nftGrid"></main>  <nav class="bottom-nav">
+  <main class="collection-grid" id="nftGrid"></main>
+
+  <nav class="bottom-nav">
     <a href="/" class="active">
       <img src="https://cdn-icons-png.flaticon.com/512/1946/1946433.png" alt="Market" />
       <span>Market</span>
@@ -189,16 +208,17 @@ h2 {
       <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile" />
       <span>Profile</span>
     </a>
-  </nav>  <script>
+  </nav>
+
+  <script>
     const collections = [
-      { name: "Pudgy & Friends", img: "https://i.imgur.com/b6gAkO0.png" },
-      { name: "Azuki", img: "https://i.imgur.com/6qPl8yB.png" },
-      { name: "DOGS OG", img: "https://i.imgur.com/ib0tKXz.png" },
-      { name: "Bored Stickers", img: "https://i.imgur.com/wI8XlvN.png" },
-      { name: "Pudgy Penguins", img: "https://i.imgur.com/k6Xjlhd.png" },
-      { name: "Lil Pudgys", img: "https://i.imgur.com/Ix2nVHO.png" },
-      { name: "Not Pixel", img: "https://i.imgur.com/IdkNid2.png" },
-      { name: "Doodles", img: "https://i.imgur.com/f7nwnKD.png" }
+      { name: "Void", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", comingSoon: false },
+      { name: "Notcoin", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", comingSoon: false },
+      { name: "Not Pixel", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", comingSoon: false },
+      { name: "Lost Dogs", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", comingSoon: true },
+      { name: "Glance", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", comingSoon: true },
+      { name: "Disk Trickster", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", comingSoon: true },
+      { name: "Hitoku", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", comingSoon: true },
     ];
 
     const grid = document.getElementById("nftGrid");
@@ -217,8 +237,11 @@ h2 {
           const card = document.createElement("div");
           card.className = "collection-card";
           card.innerHTML = `
-            <a href="${getPageLink(c.name)}">
-              <img src="${c.img}" alt="${c.name}" />
+            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}" ${c.comingSoon ? 'onclick="return false;"' : ''}>
+              <div style="position: relative;">
+                <img src="${c.img}" alt="${c.name}" />
+                ${c.comingSoon ? '<div class="coming-soon-overlay">Coming Soon</div>' : ''}
+              </div>
               <p>${c.name}</p>
             </a>`;
           grid.appendChild(card);
@@ -230,5 +253,6 @@ h2 {
     });
 
     renderCollections();
-  </script></body>
+  </script>
+</body>
 </html>
