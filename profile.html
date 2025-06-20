@@ -103,6 +103,13 @@
       height: 24px;
       margin-bottom: 0.2rem;
     }
+
+    .debug {
+      white-space: pre-wrap;
+      font-size: 12px;
+      margin-top: 2rem;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
@@ -114,6 +121,7 @@
         <div class="user-id" id="userId">ID: -</div>
       </div>
     </div>
+    <div class="debug" id="debugInfo"></div>
   </div>
 
   <nav class="bottom-nav">
@@ -137,20 +145,24 @@
     tg.ready();
 
     const user = tg.initDataUnsafe?.user;
+    const debugBox = document.getElementById("debugInfo");
+
+    // Show debug info
+    debugBox.textContent = JSON.stringify(tg.initDataUnsafe, null, 2);
 
     if (user) {
       const userName = `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
       const userId = user.id;
-      const initials = (user.first_name?.[0] ?? '') + (user.last_name?.[0] ?? '');
+      const initials = ((user.first_name?.[0] ?? '') + (user.last_name?.[0] ?? '')).toUpperCase();
 
       document.getElementById("userName").textContent = userName || "User";
       document.getElementById("userId").textContent = `ID: ${userId}`;
-      document.getElementById("userAvatar").textContent = initials.toUpperCase() || "U";
+      document.getElementById("userAvatar").textContent = initials || "U";
     } else {
       document.getElementById("userName").textContent = "Open in Telegram";
       document.getElementById("userId").textContent = "";
       document.getElementById("userAvatar").textContent = "!";
-      console.warn("Telegram user info not found. Make sure this page is opened from Telegram.");
+      console.warn("Telegram user info not found. Must be opened as a Web App in Telegram.");
     }
   </script>
 </body>
