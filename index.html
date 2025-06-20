@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -7,222 +6,165 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg-dark: #0f0f0f;
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --card-bg: rgba(255, 255, 255, 0.07);
-      --accent-gradient: linear-gradient(135deg, #ff6ec4, #7873f5);
-      --font-color: #ffffff;
-      --radius: 20px;
-      --blur: blur(16px);
-    }
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --accent: #55d0ff;
+      --text: #fff;
+      --muted: #a0a4b8;
+      --radius: 18px;
+      --border: rgba(255, 255, 255, 0.08);
+    }* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg-dark);
-      color: var(--font-color);
-      padding-bottom: 100px;
-    }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+  color: var(--text);
+  padding-bottom: 100px;
+}
 
-    .top-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 1.2rem;
-      background: var(--glass-bg);
-      backdrop-filter: var(--blur);
-      position: sticky; top: 0; z-index: 10;
-    }
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  background: rgba(22, 26, 34, 0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-    .balance { font-size: 1.2rem; font-weight: 600; }
+.balance {
+  font-size: 1rem;
+  font-weight: 600;
+}
 
-    .deposit-btn, .withdraw-btn {
-      background: var(--accent-gradient);
-      color: white;
-      padding: 0.5rem 1.2rem;
-      border-radius: 999px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-left: 10px;
-    }
+.deposit-btn,
+.withdraw-btn {
+  background: var(--accent);
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
 
-    .deposit-btn:hover, .withdraw-btn:hover {
-      opacity: 0.95;
-      transform: scale(1.05);
-    }
+.deposit-btn:hover,
+.withdraw-btn:hover {
+  opacity: 0.9;
+}
 
-    .search-bar {
-      display: block;
-      margin: 1rem auto;
-      padding: 0.9rem 1rem;
-      width: calc(100% - 2.4rem);
-      border-radius: 16px;
-      background: var(--glass-bg);
-      border: 1px solid #333;
-      color: white;
-      font-size: 1rem;
-      backdrop-filter: var(--blur);
-    }
+.search-bar {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.9rem 1rem;
+  width: calc(100% - 2.4rem);
+  border-radius: 14px;
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  color: white;
+  font-size: 1rem;
+}
 
-    h2 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      padding: 0 1.2rem;
-      margin-top: 1rem;
-      margin-bottom: 0.8rem;
-    }
+h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  padding: 0 1.2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+}
 
-    .collection-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 1.2rem;
-      padding: 0 1rem;
-    }
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.2rem;
+  padding: 0 1.2rem;
+}
 
-    .collection-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      overflow: hidden;
-      backdrop-filter: var(--blur);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
+.collection-card {
+  background: var(--glass-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
 
-    .collection-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
-    }
+.collection-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
 
-    .collection-card img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-    }
+.collection-card a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
 
-    .collection-card p {
-      text-align: center;
-      padding: 0.7rem;
-      font-weight: 500;
-      font-size: 0.9rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+.collection-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
 
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: rgba(24, 24, 24, 0.95);
-      backdrop-filter: var(--blur);
-      padding: 0.8rem 0;
-      border-top: 1px solid #333;
-      z-index: 1000;
-    }
+.collection-card p {
+  text-align: center;
+  padding: 0.7rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-    .bottom-nav a {
-      text-decoration: none;
-      color: white;
-      font-size: 0.75rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: rgba(22, 26, 34, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--border);
+  z-index: 1000;
+}
 
-    .bottom-nav a:hover {
-      color: #bbb;
-    }
+.bottom-nav a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 500;
+  transition: color 0.3s;
+}
 
-    .bottom-nav a img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 0.2rem;
-    }
+.bottom-nav a:hover,
+.bottom-nav a.active {
+  color: var(--accent);
+}
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: var(--blur);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
+.bottom-nav a img {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 0.2rem;
+}
 
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-box {
-      background: #1a1a1a;
-      border: 1px solid #444;
-      border-radius: 24px;
-      padding: 2rem;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 0 30px rgba(255, 110, 196, 0.2);
-      position: relative;
-      text-align: center;
-    }
-
-    .modal-box h2 {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-box input {
-      width: 100%;
-      padding: 0.8rem;
-      border-radius: 12px;
-      background: var(--glass-bg);
-      border: 1px solid #666;
-      color: white;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal-box .actions {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .modal-box button {
-      flex: 1;
-      padding: 0.7rem;
-      border-radius: 999px;
-      border: none;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .confirm-btn { background: var(--accent-gradient); color: white; }
-    .cancel-btn { background: #333; color: #ccc; }
-
-    .close-x {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.3rem;
-      color: white;
-      border: none;
-      background: none;
-      cursor: pointer;
-    }
-
-    .error-msg {
-      color: #ff6b81;
-      font-size: 0.95rem;
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -232,14 +174,10 @@
       <button class="deposit-btn">+ Deposit</button>
       <button class="withdraw-btn">Withdraw</button>
     </div>
-  </div>
-
-  <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..."/>
+  </div>  <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..."/>
   <h2>Sticker Collections (22)</h2>
-  <main class="collection-grid" id="nftGrid"></main>
-
-  <nav class="bottom-nav">
-    <a href="/">
+  <main class="collection-grid" id="nftGrid"></main>  <nav class="bottom-nav">
+    <a href="/" class="active">
       <img src="https://cdn-icons-png.flaticon.com/512/1946/1946433.png" alt="Market" />
       <span>Market</span>
     </a>
@@ -251,64 +189,25 @@
       <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Profile" />
       <span>Profile</span>
     </a>
-  </nav>
-
-  <!-- Deposit Modal -->
-  <div class="modal" id="depositModal">
-    <div class="modal-box">
-      <button class="close-x" onclick="toggleModal('depositModal', false)">✕</button>
-      <h2>Deposit TON</h2>
-      <input type="number" id="tonAmount" placeholder="Enter TON amount" />
-      <div class="actions">
-        <button class="cancel-btn" onclick="toggleModal('depositModal', false)">Cancel</button>
-        <button class="confirm-btn" onclick="submitDeposit()">Confirm</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Withdraw Modal -->
-  <div class="modal" id="withdrawModal">
-    <div class="modal-box">
-      <button class="close-x" onclick="toggleModal('withdrawModal', false)">✕</button>
-      <h2>Withdraw</h2>
-      <input type="number" id="withdrawAmount" placeholder="Amount" />
-      <input type="text" id="withdrawWallet" placeholder="Wallet" />
-      <div id="withdrawError" class="error-msg">Insufficient balance</div>
-      <div class="actions">
-        <button class="cancel-btn" onclick="toggleModal('withdrawModal', false)">Cancel</button>
-        <button class="confirm-btn" onclick="submitWithdraw()">Withdraw</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
+  </nav>  <script>
     const collections = [
-      { name: "Pudgy & Friends", img: "https://cdn.stickerdom.store/16/c/cover.png?v=1" },
-      { name: "Azuki", img: "https://cdn.stickerdom.store/24/c/cover.png?v=5" },
-      { name: "DOGS OG", img: "https://cdn.stickerdom.store/1/c/cover.png?v=5" },
-      { name: "Bored Stickers", img: "https://cdn.stickerdom.store/3/c/cover.png?v=6" },
-      { name: "Pudgy Penguins", img: "https://cdn.stickerdom.store/2/c/cover.png?v=12" },
-      { name: "Lil Pudgys", img: "https://cdn.stickerdom.store/17/c/cover.png?v=0" },
-      { name: "Not Pixel", img: "https://cdn.stickerdom.store/8/c/cover.png?v=8" },
-      { name: "Doodles", img: "https://cdn.stickerdom.store/18/c/91e7e16_cover.png?v=1" },
-      { name: "Notcoin", img: "https://i.imgur.com/Hs8FvLe.png" },
-      { name: "DOGS Rewards", img: "https://i.imgur.com/ewgrHgI.png" },
-      { name: "Smeshariki", img: "https://i.imgur.com/W6nlY5H.png" },
-      { name: "SUNDOG", img: "https://i.imgur.com/L2r9ZSv.png" },
-      { name: "Rare Apepe YC", img: "https://i.imgur.com/bUbgCKs.png" },
-      { name: "Cool Cats", img: "https://i.imgur.com/RO9dzOt.png" },
-      { name: "Moonbirds", img: "https://i.imgur.com/YJeQSMF.png" },
-      { name: "World of Women", img: "https://i.imgur.com/kYHnK61.png" },
-      { name: "Goblintown", img: "https://i.imgur.com/jJwwVWW.png" },
-      { name: "Renga", img: "https://i.imgur.com/FBkoO38.png" },
-      { name: "Invisible Friends", img: "https://i.imgur.com/dlE9nmT.png" },
-      { name: "Creature World", img: "https://i.imgur.com/hm5P9Xg.png" },
-      { name: "OnChainMonkeys", img: "https://i.imgur.com/YceCrqM.png" },
-      { name: "Crypto Unicorns", img: "https://i.imgur.com/vKScaUZ.png" }
+      { name: "Pudgy & Friends", img: "https://i.imgur.com/b6gAkO0.png" },
+      { name: "Azuki", img: "https://i.imgur.com/6qPl8yB.png" },
+      { name: "DOGS OG", img: "https://i.imgur.com/ib0tKXz.png" },
+      { name: "Bored Stickers", img: "https://i.imgur.com/wI8XlvN.png" },
+      { name: "Pudgy Penguins", img: "https://i.imgur.com/k6Xjlhd.png" },
+      { name: "Lil Pudgys", img: "https://i.imgur.com/Ix2nVHO.png" },
+      { name: "Not Pixel", img: "https://i.imgur.com/IdkNid2.png" },
+      { name: "Doodles", img: "https://i.imgur.com/f7nwnKD.png" }
     ];
 
     const grid = document.getElementById("nftGrid");
     const searchInput = document.getElementById("searchInput");
+
+    function getPageLink(name) {
+      const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+      return `${firstWord}.html`;
+    }
 
     function renderCollections(filter = "") {
       grid.innerHTML = "";
@@ -318,8 +217,10 @@
           const card = document.createElement("div");
           card.className = "collection-card";
           card.innerHTML = `
-            <img src="${c.img}" alt="${c.name}" />
-            <p>${c.name}</p>`;
+            <a href="${getPageLink(c.name)}">
+              <img src="${c.img}" alt="${c.name}" />
+              <p>${c.name}</p>
+            </a>`;
           grid.appendChild(card);
         });
     }
@@ -329,29 +230,5 @@
     });
 
     renderCollections();
-
-    function toggleModal(id, show) {
-      document.getElementById(id).classList.toggle("active", show);
-      if (id === 'withdrawModal' && !show) {
-        document.getElementById("withdrawError").style.display = "none";
-      }
-    }
-
-    document.querySelector(".deposit-btn").addEventListener("click", () => toggleModal("depositModal", true));
-    document.querySelector(".withdraw-btn").addEventListener("click", () => toggleModal("withdrawModal", true));
-
-    function submitDeposit() {
-      const TON_ADDRESS = "UQAnasqvWONrKkRrxKOoXiKWLQaRy5eY1Nq93L41zw6-nJPw";
-      const MESSAGE_ID = "fb72628f0425";
-      const tonAmount = parseFloat(document.getElementById("tonAmount").value);
-      if (isNaN(tonAmount) || tonAmount <= 0) return alert("Enter valid TON amount");
-      const nanoTON = BigInt(Math.floor(tonAmount * 1e9));
-      window.location.href = `ton://transfer/${TON_ADDRESS}?amount=${nanoTON}&text=${MESSAGE_ID}`;
-    }
-
-    function submitWithdraw() {
-      document.getElementById("withdrawError").style.display = "block";
-    }
-  </script>
-</body>
+  </script></body>
 </html>
