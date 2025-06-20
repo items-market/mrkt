@@ -144,11 +144,10 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    const user = tg.initDataUnsafe?.user;
-    const debugBox = document.getElementById("debugInfo");
+    const debug = document.getElementById("debugInfo");
+    debug.textContent = "Waiting for Telegram user info...";
 
-    // Show debug info
-    debugBox.textContent = JSON.stringify(tg.initDataUnsafe, null, 2);
+    const user = tg.initDataUnsafe?.user;
 
     if (user) {
       const userName = `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
@@ -158,11 +157,14 @@
       document.getElementById("userName").textContent = userName || "User";
       document.getElementById("userId").textContent = `ID: ${userId}`;
       document.getElementById("userAvatar").textContent = initials || "U";
+
+      debug.textContent = `✅ Loaded from Telegram\n\nUser: ${JSON.stringify(user, null, 2)}`;
     } else {
       document.getElementById("userName").textContent = "Open in Telegram";
       document.getElementById("userId").textContent = "";
       document.getElementById("userAvatar").textContent = "!";
-      console.warn("Telegram user info not found. Must be opened as a Web App in Telegram.");
+
+      debug.textContent = `❌ Telegram user not detected.\n\nMake sure to open this from a WebApp button in a Telegram bot.\n\ninitData: ${tg.initData || 'EMPTY'}\ninitDataUnsafe: ${JSON.stringify(tg.initDataUnsafe, null, 2)}`;
     }
   </script>
 </body>
