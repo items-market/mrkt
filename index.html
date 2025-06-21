@@ -253,5 +253,14 @@
 
     renderCollections();
   </script>
+
+  <!-- Telegram WebApp API hide header -->
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.setHeaderVisible(false); // ✅ Hides Telegram top bar
+      }
+    });
+  </script>
 </body>
 </html>
