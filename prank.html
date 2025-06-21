@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tattoo Artist NFT</title>
+  <title>NFT Detail</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     * {
@@ -18,12 +18,12 @@
       color: white;
       min-height: 100vh;
       position: relative;
-      padding-bottom: 100px;
+      padding-bottom: 120px;
     }
 
     .container {
       padding: 16px;
-      max-width: 520px;
+      max-width: 500px;
       margin: auto;
     }
 
@@ -117,38 +117,34 @@
       border-radius: 10px;
     }
 
-    .buy-button {
+    .btn-buy {
       position: fixed;
       bottom: 16px;
       left: 16px;
       right: 16px;
-      background-color: #00baff;
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
-      text-align: center;
-      padding: 18px;
-      border-radius: 14px;
+      padding: 16px;
+      background-color: #3390ec;
+      color: #fff;
       border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 186, 255, 0.3);
       z-index: 10;
     }
 
-    /* Fake Payment Popup */
-    .overlay {
+    .payment-box {
+      display: none;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: #1e1e1e;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
+      background-color: #1e1e1e;
+      border-top-left-radius: 18px;
+      border-top-right-radius: 18px;
       padding: 24px 16px 32px;
-      box-shadow: 0 -2px 12px rgba(0,0,0,0.6);
       animation: slideUp 0.3s ease-out;
-      z-index: 9999;
-      display: none;
+      z-index: 999;
     }
 
     @keyframes slideUp {
@@ -156,71 +152,74 @@
       to { transform: translateY(0); }
     }
 
-    .payment-header {
+    .nft-image {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      background-color: #2c2c2c;
+      display: block;
+      margin: 0 auto 16px;
+      object-fit: cover;
+    }
+
+    .price {
       text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .payment-header img {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #222;
-      padding: 8px;
-      margin-bottom: 12px;
-    }
-
-    .payment-amount {
-      font-size: 18px;
       color: #ffc107;
-      margin-bottom: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
     }
 
-    .payment-title {
-      font-size: 17px;
+    .title-modal {
+      text-align: center;
+      font-size: 16px;
       font-weight: 600;
     }
 
-    .payment-subtitle {
+    .subtitle-modal {
+      text-align: center;
       font-size: 14px;
-      color: #aaa;
-      margin-top: 6px;
+      color: #999;
+      margin-top: 4px;
       margin-bottom: 20px;
     }
 
-    .confirm-button {
+    .confirm-btn {
       width: 100%;
-      background-color: #00baff;
-      border: none;
+      background-color: #3390ec;
       color: white;
-      font-size: 16px;
-      font-weight: bold;
       padding: 14px;
-      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
       cursor: pointer;
-      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(0, 150, 255, 0.3);
     }
 
     .terms {
-      font-size: 12px;
-      color: #888;
       text-align: center;
-      margin-top: 14px;
+      font-size: 12px;
+      color: #777;
+      margin-top: 16px;
     }
 
     .terms a {
-      color: #00baff;
+      color: #3390ec;
       text-decoration: none;
     }
 
-    .fake-sparkle {
-      font-size: 28px;
+    .cancel {
       text-align: center;
-      margin-top: -10px;
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 14px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <div class="title">Tattoo Artist</div>
     <div class="subtitle">
@@ -230,7 +229,7 @@
     <div class="description">Let me guess, you want to get her name on the arm already?</div>
     <div class="supply">
       <span class="tag">NFT</span>
-      Left 4485 / 5555
+      Left <span id="supplyLeft">21</span> / 21
     </div>
 
     <div class="main-preview">
@@ -238,41 +237,28 @@
     </div>
 
     <div class="thumbnails">
-      <div class="thumb">
-        <img src="https://i.imgur.com/E3KpvcE.png" alt="thumb1">
-      </div>
-      <div class="thumb">
-        <img src="https://i.imgur.com/kBMB7bP.png" alt="thumb2">
-      </div>
-      <div class="thumb">
-        <img src="https://i.imgur.com/zOjJJlX.png" alt="thumb3">
-      </div>
-      <div class="thumb active">
-        <img src="https://i.imgur.com/Xb9Nczz.png" alt="thumb4">
-      </div>
-      <div class="thumb">
-        <img src="https://i.imgur.com/mKbc1yY.png" alt="thumb5">
-      </div>
+      <div class="thumb"><img src="https://i.imgur.com/E3KpvcE.png"></div>
+      <div class="thumb"><img src="https://i.imgur.com/kBMB7bP.png"></div>
+      <div class="thumb"><img src="https://i.imgur.com/zOjJJlX.png"></div>
+      <div class="thumb"><img src="https://i.imgur.com/Xb9Nczz.png"></div>
+      <div class="thumb"><img src="https://i.imgur.com/mKbc1yY.png"></div>
     </div>
   </div>
 
-  <button class="buy-button">Get for ⭐ 999</button>
+  <!-- Buy Button -->
+  <button class="btn-buy" onclick="showPayment()">Get for ⭐ 999</button>
 
-  <!-- Fake Payment Popup -->
-  <div class="overlay" id="fakePayment">
-    <div class="payment-header">
-      <div class="fake-sparkle">✨🎉✨</div>
-      <img src="https://i.imgur.com/E3KpvcE.png" alt="NFT Icon" />
-      <div class="payment-amount">⭐ 999</div>
-      <div class="payment-title">Tattoo Artist from DOGS OG</div>
-      <div class="payment-subtitle">Sticker Pack</div>
-    </div>
-    <button class="confirm-button" onclick="alert('✅ Payment simulated!')">
-      Confirm and Pay ⭐ 999 Stars
-    </button>
+  <!-- Payment UI -->
+  <div class="payment-box" id="paymentModal">
+    <img src="https://i.imgur.com/E3KpvcE.png" alt="NFT" class="nft-image">
+    <div class="price">⭐ 999</div>
+    <div class="title-modal">Tattoo Artist from DOGS OG</div>
+    <div class="subtitle-modal">Sticker Pack</div>
+    <button class="confirm-btn" onclick="confirmFake()">Confirm and Pay ⭐ 999 Stars</button>
     <div class="terms">
       By purchasing you agree to the <a href="#">Terms of Service</a>.
     </div>
+    <div class="cancel" onclick="hidePayment()">Cancel</div>
   </div>
 
   <script>
@@ -282,17 +268,37 @@
     thumbs.forEach(thumb => {
       thumb.addEventListener('click', () => {
         const img = thumb.querySelector('img');
-        const newSrc = img.getAttribute('src');
-        mainImage.setAttribute('src', newSrc);
+        mainImage.src = img.src;
         thumbs.forEach(t => t.classList.remove('active'));
         thumb.classList.add('active');
       });
     });
 
-    // Show fake payment popup
-    document.querySelector('.buy-button').addEventListener('click', () => {
-      document.getElementById('fakePayment').style.display = 'block';
-    });
+    function showPayment() {
+      document.getElementById('paymentModal').style.display = 'block';
+    }
+
+    function hidePayment() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function confirmFake() {
+      alert('✅ Payment simulated!');
+      hidePayment();
+    }
+
+    // NFT countdown every 2 seconds, stop at 3 left
+    let supply = 21;
+    const supplyDisplay = document.getElementById("supplyLeft");
+    const countdown = setInterval(() => {
+      if (supply > 3) {
+        supply--;
+        supplyDisplay.textContent = supply;
+      } else {
+        clearInterval(countdown);
+      }
+    }, 2000); // every 2 seconds
   </script>
+
 </body>
 </html>
