@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Prime Society OS — Access Sector Ξ₿7</title>
+  <title>Prime Society OS — Simulation Protocol Ξ₿7</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
@@ -81,95 +81,129 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.1; }
     }
+    .game-stats {
+      position: absolute;
+      bottom: 50px;
+      left: 10px;
+      font-size: 0.9rem;
+      color: #00ffaa;
+      z-index: 15;
+    }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <div class="surveillance">🛰 Surveillance Feed Active</div>
-  <div id="overlay">👁 Welcome to Prime Society — Sector Ξ₿7 Secure Shell :: No Data</div>
+  <div class="surveillance">🛰 Simulation Surveillance Online</div>
+  <div id="overlay">🎮 Prime Society Simulation — Console Mode</div>
   <div id="terminal">
-    <div>&gt; PRIMEOS v4.2.1 [Encrypted Access Grid]</div>
-    <div>&gt; User: CITIZEN-A739X | Rank: Observer-Tier ⛶</div>
+    <div>&gt; PRIMEOS-GAME v1.0 [Simulation Console Mode]</div>
+    <div>&gt; User: INITIATE-Ω739 | Difficulty: NORMAL</div>
     <div class="access-log" id="log"></div>
-    <input type="text" id="prompt" placeholder="\u23CE Input Prime Command..." autofocus />
+    <input type="text" id="prompt" placeholder="⮐ Type command (start, move, scan, hack, exit)..." autofocus />
   </div>
-  <audio id="voice" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+  <div class="game-stats" id="stats">
+    HP: <span id="hp">100</span> | XP: <span id="xp">0</span> | Level: <span id="lvl">1</span>
+  </div><audio id="voice" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
   <script>
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
     canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;const letters = "ΞΣΩΦΨπ01AIΔACCESSCOREΩΞΣπΣΨΞΣΞΩ011001";
-const fontSize = 16;
-const columns = Math.floor(canvas.width / fontSize);
-const drops = new Array(columns).fill(1);
+    canvas.width = window.innerWidth;
 
-function drawMatrix() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#00ffcc";
-  ctx.font = `${fontSize}px 'Share Tech Mono'`;
-  for (let i = 0; i < drops.length; i++) {
-    const text = letters.charAt(Math.floor(Math.random() * letters.length));
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
+    const letters = "ΞΣΩΦΨπAIΔACCESSΩΞΣπΣΨΞΩ01";
+    const fontSize = 16;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = new Array(columns).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffcc";
+      ctx.font = `${fontSize}px 'Share Tech Mono'`;
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
     }
-    drops[i]++;
-  }
-}
-setInterval(drawMatrix, 33);
-window.addEventListener('resize', () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
+    setInterval(drawMatrix, 33);
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
 
-const input = document.getElementById("prompt");
-const log = document.getElementById("log");
-const voice = document.getElementById("voice");
+    const input = document.getElementById("prompt");
+    const log = document.getElementById("log");
+    const voice = document.getElementById("voice");
+    const hp = document.getElementById("hp");
+    const xp = document.getElementById("xp");
+    const lvl = document.getElementById("lvl");
 
-const respond = (msg) => {
-  log.innerHTML += `&gt; ${msg}<br>`;
-  log.scrollTop = log.scrollHeight;
-  voice.play();
-};
+    let player = {
+      hp: 100,
+      xp: 0,
+      level: 1
+    };
 
-input.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") {
-    const value = input.value.trim().toLowerCase();
-    switch (value) {
-      case "nothing":
-        respond("Confirmed: Prime Archive sector Ξ₿7 is void of content.");
-        break;
-      case "exit":
-        respond("No authorized exit routes available from this shell.");
-        break;
-      case "help":
-        respond("Available Commands: nothing, help, glitch, id, scan, override, oracle");
-        break;
-      case "glitch":
-        document.body.style.animation = "glitch 0.1s steps(2, end) infinite alternate";
-        setTimeout(() => document.body.style.animation = '', 2000);
-        respond("⚠️ System instability triggered. Glitch effect enabled.");
-        break;
-      case "id":
-        respond("Citizen-A739X verified. Access level: OBSERVER ⛶");
-        break;
-      case "scan":
-        respond("Thermal scan complete — organic matter not detected.");
-        break;
-      case "override":
-        respond("⛔ CORE OVERRIDE DENIED. Clearance: Level 7 required.");
-        break;
-      case "oracle":
-        respond("🔮 The Oracle sees nothing. Try again later.");
-        break;
-      default:
-        respond("❌ Command not recognized: " + value);
-    }
-    input.value = "";
-  }
-});
+    const respond = (msg) => {
+      log.innerHTML += `&gt; ${msg}<br>`;
+      log.scrollTop = log.scrollHeight;
+      voice.play();
+    };
 
-  </script>
-</body>
+    const updateStats = () => {
+      hp.textContent = player.hp;
+      xp.textContent = player.xp;
+      lvl.textContent = player.level;
+    };
+
+    const gainXP = (amount) => {
+      player.xp += amount;
+      if (player.xp >= 100) {
+        player.level++;
+        player.xp = 0;
+        respond(`🆙 Level up! You are now Level ${player.level}`);
+      }
+      updateStats();
+    };
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const value = input.value.trim().toLowerCase();
+        switch (value) {
+          case "start":
+            respond("Simulation initialized. Welcome, initiate Ω739.");
+            break;
+          case "move":
+            respond("You advanced into Sector 4D. It's eerily quiet...");
+            gainXP(15);
+            break;
+          case "scan":
+            respond("Scanning... Signal detected. It's faint but sentient.");
+            gainXP(10);
+            break;
+          case "hack":
+            if (Math.random() > 0.5) {
+              respond("Hack successful. AI node compromised.");
+              gainXP(25);
+            } else {
+              respond("Hack failed. You've been traced. -10 HP");
+              player.hp = Math.max(0, player.hp - 10);
+              updateStats();
+            }
+            break;
+          case "exit":
+            respond("Simulation exit denied. No safe node detected.");
+            break;
+          default:
+            respond(`Unknown protocol command: '${value}'`);
+        }
+        input.value = "";
+      }
+    });
+  </script></body>
 </html>
