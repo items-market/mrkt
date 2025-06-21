@@ -1,130 +1,77 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Prime Society: Protocol Ξ₿7</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Prime Society: Easy Simulation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: #000;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #0a0f0f, #111);
       color: #00ffcc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-    canvas {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
     #hud {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 10;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px;
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid #00ffcc;
-      border-radius: 8px;
-      box-shadow: 0 0 12px #00ffcc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
     }
     #hud div {
-      margin-bottom: 5px;
-    }
-    #actions {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      display: flex;
-      gap: 10px;
+      margin: 5px 0;
     }
     .btn {
-      background: black;
-      color: #00ffcc;
-      border: 1px solid #00ffcc;
       padding: 10px 20px;
-      cursor: pointer;
+      margin: 5px;
+      border: none;
       border-radius: 5px;
+      background: #00ffcc;
+      color: #000;
       font-size: 1rem;
-      transition: background 0.2s;
+      cursor: pointer;
     }
     .btn:hover {
-      background: #002222;
+      background: #00bbaa;
     }
     #log {
-      position: absolute;
-      right: 10px;
-      bottom: 20px;
-      width: 250px;
-      height: 180px;
+      width: 90%;
+      max-width: 400px;
+      height: 150px;
       overflow-y: auto;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 10px;
+      background: rgba(0, 0, 0, 0.5);
       border: 1px solid #00ffcc;
-      border-radius: 8px;
-      color: #00cccc;
+      padding: 10px;
+      border-radius: 10px;
       font-size: 0.9rem;
-      z-index: 10;
     }
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
+  <h1>🎮 Prime Society: Easy Mode</h1>
   <div id="hud">
-    <div>🧬 PRIME SOCIETY PROTOCOL: Ξ₿7</div>
-    <div>💠 HP: <span id="hp">100</span></div>
-    <div>⚙️ XP: <span id="xp">0</span></div>
-    <div>📈 Level: <span id="lvl">1</span></div>
-  </div>  <div id="actions">
-    <button class="btn" onclick="startGame()">Start</button>
-    <button class="btn" onclick="moveSector()">Move</button>
-    <button class="btn" onclick="scanSector()">Scan</button>
-    <button class="btn" onclick="hackNode()">Hack</button>
-    <button class="btn" onclick="exitGame()">Exit</button>
-  </div>  <div id="log"></div>
-  <audio id="voice" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>  <script>
-    // Matrix Effect
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const letters = "ΞΣΩΦΨπAIΔΩΞΣΨΞΩ01";
-    const fontSize = 16;
-    const columns = Math.floor(canvas.width / fontSize);
-    const drops = new Array(columns).fill(1);
-
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00ffcc";
-      ctx.font = `${fontSize}px 'Share Tech Mono'`;
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    }
-    setInterval(drawMatrix, 33);
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-
-    // Game Logic
+    <div>❤️ Health: <span id="hp">100</span></div>
+    <div>⭐ Experience: <span id="xp">0</span></div>
+    <div>🏆 Level: <span id="lvl">1</span></div>
+  </div>  <div>
+    <button class="btn" onclick="doAction('explore')">Explore</button>
+    <button class="btn" onclick="doAction('rest')">Rest</button>
+    <button class="btn" onclick="doAction('fight')">Fight</button>
+  </div>  <div id="log"></div>  <script>
+    const log = document.getElementById("log");
     const hpDisplay = document.getElementById("hp");
     const xpDisplay = document.getElementById("xp");
     const lvlDisplay = document.getElementById("lvl");
-    const log = document.getElementById("log");
-    const voice = document.getElementById("voice");
 
     let player = {
       hp: 100,
@@ -138,10 +85,9 @@
       lvlDisplay.textContent = player.level;
     }
 
-    function logMessage(msg) {
-      log.innerHTML += `▶ ${msg}<br>`;
+    function logMessage(message) {
+      log.innerHTML += `▶ ${message}<br>`;
       log.scrollTop = log.scrollHeight;
-      voice.play();
     }
 
     function gainXP(amount) {
@@ -149,38 +95,38 @@
       if (player.xp >= 100) {
         player.level++;
         player.xp = 0;
-        logMessage(`LEVEL UP! Now Level ${player.level}`);
+        logMessage("You leveled up! 🎉");
       }
       updateHUD();
     }
 
-    function startGame() {
-      logMessage("Simulation protocol online. Welcome Initiate.");
-    }
-
-    function moveSector() {
-      logMessage("You moved to a new dark zone. No threats detected.");
-      gainXP(10);
-    }
-
-    function scanSector() {
-      logMessage("🔍 Scanning... Signal anomaly located in Grid 5-E.");
-      gainXP(15);
-    }
-
-    function hackNode() {
-      if (Math.random() > 0.5) {
-        logMessage("💻 Hack successful. Core data acquired.");
-        gainXP(25);
-      } else {
-        logMessage("⚠️ Hack failed. Security countermeasures triggered. -10 HP");
-        player.hp = Math.max(0, player.hp - 10);
-        updateHUD();
+    function doAction(action) {
+      switch(action) {
+        case 'explore':
+          logMessage("You explored the digital ruins. +10 XP");
+          gainXP(10);
+          break;
+        case 'rest':
+          if (player.hp < 100) {
+            player.hp = Math.min(100, player.hp + 20);
+            logMessage("You rested and healed. +20 HP");
+          } else {
+            logMessage("You're already fully healed.");
+          }
+          updateHUD();
+          break;
+        case 'fight':
+          const outcome = Math.random();
+          if (outcome > 0.5) {
+            logMessage("You won the fight! +20 XP");
+            gainXP(20);
+          } else {
+            player.hp = Math.max(0, player.hp - 15);
+            logMessage("You got hurt in the fight. -15 HP");
+            updateHUD();
+          }
+          break;
       }
-    }
-
-    function exitGame() {
-      logMessage("🔒 Unable to exit. Protocol lock enforced.");
     }
   </script></body>
 </html>
