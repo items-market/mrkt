@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Prime Society Interface — Nothing Here 😔</title>
+  <title>Prime Society OS — Nothing Here 😔</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
@@ -18,7 +18,7 @@
     }
     #overlay {
       position: absolute;
-      top: 25%;
+      top: 15%;
       width: 100%;
       text-align: center;
       font-size: 2rem;
@@ -43,6 +43,7 @@
       padding: 10px;
       border: 1px solid #00ffcc;
       box-shadow: 0 0 20px #00ffcc;
+      z-index: 10;
     }
     #prompt {
       width: 100%;
@@ -52,23 +53,30 @@
       font-family: inherit;
       font-size: 1rem;
     }
+    .access-log {
+      font-size: 0.85rem;
+      margin-top: 10px;
+      color: #00cccc;
+    }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <div id="overlay">Welcome to Prime Society  — Nothing Here 😔</div>
+  <div id="overlay">🔐 Prime Society :: No Data Found 😔</div>
   <div id="terminal">
-    <div>&gt; PRIMEOS v3.2.9 Initialized</div>
-    <div>&gt; Secure Access Granted</div>
-    <div>&gt; Status: 🛑 No content in this sector</div>
-    <input type="text" id="prompt" autofocus />
-  </div>  <script>
+    <div>&gt; PRIMEOS v3.9.4 [Sector: NEON-DARK]</div>
+    <div>&gt; Secure Identity Matrix: ✅ VERIFIED</div>
+    <div class="access-log" id="log"></div>
+    <input type="text" id="prompt" placeholder="\u23CE Enter Prime Command..." autofocus />
+  </div><audio id="voice" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+  <script>
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
 
-    const letters = "ΠΣΔΩΦΨΞPRIMESECURITYPROTOCOLΩΞ01ABCDEF6789";
+    const letters = "ΞΣΩΦΨπ0123456789PRIMEACCESSCORESECURITY";
     const fontSize = 16;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = new Array(columns).fill(1);
@@ -96,20 +104,44 @@
     });
 
     const input = document.getElementById("prompt");
+    const log = document.getElementById("log");
+    const voice = document.getElementById("voice");
+
+    const respond = (msg) => {
+      log.innerHTML += `&gt; ${msg}<br>`;
+      log.scrollTop = log.scrollHeight;
+      voice.play();
+    };
+
     input.addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         const value = input.value.trim().toLowerCase();
-        if (value === "nothing") {
-          alert("🔒 Prime Society acknowledges your awareness of nothing.");
-        } else if (value === "exit") {
-          alert("🚪 You have exited nothing. You're still here.");
-        } else if (value === "help") {
-          alert("🧠 PRIME COMMANDS:\n- nothing\n- help\n- exit\n- glitch");
-        } else if (value === "glitch") {
-          document.body.style.animation = "glitch 0.1s steps(2, end) infinite alternate";
-          setTimeout(() => document.body.style.animation = '', 2000);
-        } else {
-          alert("❌ Unknown command: " + value);
+        switch (value) {
+          case "nothing":
+            respond("Prime Archive confirms: absolutely nothing here.");
+            break;
+          case "exit":
+            respond("No known destination to exit to. Remaining in PrimeOS.");
+            break;
+          case "help":
+            respond("Commands: nothing, help, exit, glitch, id, scan, override");
+            break;
+          case "glitch":
+            document.body.style.animation = "glitch 0.1s steps(2, end) infinite alternate";
+            setTimeout(() => document.body.style.animation = '', 2000);
+            respond("Glitch protocol activated. Visual instability initiated.");
+            break;
+          case "id":
+            respond("Citizen ID: PRIME-A739X — Status: Observer");
+            break;
+          case "scan":
+            respond("Infrared scan complete. No presence detected.");
+            break;
+          case "override":
+            respond("Access Denied. Prime Core Override locked.");
+            break;
+          default:
+            respond("Command not recognized: " + value);
         }
         input.value = "";
       }
