@@ -216,54 +216,83 @@
       margin-top: 14px;
       cursor: pointer;
     }
+
+    #videoPopup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #videoPopup video {
+      border-radius: 12px;
+      max-width: 90%;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="title">Tattoo Artist</div>
+    <div class="title">Too Real</div>
     <div class="subtitle">
-      DOGS OG 
+      Prime OG 
       <img src="https://cdn-icons-png.flaticon.com/512/1828/1828640.png" alt="verified" class="verified-icon">
     </div>
-    <div class="description">Let me guess, you want to get her name on the arm already?</div>
+    <div class="description">Life’s a mess, we just smile through it.
+Stress, overthinking, repeat — now in NFT form.</div>
     <div class="supply">
       <span class="tag">NFT</span>
       Left <span id="supplyLeft">21</span> / 21
     </div>
 
     <div class="main-preview">
-      <img id="mainImage" src="https://i.imgur.com/Xb9Nczz.png" alt="Main NFT">
+      <img id="mainImage" src="https://i.imgur.com/6dECs42.png" alt="Main NFT">
     </div>
 
     <div class="thumbnails">
-      <div class="thumb"><img src="https://i.imgur.com/E3KpvcE.png"></div>
-      <div class="thumb"><img src="https://i.imgur.com/kBMB7bP.png"></div>
-      <div class="thumb"><img src="https://i.imgur.com/zOjJJlX.png"></div>
-      <div class="thumb"><img src="https://i.imgur.com/Xb9Nczz.png"></div>
-      <div class="thumb"><img src="https://i.imgur.com/mKbc1yY.png"></div>
+      <div class="thumb active"><img src="https://i.imgur.com/6dECs42.png"></div>
+      <div class="thumb"><img src="https://i.imgur.com/tB3pWh3.jpeg"></div>
+      <div class="thumb"><img src="https://i.imgur.com/A9Y59yF.jpeg"></div>
+      <div class="thumb"><img src="https://i.imgur.com/0XGNJ6O.png"></div>
+      <div class="thumb"><img src="https://i.imgur.com/zwmovCb.png"></div>
     </div>
   </div>
 
   <!-- Buy Button -->
-  <button class="btn-buy" onclick="showPayment()">Get for ⭐ 999</button>
+  <button class="btn-buy" onclick="showPayment()">Get for ⭐ 69</button>
 
   <!-- Payment UI -->
   <div class="payment-box" id="paymentModal">
     <img src="https://i.imgur.com/E3KpvcE.png" alt="NFT" class="nft-image">
-    <div class="price">⭐ 999</div>
+    <div class="price">⭐ 69</div>
     <div class="title-modal">Tattoo Artist from DOGS OG</div>
     <div class="subtitle-modal">Sticker Pack</div>
-    <button class="confirm-btn" onclick="confirmFake()">Confirm and Pay ⭐ 999 Stars</button>
+    <button class="confirm-btn" onclick="confirmFake()">Confirm and Pay ⭐ 69 Stars</button>
     <div class="terms">
       By purchasing you agree to the <a href="#">Terms of Service</a>.
     </div>
     <div class="cancel" onclick="hidePayment()">Cancel</div>
   </div>
 
+  <!-- Video Popup -->
+  <div id="videoPopup">
+    <video controls autoplay>
+      <source src="https://i.imgur.com/0QAVTZt.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
   <script>
     const mainImage = document.getElementById('mainImage');
     const thumbs = document.querySelectorAll('.thumb');
+    const supplyDisplay = document.getElementById("supplyLeft");
+    const popup = document.getElementById("videoPopup");
 
     thumbs.forEach(thumb => {
       thumb.addEventListener('click', () => {
@@ -283,21 +312,24 @@
     }
 
     function confirmFake() {
-      alert('✅ Payment simulated!');
       hidePayment();
+      popup.style.display = 'flex';
     }
 
-    // NFT countdown every 2 seconds, stop at 3 left
-    let supply = 21;
-    const supplyDisplay = document.getElementById("supplyLeft");
+    // Countdown logic with localStorage
+    let supply = localStorage.getItem('nftSupply');
+    supply = supply ? parseInt(supply) : 21;
+    supplyDisplay.textContent = supply;
+
     const countdown = setInterval(() => {
       if (supply > 3) {
         supply--;
+        localStorage.setItem('nftSupply', supply);
         supplyDisplay.textContent = supply;
       } else {
         clearInterval(countdown);
       }
-    }, 2000); // every 2 seconds
+    }, 5000); // every 5 seconds
   </script>
 
 </body>
