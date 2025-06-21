@@ -1,335 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NFT Detail</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <title>Nothing Here 😔</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
     body {
-      background-color: #0d0d0d;
-      color: white;
-      min-height: 100vh;
-      position: relative;
-      padding-bottom: 120px;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #111;
+      color: #eee;
+      font-family: 'Comic Sans MS', sans-serif;
+      flex-direction: column;
     }
 
-    .container {
-      padding: 16px;
-      max-width: 500px;
-      margin: auto;
+    .box {
+      border: 2px dashed #555;
+      padding: 40px;
+      text-align: center;
+      border-radius: 20px;
+      background: #222;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      transition: transform 0.3s ease;
     }
 
-    .title {
+    .box:hover {
+      transform: scale(1.02);
+      cursor: not-allowed;
+    }
+
+    .dotz {
       font-size: 24px;
-      font-weight: 700;
-    }
-
-    .subtitle {
-      font-size: 15px;
-      color: #7d8fa9;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .verified-icon {
-      width: 16px;
-      height: 16px;
-      vertical-align: middle;
-    }
-
-    .description {
       margin-top: 10px;
-      font-size: 15px;
-      color: #cccccc;
+      animation: dotz 1s infinite;
     }
 
-    .supply {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #d8d8d8;
-    }
-
-    .tag {
-      background-color: #4b3f28;
-      color: #ffc107;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-right: 6px;
-    }
-
-    .main-preview {
-      margin-top: 20px;
-      border-radius: 20px;
-      overflow: hidden;
-      background-color: #1a1a1a;
-      height: 360px;
-    }
-
-    .main-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 20px;
-      transition: all 0.3s ease;
-    }
-
-    .thumbnails {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding-bottom: 16px;
-    }
-
-    .thumb {
-      width: 19%;
-      aspect-ratio: 1/1;
-      background-color: #1a1a1a;
-      padding: 6px;
-      border-radius: 14px;
-      border: 2px solid transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: border-color 0.2s ease;
-    }
-
-    .thumb.active {
-      border-color: #00baff;
-    }
-
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    .btn-buy {
-      position: fixed;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      padding: 16px;
-      background-color: #3390ec;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 17px;
-      font-weight: 600;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .payment-box {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: #1e1e1e;
-      border-top-left-radius: 18px;
-      border-top-right-radius: 18px;
-      padding: 24px 16px 32px;
-      animation: slideUp 0.3s ease-out;
-      z-index: 999;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .nft-image {
-      width: 72px;
-      height: 72px;
-      border-radius: 16px;
-      background-color: #2c2c2c;
-      display: block;
-      margin: 0 auto 16px;
-      object-fit: cover;
-    }
-
-    .price {
-      text-align: center;
-      color: #ffc107;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .title-modal {
-      text-align: center;
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .subtitle-modal {
-      text-align: center;
-      font-size: 14px;
-      color: #999;
-      margin-top: 4px;
-      margin-bottom: 20px;
-    }
-
-    .confirm-btn {
-      width: 100%;
-      background-color: #3390ec;
-      color: white;
-      padding: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 150, 255, 0.3);
-    }
-
-    .terms {
-      text-align: center;
-      font-size: 12px;
-      color: #777;
-      margin-top: 16px;
-    }
-
-    .terms a {
-      color: #3390ec;
-      text-decoration: none;
-    }
-
-    .cancel {
-      text-align: center;
-      font-size: 14px;
-      color: #aaa;
-      margin-top: 14px;
-      cursor: pointer;
-    }
-
-    #videoPopup {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.9);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #videoPopup video {
-      border-radius: 12px;
-      max-width: 90%;
+    @keyframes dotz {
+      0%   { content: "."; }
+      33%  { content: ".."; }
+      66%  { content: "..."; }
+      100% { content: ""; }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="title">Too Real</div>
-    <div class="subtitle">
-      Prime OG 
-      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828640.png" alt="verified" class="verified-icon">
-    </div>
-    <div class="description">Life’s a mess, we just smile through it.
-Stress, overthinking, repeat — now in NFT form.</div>
-    <div class="supply">
-      <span class="tag">NFT</span>
-      Left <span id="supplyLeft">21</span> / 21
-    </div>
-
-    <div class="main-preview">
-      <img id="mainImage" src="https://i.imgur.com/6dECs42.png" alt="Main NFT">
-    </div>
-
-    <div class="thumbnails">
-      <div class="thumb active"><img src="https://i.imgur.com/6dECs42.png"></div>
-      <div class="thumb"><img src="https://i.imgur.com/tB3pWh3.jpeg"></div>
-      <div class="thumb"><img src="https://i.imgur.com/A9Y59yF.jpeg"></div>
-      <div class="thumb"><img src="https://i.imgur.com/0XGNJ6O.png"></div>
-      <div class="thumb"><img src="https://i.imgur.com/zwmovCb.png"></div>
-    </div>
-  </div>
-
-  <!-- Buy Button -->
-  <button class="btn-buy" onclick="showPayment()">Get for ⭐ 69</button>
-
-  <!-- Payment UI -->
-  <div class="payment-box" id="paymentModal">
-    <img src="https://i.imgur.com/E3KpvcE.png" alt="NFT" class="nft-image">
-    <div class="price">⭐ 69</div>
-    <div class="title-modal">Tattoo Artist from DOGS OG</div>
-    <div class="subtitle-modal">Sticker Pack</div>
-    <button class="confirm-btn" onclick="confirmFake()">Confirm and Pay ⭐ 69 Stars</button>
-    <div class="terms">
-      By purchasing you agree to the <a href="#">Terms of Service</a>.
-    </div>
-    <div class="cancel" onclick="hidePayment()">Cancel</div>
-  </div>
-
-  <!-- Video Popup -->
-  <div id="videoPopup">
-    <video controls autoplay>
-      <source src="https://i.imgur.com/0QAVTZt.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+  <div class="box">
+    <div id="message">😔 Nothing here...</div>
+    <div id="dotz">.</div>
   </div>
 
   <script>
-    const mainImage = document.getElementById('mainImage');
-    const thumbs = document.querySelectorAll('.thumb');
-    const supplyDisplay = document.getElementById("supplyLeft");
-    const popup = document.getElementById("videoPopup");
-
-    thumbs.forEach(thumb => {
-      thumb.addEventListener('click', () => {
-        const img = thumb.querySelector('img');
-        mainImage.src = img.src;
-        thumbs.forEach(t => t.classList.remove('active'));
-        thumb.classList.add('active');
-      });
-    });
-
-    function showPayment() {
-      document.getElementById('paymentModal').style.display = 'block';
-    }
-
-    function hidePayment() {
-      document.getElementById('paymentModal').style.display = 'none';
-    }
-
-    function confirmFake() {
-      hidePayment();
-      popup.style.display = 'flex';
-    }
-
-    // Countdown logic with localStorage
-    let supply = localStorage.getItem('nftSupply');
-    supply = supply ? parseInt(supply) : 21;
-    supplyDisplay.textContent = supply;
-
-    const countdown = setInterval(() => {
-      if (supply > 3) {
-        supply--;
-        localStorage.setItem('nftSupply', supply);
-        supplyDisplay.textContent = supply;
-      } else {
-        clearInterval(countdown);
-      }
-    }, 5000); // every 5 seconds
+    const dotz = document.getElementById("dotz");
+    let dots = "";
+    setInterval(() => {
+      dots = dots.length < 3 ? dots + "." : "";
+      dotz.textContent = dots;
+    }, 500);
   </script>
 
 </body>
