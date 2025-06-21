@@ -1,65 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nothing Here 😔 Matrix Mode</title>
+  <title>Prime Society Interface — Nothing Here 😔</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     html, body {
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: black;
-      color: #0f0;
-      font-family: monospace;
+      background: #000;
+      color: #00ffcc;
+      font-family: 'Share Tech Mono', monospace;
     }
     canvas {
       display: block;
     }
     #overlay {
       position: absolute;
-      top: 30%;
+      top: 25%;
       width: 100%;
       text-align: center;
       font-size: 2rem;
-      color: #00ff00cc;
-      text-shadow: 0 0 10px #00ff00;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
       animation: flicker 3s infinite;
       z-index: 10;
     }
     @keyframes flicker {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.4; }
+    }
+    #terminal {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 600px;
+      color: #00ffcc;
+      background: rgba(0,0,0,0.6);
+      padding: 10px;
+      border: 1px solid #00ffcc;
+      box-shadow: 0 0 20px #00ffcc;
+    }
+    #prompt {
+      width: 100%;
+      background: black;
+      color: #00ffcc;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <div id="overlay">Nothing Here 😔</div>
-
-  <script>
+  <div id="overlay">Welcome to Prime Society 👁 — Nothing Here 😔</div>
+  <div id="terminal">
+    <div>&gt; PRIMEOS v3.2.9 Initialized</div>
+    <div>&gt; Secure Access Granted</div>
+    <div>&gt; Status: 🛑 No content in this sector</div>
+    <input type="text" id="prompt" autofocus />
+  </div>  <script>
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
-
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
 
-    const letters = "アァイィウエエェオカサタナハマヤラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+    const letters = "ΠΣΔΩΦΨΞPRIMESECURITYPROTOCOLΩΞ01ABCDEF6789";
     const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array.from({ length: columns }).fill(1);
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = new Array(columns).fill(1);
 
     function drawMatrix() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#0F0";
-      ctx.font = `${fontSize}px monospace`;
+      ctx.fillStyle = "#00ffcc";
+      ctx.font = `${fontSize}px 'Share Tech Mono'`;
 
       for (let i = 0; i < drops.length; i++) {
         const text = letters.charAt(Math.floor(Math.random() * letters.length));
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
@@ -72,6 +94,25 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     });
-  </script>
-</body>
+
+    const input = document.getElementById("prompt");
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        const value = input.value.trim().toLowerCase();
+        if (value === "nothing") {
+          alert("🔒 Prime Society acknowledges your awareness of nothing.");
+        } else if (value === "exit") {
+          alert("🚪 You have exited nothing. You're still here.");
+        } else if (value === "help") {
+          alert("🧠 PRIME COMMANDS:\n- nothing\n- help\n- exit\n- glitch");
+        } else if (value === "glitch") {
+          document.body.style.animation = "glitch 0.1s steps(2, end) infinite alternate";
+          setTimeout(() => document.body.style.animation = '', 2000);
+        } else {
+          alert("❌ Unknown command: " + value);
+        }
+        input.value = "";
+      }
+    });
+  </script></body>
 </html>
