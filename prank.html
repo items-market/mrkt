@@ -1,77 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Nothing Here 😔 Matrix Mode</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Prime Society: Easy Simulation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background: black;
-      color: #0f0;
-      font-family: monospace;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #0a0f0f, #111);
+      color: #00ffcc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-    canvas {
-      display: block;
-    }
-    #overlay {
-      position: absolute;
-      top: 30%;
-      width: 100%;
-      text-align: center;
+    h1 {
       font-size: 2rem;
-      color: #00ff00cc;
-      text-shadow: 0 0 10px #00ff00;
-      animation: flicker 3s infinite;
-      z-index: 10;
+      margin-bottom: 10px;
     }
-    @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+    #hud {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid #00ffcc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    #hud div {
+      margin: 5px 0;
+    }
+    .btn {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background: #00ffcc;
+      color: #000;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #00bbaa;
+    }
+    #log {
+      width: 90%;
+      max-width: 400px;
+      height: 150px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #00ffcc;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
-  <div id="overlay">Nothing Here 😔</div>
+  <h1>🎮 Prime Society: Easy Mode</h1>
+  <div id="hud">
+    <div>❤️ Health: <span id="hp">100</span></div>
+    <div>⭐ Experience: <span id="xp">0</span></div>
+    <div>🏆 Level: <span id="lvl">1</span></div>
+  </div>  <div>
+    <button class="btn" onclick="doAction('explore')">Explore</button>
+    <button class="btn" onclick="doAction('rest')">Rest</button>
+    <button class="btn" onclick="doAction('fight')">Fight</button>
+  </div>  <div id="log"></div>  <script>
+    const log = document.getElementById("log");
+    const hpDisplay = document.getElementById("hp");
+    const xpDisplay = document.getElementById("xp");
+    const lvlDisplay = document.getElementById("lvl");
 
-  <script>
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
+    let player = {
+      hp: 100,
+      xp: 0,
+      level: 1
+    };
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const letters = "アァイィウエエェオカサタナハマヤラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const drops = Array.from({ length: columns }).fill(1);
-
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#0F0";
-      ctx.font = `${fontSize}px monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
+    function updateHUD() {
+      hpDisplay.textContent = player.hp;
+      xpDisplay.textContent = player.xp;
+      lvlDisplay.textContent = player.level;
     }
 
-    setInterval(drawMatrix, 33);
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
-  </script>
-</body>
+    function logMessage(message) {
+      log.innerHTML += `▶ ${message}<br>`;
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function gainXP(amount) {
+      player.xp += amount;
+      if (player.xp >= 100) {
+        player.level++;
+        player.xp = 0;
+        logMessage("You leveled up! 🎉");
+      }
+      updateHUD();
+    }
+
+    function doAction(action) {
+      switch(action) {
+        case 'explore':
+          logMessage("You explored the digital ruins. +10 XP");
+          gainXP(10);
+          break;
+        case 'rest':
+          if (player.hp < 100) {
+            player.hp = Math.min(100, player.hp + 20);
+            logMessage("You rested and healed. +20 HP");
+          } else {
+            logMessage("You're already fully healed.");
+          }
+          updateHUD();
+          break;
+        case 'fight':
+          const outcome = Math.random();
+          if (outcome > 0.5) {
+            logMessage("You won the fight! +20 XP");
+            gainXP(20);
+          } else {
+            player.hp = Math.max(0, player.hp - 15);
+            logMessage("You got hurt in the fight. -15 HP");
+            updateHUD();
+          }
+          break;
+      }
+    }
+  </script></body>
 </html>
