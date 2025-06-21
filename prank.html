@@ -6,59 +6,121 @@
   <style>
     body {
       margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #1e1e1e, #000);
       height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #111;
-      color: #eee;
-      font-family: 'Comic Sans MS', sans-serif;
-      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #ffffff;
     }
 
-    .box {
-      border: 2px dashed #555;
-      padding: 40px;
+    .container {
       text-align: center;
-      border-radius: 20px;
-      background: #222;
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
-      transition: transform 0.3s ease;
+      animation: fadeIn 2s ease-out;
     }
 
-    .box:hover {
-      transform: scale(1.02);
-      cursor: not-allowed;
+    .face {
+      font-size: 6rem;
+      animation: blink 4s infinite;
     }
 
-    .dotz {
-      font-size: 24px;
+    .message {
+      font-size: 2rem;
       margin-top: 10px;
-      animation: dotz 1s infinite;
+      opacity: 0.8;
     }
 
-    @keyframes dotz {
-      0%   { content: "."; }
-      33%  { content: ".."; }
-      66%  { content: "..."; }
-      100% { content: ""; }
+    .loading {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: #aaa;
+      animation: pulse 1.5s infinite;
+    }
+
+    .dots {
+      display: inline-block;
+      width: 1em;
+      text-align: left;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.3; transform: scale(1); }
+    }
+
+    .credits {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .hidden-feature {
+      display: none;
+    }
+
+    /* Optional: Add easter egg if someone spams the keyboard */
+    .easter-egg {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 1.2rem;
+      background: #222;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 1px solid #555;
+      box-shadow: 0 0 10px #000;
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="box">
-    <div id="message">😔 Nothing here...</div>
-    <div id="dotz">.</div>
+  <div class="container">
+    <div class="face">😔</div>
+    <div class="message">There's literally nothing here...</div>
+    <div class="loading">Loading<span class="dots" id="dots">.</span></div>
   </div>
 
+  <div class="easter-egg" id="easterEgg">You found the hidden meaning of nothing! 🎉</div>
+
+  <div class="credits">© 2025 Absolutely Nothing Inc.</div>
+
   <script>
-    const dotz = document.getElementById("dotz");
-    let dots = "";
+    const dots = document.getElementById("dots");
+    const egg = document.getElementById("easterEgg");
+    let dotCount = 1;
     setInterval(() => {
-      dots = dots.length < 3 ? dots + "." : "";
-      dotz.textContent = dots;
+      dots.textContent = '.'.repeat(dotCount);
+      dotCount = (dotCount % 3) + 1;
     }, 500);
+
+    // Easter egg: reveal hidden message if user types "nothing" quickly
+    let buffer = '';
+    document.addEventListener('keydown', (e) => {
+      buffer += e.key.toLowerCase();
+      if (buffer.length > 7) buffer = buffer.slice(-7);
+      if (buffer.includes("nothing")) {
+        egg.style.display = "block";
+        setTimeout(() => egg.style.display = "none", 4000);
+        buffer = '';
+      }
+    });
   </script>
 
 </body>
