@@ -2,142 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Void OS - Nothing Here 😔</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nothing Here 😔 Matrix Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: black;
-      font-family: monospace;
       overflow: hidden;
-    }
-
-    #boot {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
       background: black;
       color: #0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      font-size: 1.5rem;
+      font-family: monospace;
     }
-
-    .loading-text {
-      animation: blink 1s infinite;
+    canvas {
+      display: block;
     }
-
-    @keyframes blink {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 1; }
-    }
-
-    #desktop {
-      display: none;
+    #overlay {
+      position: absolute;
+      top: 30%;
       width: 100%;
-      height: 100vh;
-      background: linear-gradient(#111, #000);
-      color: white;
-      position: relative;
-    }
-
-    .icon {
-      position: absolute;
-      top: 20%;
-      left: 10%;
       text-align: center;
-      cursor: pointer;
+      font-size: 2rem;
+      color: #00ff00cc;
+      text-shadow: 0 0 10px #00ff00;
+      animation: flicker 3s infinite;
+      z-index: 10;
     }
-
-    .icon img {
-      width: 64px;
-      height: 64px;
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
-
-    .terminal {
-      position: absolute;
-      top: 10%;
-      left: 20%;
-      width: 60%;
-      height: 60%;
-      background: rgba(0,0,0,0.85);
-      border: 2px solid #0f0;
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 1rem;
-      display: none;
-      color: #0f0;
-    }
-
-    .bsod {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #0000aa;
-      color: #fff;
-      font-size: 1.5rem;
-      display: none;
-      padding: 20px;
-    }
-
   </style>
 </head>
 <body>
-
-  <div id="boot">
-    <div>🧠 Initializing Void OS...</div>
-    <div class="loading-text">Loading nothing...</div>
-  </div>
-
-  <div id="desktop">
-    <div class="icon" onclick="openTerminal()">
-      <img src="https://cdn-icons-png.flaticon.com/512/2462/2462719.png" />
-      <div>Nothing Terminal</div>
-    </div>
-  </div>
-
-  <div class="terminal" id="terminal">
-    <div>Welcome to Void Terminal</div>
-    <div>Type "nothing" or "exit"</div>
-    <input type="text" id="cmd" style="width: 100%; background: black; color: #0f0; border: none;" autofocus />
-  </div>
-
-  <div class="bsod" id="bsod">
-    💀 A fatal error has occurred:<br><br>
-    SYSTEM_THREAD_EXCEPTION_NOTHING_FOUND<br><br>
-    Press power button to continue doing nothing.
-  </div>
+  <canvas id="matrix"></canvas>
+  <div id="overlay">Nothing Here 😔</div>
 
   <script>
-    setTimeout(() => {
-      document.getElementById("boot").style.display = "none";
-      document.getElementById("desktop").style.display = "block";
-    }, 4000);
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
 
-    function openTerminal() {
-      document.getElementById("terminal").style.display = "block";
-      document.getElementById("cmd").focus();
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "アァイィウエエェオカサタナハマヤラワガザダバパABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#0F0";
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
     }
 
-    const cmd = document.getElementById("cmd");
-    cmd.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        if (cmd.value.toLowerCase() === "nothing") {
-          alert("You have done nothing successfully. 🎉");
-        } else if (cmd.value.toLowerCase() === "exit") {
-          document.getElementById("terminal").style.display = "none";
-        } else if (cmd.value.toLowerCase() === "bsod") {
-          document.getElementById("bsod").style.display = "block";
-        } else {
-          alert("Command not found: " + cmd.value);
-        }
-        cmd.value = "";
-      }
+    setInterval(drawMatrix, 33);
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     });
   </script>
-
 </body>
 </html>
