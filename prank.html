@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Prime Society OS — Simulation Protocol Ξ₿7</title>
+  <title>Prime Society: Protocol Ξ₿7</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
@@ -10,8 +10,8 @@
       padding: 0;
       overflow: hidden;
       background: #000;
-      color: #00ffcc;
       font-family: 'Share Tech Mono', monospace;
+      color: #00ffcc;
     }
     canvas {
       display: block;
@@ -20,98 +20,81 @@
       left: 0;
       z-index: 0;
     }
-    #overlay {
+    #hud {
       position: absolute;
-      top: 10%;
-      width: 100%;
-      text-align: center;
-      font-size: 2rem;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
-      animation: flicker 3s infinite;
+      top: 10px;
+      left: 10px;
       z-index: 10;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      box-shadow: 0 0 12px #00ffcc;
     }
-    @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    #hud div {
+      margin-bottom: 5px;
     }
-    #terminal {
+    #actions {
       position: absolute;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      width: 80%;
-      max-width: 700px;
-      color: #00ffcc;
-      background: rgba(0,0,0,0.7);
-      padding: 12px;
-      border: 1px solid #00ffcc;
-      box-shadow: 0 0 20px #00ffcc, inset 0 0 10px #003333;
       z-index: 10;
-      border-radius: 5px;
+      display: flex;
+      gap: 10px;
     }
-    #prompt {
-      width: 100%;
+    .btn {
       background: black;
       color: #00ffcc;
-      border: none;
-      font-family: inherit;
+      border: 1px solid #00ffcc;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
       font-size: 1rem;
+      transition: background 0.2s;
     }
-    .access-log {
-      font-size: 0.85rem;
-      margin-top: 10px;
-      max-height: 200px;
-      overflow-y: auto;
-      color: #00cccc;
-      line-height: 1.4;
+    .btn:hover {
+      background: #002222;
     }
-    .surveillance {
+    #log {
       position: absolute;
-      top: 0;
       right: 10px;
-      font-size: 0.85rem;
-      color: #00ffcc;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 4px 8px;
-      z-index: 12;
-      animation: blink 2s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.1; }
-    }
-    .game-stats {
-      position: absolute;
-      bottom: 50px;
-      left: 10px;
+      bottom: 20px;
+      width: 250px;
+      height: 180px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      color: #00cccc;
       font-size: 0.9rem;
-      color: #00ffaa;
-      z-index: 15;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
-  <div class="surveillance">🛰 Simulation Surveillance Online</div>
-  <div id="overlay">🎮 Prime Society Simulation — Console Mode</div>
-  <div id="terminal">
-    <div>&gt; PRIMEOS-GAME v1.0 [Simulation Console Mode]</div>
-    <div>&gt; User: INITIATE-Ω739 | Difficulty: NORMAL</div>
-    <div class="access-log" id="log"></div>
-    <input type="text" id="prompt" placeholder="⮐ Type command (start, move, scan, hack, exit)..." autofocus />
-  </div>
-  <div class="game-stats" id="stats">
-    HP: <span id="hp">100</span> | XP: <span id="xp">0</span> | Level: <span id="lvl">1</span>
-  </div><audio id="voice" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
-
-  <script>
+  <div id="hud">
+    <div>🧬 PRIME SOCIETY PROTOCOL: Ξ₿7</div>
+    <div>💠 HP: <span id="hp">100</span></div>
+    <div>⚙️ XP: <span id="xp">0</span></div>
+    <div>📈 Level: <span id="lvl">1</span></div>
+  </div>  <div id="actions">
+    <button class="btn" onclick="startGame()">Start</button>
+    <button class="btn" onclick="moveSector()">Move</button>
+    <button class="btn" onclick="scanSector()">Scan</button>
+    <button class="btn" onclick="hackNode()">Hack</button>
+    <button class="btn" onclick="exitGame()">Exit</button>
+  </div>  <div id="log"></div>
+  <audio id="voice" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>  <script>
+    // Matrix Effect
     const canvas = document.getElementById("matrix");
     const ctx = canvas.getContext("2d");
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
 
-    const letters = "ΞΣΩΦΨπAIΔACCESSΩΞΣπΣΨΞΩ01";
+    const letters = "ΞΣΩΦΨπAIΔΩΞΣΨΞΩ01";
     const fontSize = 16;
     const columns = Math.floor(canvas.width / fontSize);
     const drops = new Array(columns).fill(1);
@@ -136,12 +119,12 @@
       canvas.height = window.innerHeight;
     });
 
-    const input = document.getElementById("prompt");
+    // Game Logic
+    const hpDisplay = document.getElementById("hp");
+    const xpDisplay = document.getElementById("xp");
+    const lvlDisplay = document.getElementById("lvl");
     const log = document.getElementById("log");
     const voice = document.getElementById("voice");
-    const hp = document.getElementById("hp");
-    const xp = document.getElementById("xp");
-    const lvl = document.getElementById("lvl");
 
     let player = {
       hp: 100,
@@ -149,61 +132,55 @@
       level: 1
     };
 
-    const respond = (msg) => {
-      log.innerHTML += `&gt; ${msg}<br>`;
+    function updateHUD() {
+      hpDisplay.textContent = player.hp;
+      xpDisplay.textContent = player.xp;
+      lvlDisplay.textContent = player.level;
+    }
+
+    function logMessage(msg) {
+      log.innerHTML += `▶ ${msg}<br>`;
       log.scrollTop = log.scrollHeight;
       voice.play();
-    };
+    }
 
-    const updateStats = () => {
-      hp.textContent = player.hp;
-      xp.textContent = player.xp;
-      lvl.textContent = player.level;
-    };
-
-    const gainXP = (amount) => {
+    function gainXP(amount) {
       player.xp += amount;
       if (player.xp >= 100) {
         player.level++;
         player.xp = 0;
-        respond(`🆙 Level up! You are now Level ${player.level}`);
+        logMessage(`LEVEL UP! Now Level ${player.level}`);
       }
-      updateStats();
-    };
+      updateHUD();
+    }
 
-    input.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        const value = input.value.trim().toLowerCase();
-        switch (value) {
-          case "start":
-            respond("Simulation initialized. Welcome, initiate Ω739.");
-            break;
-          case "move":
-            respond("You advanced into Sector 4D. It's eerily quiet...");
-            gainXP(15);
-            break;
-          case "scan":
-            respond("Scanning... Signal detected. It's faint but sentient.");
-            gainXP(10);
-            break;
-          case "hack":
-            if (Math.random() > 0.5) {
-              respond("Hack successful. AI node compromised.");
-              gainXP(25);
-            } else {
-              respond("Hack failed. You've been traced. -10 HP");
-              player.hp = Math.max(0, player.hp - 10);
-              updateStats();
-            }
-            break;
-          case "exit":
-            respond("Simulation exit denied. No safe node detected.");
-            break;
-          default:
-            respond(`Unknown protocol command: '${value}'`);
-        }
-        input.value = "";
+    function startGame() {
+      logMessage("Simulation protocol online. Welcome Initiate.");
+    }
+
+    function moveSector() {
+      logMessage("You moved to a new dark zone. No threats detected.");
+      gainXP(10);
+    }
+
+    function scanSector() {
+      logMessage("🔍 Scanning... Signal anomaly located in Grid 5-E.");
+      gainXP(15);
+    }
+
+    function hackNode() {
+      if (Math.random() > 0.5) {
+        logMessage("💻 Hack successful. Core data acquired.");
+        gainXP(25);
+      } else {
+        logMessage("⚠️ Hack failed. Security countermeasures triggered. -10 HP");
+        player.hp = Math.max(0, player.hp - 10);
+        updateHUD();
       }
-    });
+    }
+
+    function exitGame() {
+      logMessage("🔒 Unable to exit. Protocol lock enforced.");
+    }
   </script></body>
 </html>
