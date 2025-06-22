@@ -1,112 +1,1018 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profit Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maruf Hasan | Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: white;
+    :root {
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --accent: #55d0ff;
+      --text: #fff;
+      --muted: #a0a4b8;
+      --radius: 18px;
+      --border: rgba(255, 255, 255, 0.08);
+      --error: #ff6b6b;
+      --section-bg: rgba(22, 26, 34, 0.95);
+      --accent-gradient: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
-    .container {
-      max-width: 500px;
-      margin: auto;
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 72px;
+      position: relative;
+      overflow-x: hidden;
     }
-    .profile {
+
+    /* Top Bar - Matches Index.html */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .balance-container {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
-      background-color: #1e1e1e;
-      padding: 10px;
-      border-radius: 10px;
+      gap: 12px;
+      position: relative;
     }
-    .profile img {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      margin-right: 15px;
+
+    .balance {
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(85, 208, 255, 0.1);
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(85, 208, 255, 0.2);
+      display: flex;
+      align-items: center;
+      transition: var(--transition);
     }
+
+    .ton-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    .balance-amount {
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 5px;
+      font-size: 16px;
+    }
+
+    .balance-currency {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .deposit-btn {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .withdraw-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      font-size: 14px;
+    }
+
+    .deposit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(42, 158, 244, 0.3);
+    }
+
+    .withdraw-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .button-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Profile Card - Enhanced */
+    .profile-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px;
+      backdrop-filter: blur(16px);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
     .profile-info {
       display: flex;
-      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
     }
-    .name {
+
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #2a2f3d 0%, #1a1e28 100%);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 2px solid rgba(85, 208, 255, 0.2);
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
       font-size: 20px;
-      font-weight: bold;
+      font-weight: 600;
+      margin-bottom: 4px;
+      letter-spacing: -0.2px;
     }
-    .user-id {
-      font-size: 14px;
-      color: gray;
+
+    .profile-telegram {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .profit-box {
-      background-color: #1e1e1e;
-      padding: 15px;
-      border-radius: 10px;
-      margin-top: 10px;
+
+    .profile-telegram::before {
+      content: '@';
+      opacity: 0.6;
     }
-    .profit-label {
+
+    .profile-stats {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+      background: rgba(10, 13, 20, 0.6);
+      border-radius: var(--radius);
+      padding: 14px;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-value {
+      font-weight: 600;
       font-size: 16px;
-      color: #aaa;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
     }
-    .profit-value {
-      font-size: 24px;
-      color: #00ff88;
-      font-weight: bold;
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin: 0 20px 24px;
+      position: relative;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 14px 0;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius);
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .tab:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40%;
+      height: 3px;
+      background: var(--accent-gradient);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* Content Sections */
+    .content-section {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 0 20px 20px;
+      backdrop-filter: blur(16px);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--accent);
+    }
+
+    .roadmap-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .step-number {
+      background: var(--accent-gradient);
+      color: white;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .collection-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .collection-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .collection-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .collection-card p {
+      text-align: center;
+      padding: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Bottom Navigation - Matches Index.html */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      background: rgba(22, 26, 34, 0.95);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      z-index: 100;
+    }
+
+    .nav-item {
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-item:hover {
+      color: var(--accent);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .nav-item.active::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      transition: var(--transition);
+    }
+
+    .nav-item.active svg {
+      stroke-width: 2.2;
+    }
+
+    /* Overlays - From Index.html */
+    .deposit-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .deposit-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .deposit-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+    }
+
+    .deposit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .deposit-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .deposit-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .address-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .wallet-address {
+      font-family: 'Menlo', monospace;
+      word-break: break-all;
+      padding-right: 40px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+    }
+
+    .confirm-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Withdraw Overlay Styles */
+    .withdraw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .withdraw-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .withdraw-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+    }
+
+    .withdraw-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .withdraw-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .withdraw-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Action Button Styles */
+    .action-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .action-btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      body {
+        padding-bottom: 72px;
+      }
+      
+      .profile-card {
+        padding: 20px;
+        margin: 16px;
+      }
+      
+      .profile-avatar {
+        width: 56px;
+        height: 56px;
+      }
+      
+      .profile-name {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="userProfile" class="profile" style="display: none;">
-      <img id="userPhoto" src="" alt="User Photo">
-      <div class="profile-info">
-        <div id="userName" class="name"></div>
-        <div id="userId" class="user-id"></div>
+  <!-- Top Bar - Matches Index.html -->
+  <div class="top-bar">
+    <div class="balance-container">
+      <div class="balance">
+        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+        <span class="balance-amount">0</span>
+        <span class="balance-currency">TON</span>
       </div>
     </div>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
+    </div>
+  </div>
 
-    <div class="profit-box">
-      <div class="profit-label">Today's Profit</div>
-      <div class="profit-value">$1,250.00</div>
+  <!-- Profile Card - Enhanced -->
+  <div class="profile-card">
+    <div class="profile-info">
+      <div class="profile-avatar">
+        <img id="userAvatar" src="" alt="Profile Photo">
+      </div>
+      <div>
+        <div class="profile-name" id="userName">Loading...</div>
+        <div class="profile-telegram" id="userUsername"></div>
+      </div>
     </div>
-    <div class="profit-box">
-      <div class="profit-label">This Week's Profit</div>
-      <div class="profit-value">$8,430.75</div>
+    <div class="profile-stats">
+      <div class="stat">
+        <div class="stat-value">
+          <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" style="width: 16px; height: 16px;">
+          0.00
+        </div>
+        <div class="stat-label">Total Volume</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">
+          <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" style="width: 16px; height: 16px;">
+          0
+        </div>
+        <div class="stat-label">Portfolio</div>
+      </div>
     </div>
-    <div class="profit-box">
-      <div class="profit-label">This Month's Profit</div>
-      <div class="profit-value">$32,190.60</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="collections">Collections</button>
+    <button class="tab" data-tab="roadmap">Roadmap</button>
+  </div>
+
+  <!-- Collections Section -->
+  <div class="content-section" id="collectionsSection">
+    <div class="section-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+      Your Collections
     </div>
+    <div class="empty-state">
+      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+      <div class="empty-text">No collections available</div>
+      <div class="empty-subtext">Send your sticker to market to see it here</div>
+    </div>
+  </div>
+
+  <!-- Roadmap Section -->
+  <div class="content-section" id="roadmapSection" style="display: none;">
+    <div class="section-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      Getting Started
+    </div>
+    <div class="roadmap-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-text">Press Start</div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-text">Send your sticker to @palacerelayer in @sticker_bot</div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-text">Top up your wallet with 0.1 TON to activate it</div>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-text">Now you can list your sticker on the marketplace!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Overlay -->
+  <div class="deposit-overlay" id="depositOverlay">
+    <div class="deposit-box">
+      <div class="deposit-header">
+        <h2 class="deposit-title">Deposit</h2>
+        <button class="close-btn" id="closeDeposit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
+      
+      <div class="address-container">
+        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">After making the transfer, it may take a few minutes to reflect in your balance.</p>
+      
+      <button class="confirm-btn" id="confirmDeposit">I've Sent the TON</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw your TON.</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.0" step="0.01" min="0">
+        <div class="error-message" id="amountError">Please enter a valid amount</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="UQB...">
+        <div class="error-message" id="addressError">Please enter a valid address</div>
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw">Withdraw</button>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification">Copied to clipboard!</div>
+
+  <!-- Bottom Navigation - Matches Index.html -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      Home
+    </a>
+    <a href="market.html" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      Market
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      Profile
+    </a>
   </div>
 
   <script>
     // Initialize Telegram WebApp
     const tg = window.Telegram.WebApp;
-    tg.expand(); // Fullscreen
+    tg.expand(); // Expand to full screen
 
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab');
+    const sections = {
+      collections: document.getElementById('collectionsSection'),
+      roadmap: document.getElementById('roadmapSection')
+    };
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        tab.classList.add('active');
+        
+        // Hide all sections
+        Object.values(sections).forEach(section => {
+          section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const tabName = tab.getAttribute('data-tab');
+        sections[tabName].style.display = 'block';
+      });
+    });
+
+    // Overlay functionality
+    const depositOverlay = document.getElementById('depositOverlay');
+    const withdrawOverlay = document.getElementById('withdrawOverlay');
+    const showDepositBtn = document.getElementById('showDeposit');
+    const showWithdrawBtn = document.getElementById('showWithdraw');
+    const closeDepositBtn = document.getElementById('closeDeposit');
+    const closeWithdrawBtn = document.getElementById('closeWithdraw');
+    const copyBtn = document.getElementById('copyBtn');
+    const notification = document.getElementById('notification');
+
+    showDepositBtn.addEventListener('click', () => {
+      depositOverlay.classList.add('active');
+    });
+
+    showWithdrawBtn.addEventListener('click', () => {
+      withdrawOverlay.classList.add('active');
+    });
+
+    closeDepositBtn.addEventListener('click', () => {
+      depositOverlay.classList.remove('active');
+    });
+
+    closeWithdrawBtn.addEventListener('click', () => {
+      withdrawOverlay.classList.remove('active');
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const address = document.getElementById('walletAddress').textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        notification.classList.add('show');
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 2000);
+      });
+    });
+
+    // Set user data from Telegram WebApp
     const user = tg.initDataUnsafe.user;
-
     if (user) {
+      // Set user name
+      const userNameElement = document.getElementById('userName');
       const name = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-      const photo = user.photo_url;
-      const id = user.id;
-
-      document.getElementById('userName').textContent = name;
-      document.getElementById('userId').textContent = `User ID: ${id}`;
-      if (photo) {
-        document.getElementById('userPhoto').src = photo;
+      userNameElement.textContent = name || 'Telegram User';
+      
+      // Set username if available
+      const userUsernameElement = document.getElementById('userUsername');
+      if (user.username) {
+        userUsernameElement.textContent = user.username;
+        userUsernameElement.style.display = 'flex';
       } else {
-        document.getElementById('userPhoto').src = 'https://via.placeholder.com/60';
+        userUsernameElement.style.display = 'none';
       }
-
-      document.getElementById('userProfile').style.display = 'flex';
+      
+      // Set avatar if available
+      const userAvatarElement = document.getElementById('userAvatar');
+      if (user.photo_url) {
+        userAvatarElement.src = user.photo_url;
+      } else {
+        // Default avatar if no photo
+        userAvatarElement.src = 'https://via.placeholder.com/64';
+      }
     } else {
-      alert('User info not available via Telegram SDK.');
+      // Fallback for testing outside Telegram
+      document.getElementById('userName').textContent = 'Telegram User';
+      document.getElementById('userUsername').textContent = 'username';
+      document.getElementById('userAvatar').src = 'https://via.placeholder.com/64';
     }
   </script>
 </body>
