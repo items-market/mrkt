@@ -980,12 +980,22 @@
 
     // Telegram Mini App user data
     function initTelegramUserData() {
+      // Check if Telegram WebApp is available
       if (window.Telegram && window.Telegram.WebApp) {
+        // Expand the app to full viewport
+        Telegram.WebApp.expand();
+        
+        // Get user data
         const user = Telegram.WebApp.initDataUnsafe.user;
+        
         if (user) {
           // Set user name
           const userNameElement = document.getElementById('userName');
-          userNameElement.textContent = user.first_name || 'Telegram User';
+          let fullName = user.first_name || '';
+          if (user.last_name) {
+            fullName += ' ' + user.last_name;
+          }
+          userNameElement.textContent = fullName.trim() || 'Telegram User';
           
           // Set username if available
           const userUsernameElement = document.getElementById('userUsername');
@@ -1001,16 +1011,26 @@
           if (user.photo_url) {
             userAvatarElement.src = user.photo_url;
           } else {
-            // Default avatar if no photo
-            userAvatarElement.src = 'https://via.placeholder.com/64';
+            // Generate default avatar with initials as fallback
+            const initials = (user.first_name ? user.first_name.charAt(0) : '') + 
+                            (user.last_name ? user.last_name.charAt(0) : '');
+            userAvatarElement.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials || 'TU')}&background=random&color=fff&size=64`;
           }
+        } else {
+          // Fallback if user data is not available
+          setFallbackUserData();
         }
       } else {
         // Fallback for testing outside Telegram
-        document.getElementById('userName').textContent = 'Telegram User';
-        document.getElementById('userUsername').textContent = 'username';
-        document.getElementById('userAvatar').src = 'https://via.placeholder.com/64';
+        setFallbackUserData();
       }
+    }
+
+    function setFallbackUserData() {
+      document.getElementById('userName').textContent = 'Telegram User';
+      document.getElementById('userUsername').textContent = 'username';
+      document.getElementById('userUsername').style.display = 'flex';
+      document.getElementById('userAvatar').src = 'https://ui-avatars.com/api/?name=TU&background=random&color=fff&size=64';
     }
 
     // Initialize when DOM is loaded
