@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maruf Hasan | Profile</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg-start: #0e111a;
@@ -672,25 +671,6 @@
       opacity: 1;
     }
 
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--muted);
-    }
-
-    .empty-icon {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .empty-text {
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
     /* Responsive adjustments */
     @media (max-width: 480px) {
       body {
@@ -748,7 +728,7 @@
       </div>
       <div>
         <div class="profile-name" id="userName">Loading...</div>
-        <div class="profile-telegram" id="userUsername"></div>
+        <div class="profile-telegram" id="userUsername">@username</div>
       </div>
     </div>
     <div class="profile-stats">
@@ -771,8 +751,8 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" data-tab="collections">Collections</button>
-    <button class="tab" data-tab="roadmap">Roadmap</button>
+    <button class="tab active" id="collectionsTab">Collections</button>
+    <button class="tab" id="roadmapTab">Roadmap</button>
   </div>
 
   <!-- Collections Section -->
@@ -786,14 +766,11 @@
       </svg>
       Your Collections
     </div>
-    <div class="empty-state">
-      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-      </svg>
-      <div class="empty-text">No collections available</div>
-      <div class="empty-subtext">Send your sticker to market to see it here</div>
+    <div class="collection-grid" id="collectionsGrid">
+      <!-- Collections will be shown here if available -->
+      <div class="no-collections" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--muted);">
+        No collections available yet
+      </div>
     </div>
   </div>
 
@@ -839,3 +816,175 @@
         </button>
       </div>
       
+      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
+      
+      <div class="address-container">
+        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">After making the transfer, your balance will update automatically.</p>
+      
+      <button class="confirm-btn" id="confirmDeposit">I've sent the TON</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw your TON.</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.0">
+        <div class="error-message" id="amountError">Invalid amount</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="UQ...">
+        <div class="error-message" id="addressError">Invalid address</div>
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw">Withdraw</button>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification">Copied to clipboard!</div>
+
+  <!-- Bottom Navigation - Matches Index.html -->
+  <div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Home</span>
+    </a>
+    <a href="marketplace.html" class="nav-item">
+      <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span>Market</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <script>
+    // Telegram Mini App initData handling
+    function parseInitData() {
+      try {
+        // This would normally come from Telegram.WebApp.initData or Telegram.WebApp.initDataUnsafe
+        // For demo purposes, we'll use mock data
+        const initData = {
+          user: {
+            id: 123456789,
+            first_name: "Maruf",
+            last_name: "Hasan",
+            username: "marufhasan",
+            photo_url: "https://t.me/i/userpic/320/marufhasan.jpg",
+          }
+        };
+
+        // Update profile with initData
+        if (initData.user) {
+          const user = initData.user;
+          document.getElementById('userName').textContent = 
+            [user.first_name, user.last_name].filter(Boolean).join(' ');
+          
+          if (user.username) {
+            document.getElementById('userUsername').textContent = `@${user.username}`;
+          } else {
+            document.getElementById('userUsername').textContent = `user_${user.id}`;
+          }
+
+          if (user.photo_url) {
+            document.getElementById('userAvatar').src = user.photo_url;
+          } else {
+            // Fallback avatar if no photo_url is provided
+            const initials = [user.first_name?.[0], user.last_name?.[0]].filter(Boolean).join('');
+            document.getElementById('userAvatar').src = `https://ui-avatars.com/api/?name=${initials}&background=random&color=fff&size=64`;
+          }
+        }
+      } catch (error) {
+        console.error('Error parsing initData:', error);
+      }
+    }
+
+    // Tab switching functionality
+    document.getElementById('collectionsTab').addEventListener('click', function() {
+      document.getElementById('collectionsSection').style.display = 'block';
+      document.getElementById('roadmapSection').style.display = 'none';
+      this.classList.add('active');
+      document.getElementById('roadmapTab').classList.remove('active');
+    });
+
+    document.getElementById('roadmapTab').addEventListener('click', function() {
+      document.getElementById('collectionsSection').style.display = 'none';
+      document.getElementById('roadmapSection').style.display = 'block';
+      this.classList.add('active');
+      document.getElementById('collectionsTab').classList.remove('active');
+    });
+
+    // Deposit/Withdraw overlay functionality
+    document.getElementById('showDeposit').addEventListener('click', function() {
+      document.getElementById('depositOverlay').classList.add('active');
+    });
+
+    document.getElementById('closeDeposit').addEventListener('click', function() {
+      document.getElementById('depositOverlay').classList.remove('active');
+    });
+
+    document.getElementById('showWithdraw').addEventListener('click', function() {
+      document.getElementById('withdrawOverlay').classList.add('active');
+    });
+
+    document.getElementById('closeWithdraw').addEventListener('click', function() {
+      document.getElementById('withdrawOverlay').classList.remove('active');
+    });
+
+    // Copy wallet address functionality
+    document.getElementById('copyBtn').addEventListener('click', function() {
+      const address = document.getElementById('walletAddress').textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        const notification = document.getElementById('notification');
+        notification.textContent = 'Copied to clipboard!';
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 2000);
+      });
+    });
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      parseInitData();
+      
+      // In a real app, you would check for collections here
+      // For now, we'll just show the "no collections" message
+    });
+  </script>
+</body>
+</html>
