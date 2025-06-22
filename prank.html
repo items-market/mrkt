@@ -54,10 +54,9 @@
 
       const amountNanoTon = Math.round(amountTon * 1_000_000_000);
 
-      // Replace with your actual wallet address
       const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
 
-      const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}&text=3dcb41408a`;
+      const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
 
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.openLink(url);
