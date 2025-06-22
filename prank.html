@@ -724,11 +724,11 @@
   <div class="profile-card">
     <div class="profile-info">
       <div class="profile-avatar">
-        <img id="userAvatar" src="" alt="Profile Photo">
+        <img src="https://via.placeholder.com/64" alt="Profile Photo">
       </div>
       <div>
-        <div class="profile-name" id="userName">Loading...</div>
-        <div class="profile-telegram" id="userUsername">@username</div>
+        <div class="profile-name">Maruf Hasan</div>
+        <div class="profile-telegram">marufhasan</div>
       </div>
     </div>
     <div class="profile-stats">
@@ -751,8 +751,8 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" id="collectionsTab">Collections</button>
-    <button class="tab" id="roadmapTab">Roadmap</button>
+    <button class="tab active">Collections</button>
+    <button class="tab">Roadmap</button>
   </div>
 
   <!-- Collections Section -->
@@ -766,10 +766,14 @@
       </svg>
       Your Collections
     </div>
-    <div class="collection-grid" id="collectionsGrid">
-      <!-- Collections will be shown here if available -->
-      <div class="no-collections" style="grid-column: 1 / -1; text-align: center; padding: 20px; color: var(--muted);">
-        No collections available yet
+    <div class="collection-grid">
+      <div class="collection-card">
+        <img src="https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif" alt="Void">
+        <p>Void</p>
+      </div>
+      <div class="collection-card">
+        <img src="https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg" alt="Notcoin">
+        <p>Notcoin</p>
       </div>
     </div>
   </div>
@@ -828,4 +832,184 @@
         </button>
       </div>
       
-      <p class="deposit-instructions">After making the transfer, your balance will update automaticall
+      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
+      
+      <button class="confirm-btn" id="confirmBtn">I sent</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
+        <div class="error-message" id="amountError">Insufficient balance</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification">Notification message</div>
+
+  <!-- Bottom Navigation - Matches Index.html -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Market</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+    <a href="activity.html" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span>Activity</span>
+    </a>
+  </nav>
+
+  <script>
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab');
+    const collectionsSection = document.getElementById('collectionsSection');
+    const roadmapSection = document.getElementById('roadmapSection');
+    
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        if (tab.textContent === 'Collections') {
+          collectionsSection.style.display = 'block';
+          roadmapSection.style.display = 'none';
+        } else {
+          collectionsSection.style.display = 'none';
+          roadmapSection.style.display = 'block';
+        }
+      });
+    });
+
+    // Deposit/Withdraw functionality from index.html
+    const depositOverlay = document.getElementById('depositOverlay');
+    const withdrawOverlay = document.getElementById('withdrawOverlay');
+    const showDepositBtn = document.getElementById('showDeposit');
+    const showWithdrawBtn = document.getElementById('showWithdraw');
+    const closeDepositBtn = document.getElementById('closeDeposit');
+    const closeWithdrawBtn = document.getElementById('closeWithdraw');
+    const notification = document.getElementById('notification');
+    const walletAddress = document.getElementById('walletAddress');
+    const copyBtn = document.getElementById('copyBtn');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const withdrawAmount = document.getElementById('withdrawAmount');
+    const withdrawAddress = document.getElementById('withdrawAddress');
+    const amountError = document.getElementById('amountError');
+    const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
+    const fullAddress = "UQBiasModFullAddressf5eSDEitj";
+
+    // Show/hide overlays
+    showDepositBtn.addEventListener('click', () => depositOverlay.classList.add('active'));
+    showWithdrawBtn.addEventListener('click', () => withdrawOverlay.classList.add('active'));
+    
+    closeDepositBtn.addEventListener('click', () => depositOverlay.classList.remove('active'));
+    closeWithdrawBtn.addEventListener('click', () => withdrawOverlay.classList.remove('active'));
+
+    [depositOverlay, withdrawOverlay].forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('active');
+      });
+    });
+
+    // Copy address functionality
+    function copyToClipboard() {
+      navigator.clipboard.writeText(fullAddress).then(() => {
+        showNotification('Address copied!');
+      });
+    }
+    walletAddress.addEventListener('click', copyToClipboard);
+    copyBtn.addEventListener('click', copyToClipboard);
+
+    // Withdraw validation
+    withdrawAmount.addEventListener('input', validateWithdraw);
+    
+    function validateWithdraw() {
+      const amount = parseFloat(withdrawAmount.value);
+      if (isNaN(amount)) {
+        amountError.style.display = 'none';
+        confirmWithdrawBtn.disabled = true;
+        return;
+      }
+      
+      if (amount > 0) { // Replace with actual balance check
+        amountError.style.display = 'none';
+        confirmWithdrawBtn.disabled = false;
+      } else if (amount <= 0) {
+        amountError.style.display = 'block';
+        amountError.textContent = 'Amount must be positive';
+        confirmWithdrawBtn.disabled = true;
+      } else {
+        amountError.style.display = 'none';
+        confirmWithdrawBtn.disabled = false;
+      }
+    }
+
+    // Notification helper
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.classList.add('show');
+      setTimeout(() => notification.classList.remove('show'), 2000);
+    }
+
+    // Initialize Telegram WebApp
+    function initTelegramWebApp() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const webApp = window.Telegram.WebApp;
+        const user = webApp.initDataUnsafe.user;
+        
+        if (user) {
+          // Update profile info with Telegram data
+          document.querySelector('.profile-name').textContent = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+          document.querySelector('.profile-telegram').textContent = user.username || '';
+          
+          // Set profile photo if available
+          if (user.photo_url) {
+            document.querySelector('.profile-avatar img').src = user.photo_url;
+          }
+        }
+        
+        // Expand the WebApp to full height
+        webApp.expand();
+      }
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', initTelegramWebApp);
+  </script>
+</body>
+</html>
