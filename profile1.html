@@ -891,15 +891,8 @@
   <!-- Notification -->
   <div class="notification" id="notification">Copied to clipboard!</div>
 
-  <!-- Bottom Navigation - Matches Index.html -->
+  <!-- Bottom Navigation - Changed order to Market, Profile, Activity -->
   <div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-      </svg>
-      Home
-    </a>
     <a href="market.html" class="nav-item">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <circle cx="9" cy="21" r="1"></circle>
@@ -914,6 +907,12 @@
         <circle cx="12" cy="7" r="4"></circle>
       </svg>
       Profile
+    </a>
+    <a href="activity.html" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      Activity
     </a>
   </div>
 
@@ -983,37 +982,48 @@
       });
     });
 
-    // Set user data from Telegram WebApp
-    const user = tg.initDataUnsafe.user;
-    if (user) {
-      // Set user name
-      const userNameElement = document.getElementById('userName');
-      const name = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-      userNameElement.textContent = name || 'Telegram User';
+    // Function to set user data
+    function setUserData() {
+      // Try to get user data from Telegram WebApp
+      const user = tg.initDataUnsafe?.user;
       
-      // Set username if available
-      const userUsernameElement = document.getElementById('userUsername');
-      if (user.username) {
-        userUsernameElement.textContent = user.username;
-        userUsernameElement.style.display = 'flex';
+      if (user) {
+        // Set user name
+        const userNameElement = document.getElementById('userName');
+        const name = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        userNameElement.textContent = name || 'Telegram User';
+        
+        // Set username if available
+        const userUsernameElement = document.getElementById('userUsername');
+        if (user.username) {
+          userUsernameElement.textContent = user.username;
+          userUsernameElement.style.display = 'flex';
+        } else {
+          userUsernameElement.style.display = 'none';
+        }
+        
+        // Set avatar if available
+        const userAvatarElement = document.getElementById('userAvatar');
+        if (user.photo_url) {
+          userAvatarElement.src = user.photo_url;
+        } else {
+          // Default avatar if no photo
+          userAvatarElement.src = 'https://via.placeholder.com/64';
+        }
       } else {
-        userUsernameElement.style.display = 'none';
+        // Fallback for testing outside Telegram or when data isn't available
+        document.getElementById('userName').textContent = 'Telegram User';
+        document.getElementById('userUsername').textContent = 'username';
+        document.getElementById('userAvatar').src = 'https://via.placeholder.com/64';
       }
-      
-      // Set avatar if available
-      const userAvatarElement = document.getElementById('userAvatar');
-      if (user.photo_url) {
-        userAvatarElement.src = user.photo_url;
-      } else {
-        // Default avatar if no photo
-        userAvatarElement.src = 'https://via.placeholder.com/64';
-      }
-    } else {
-      // Fallback for testing outside Telegram
-      document.getElementById('userName').textContent = 'Telegram User';
-      document.getElementById('userUsername').textContent = 'username';
-      document.getElementById('userAvatar').src = 'https://via.placeholder.com/64';
     }
+
+    // Set user data when page loads
+    setUserData();
+
+    // Also listen for Telegram events in case the data becomes available later
+    tg.onEvent('viewportChanged', setUserData);
+    tg.onEvent('themeChanged', setUserData);
   </script>
 </body>
 </html>
