@@ -52,10 +52,9 @@
         return;
       }
 
-      // Convert TON to nanoTON
       const amountNanoTon = Math.round(amountTon * 1_000_000_000);
 
-      // Replace with your actual TON wallet address (without any amount or text)
+      // Clean wallet address - no ?amount or &text here
       const wallet = "UQAnasqvWONrKkRrxKOoXiKWLQaRy5eY1Nq93L41zw6-nJPw";
 
       const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}&text=fb72628f0425`;
@@ -63,7 +62,6 @@
       if (window.Telegram && Telegram.WebApp) {
         Telegram.WebApp.openLink(url);
       } else {
-        // fallback if outside Mini App
         window.open(url, "_blank");
       }
     });
