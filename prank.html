@@ -1,135 +1,73 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Nothing Here 😔 | PRIME SOCIETY</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TON Deposit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: black;
-      overflow: hidden;
-      font-family: 'Courier New', monospace;
-      color: #00ff00;
-    }
-    canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: block;
-      z-index: 0;
-    }
-    #overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0e111a;
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      height: 100vh;
+    }
+    input {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 1rem;
+      width: 120px;
       text-align: center;
-      z-index: 2;
-      pointer-events: none;
     }
-    #sad-face {
-      font-size: 4em;
-      opacity: 0.7;
-      animation: pulse 3s infinite ease-in-out, flicker 1.5s infinite;
-    }
-    #secret {
-      margin-top: 20px;
-      font-size: 1.2em;
-      opacity: 0;
-      transition: opacity 2s ease-in-out;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.6; }
-      50% { transform: scale(1.05); opacity: 1; }
-    }
-    @keyframes flicker {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 0.99;
-      }
-      20%, 22%, 24%, 55% {
-        opacity: 0.4;
-      }
-    }
-    .scanline {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(to bottom, rgba(0,255,0,0.02) 0px, rgba(0,255,0,0.02) 1px, transparent 1px, transparent 3px);
-      z-index: 1;
-      pointer-events: none;
-      animation: scroll 10s linear infinite;
-    }
-    @keyframes scroll {
-      0% { background-position-y: 0; }
-      100% { background-position-y: 100%; }
+    button {
+      background: #55d0ff;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
-  <div class="scanline"></div>
-  <div id="overlay">
-    <div id="sad-face">😔</div>
-    <div id="secret">PRIME SOCIETY knows you are watching.</div>
-  </div>  <script>
-    const canvas = document.getElementById("matrix");
-    const ctx = canvas.getContext("2d");
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
 
-    const characters = "アァイィウヴエェオカガキギクグケゲコゴサシスセソゾタチABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#*+!@%$";
-    const fontSize = 16;
-    const columns = Math.floor(width / fontSize);
-    const drops = new Array(columns).fill(1);
+  <input type="number" id="tonAmount" placeholder="TON amount" min="0.001" step="0.001" />
+  <button id="depositBtn">Deposit</button>
 
-    function drawMatrix() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, width, height);
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const depositBtn = document.getElementById('depositBtn');
+    const tonAmount = document.getElementById('tonAmount');
 
-      ctx.fillStyle = "#00ff00";
-      ctx.font = `${fontSize}px monospace`;
-
-      for (let i = 0; i < drops.length; i++) {
-        const char = characters.charAt(Math.floor(Math.random() * characters.length));
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
+    depositBtn.addEventListener('click', () => {
+      const amountTon = parseFloat(tonAmount.value);
+      if (isNaN(amountTon) || amountTon <= 0) {
+        alert("Enter a valid TON amount");
+        return;
       }
-    }
 
-    setInterval(drawMatrix, 33);
+      // Convert TON to nanoTON
+      const amountNanoTon = Math.round(amountTon * 1_000_000_000);
 
-    window.addEventListener("resize", () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      // Replace with your actual TON wallet address (without any amount or text)
+      const wallet = "UQAnasqvWONrKkRrxKOoXiKWLQaRy5eY1Nq93L41zw6-nJPw";
+
+      const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}&text=fb72628f0425`;
+
+      if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.openLink(url);
+      } else {
+        // fallback if outside Mini App
+        window.open(url, "_blank");
+      }
     });
+  </script>
 
-    setTimeout(() => {
-      document.getElementById("secret").style.opacity = 1;
-    }, 10000);
-
-    // Easter egg: click to glitch
-    document.body.addEventListener("click", () => {
-      document.body.style.transition = "all 0.2s";
-      document.body.style.filter = "contrast(1.5) brightness(1.2)";
-      setTimeout(() => {
-        document.body.style.filter = "none";
-      }, 500);
-    });
-  </script></body>
+</body>
 </html>
