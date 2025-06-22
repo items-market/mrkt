@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maruf Hasan | Profile</title>
+  <title>Sticker Marketplace</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
@@ -40,7 +40,7 @@
       overflow-x: hidden;
     }
 
-    /* Top Bar - Matches Index.html */
+    /* Top Bar */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -97,12 +97,9 @@
       gap: 10px;
     }
 
-    .deposit-btn {
-      background: var(--accent-gradient);
-      color: white;
+    .deposit-btn, .withdraw-btn {
       padding: 9px 16px;
       border-radius: 12px;
-      border: none;
       font-weight: 600;
       cursor: pointer;
       display: flex;
@@ -110,21 +107,18 @@
       gap: 6px;
       transition: var(--transition);
       font-size: 14px;
+      border: none;
+    }
+
+    .deposit-btn {
+      background: var(--accent-gradient);
+      color: white;
     }
 
     .withdraw-btn {
       background: rgba(255, 255, 255, 0.05);
       color: white;
-      padding: 9px 16px;
-      border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition);
-      font-size: 14px;
     }
 
     .deposit-btn:hover {
@@ -144,7 +138,7 @@
       height: 15px;
     }
 
-    /* Profile Card - Enhanced */
+    /* Profile Card */
     .profile-card {
       background: var(--section-bg);
       border: 1px solid var(--border);
@@ -310,6 +304,77 @@
       stroke: var(--accent);
     }
 
+    /* Market Content */
+    .search-bar {
+      display: block;
+      margin: 16px 20px;
+      padding: 14px 16px;
+      width: calc(100% - 40px);
+      border-radius: 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: white;
+      font-size: 16px;
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .collection-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .collection-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .collection-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .collection-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .collection-card p {
+      text-align: center;
+      padding: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .coming-soon-overlay {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      z-index: 2;
+    }
+
+    /* Roadmap Content */
     .roadmap-steps {
       display: flex;
       flex-direction: column;
@@ -342,45 +407,193 @@
       line-height: 1.5;
     }
 
-    .collection-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 16px;
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
     }
 
-    .collection-card {
-      background: rgba(255, 255, 255, 0.03);
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    /* Overlays */
+    .deposit-overlay, .withdraw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .deposit-overlay.active, .withdraw-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .deposit-box, .withdraw-box {
+      background: rgba(22, 26, 34, 0.95);
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      overflow: hidden;
-      transition: var(--transition);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .deposit-header, .withdraw-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .deposit-title, .withdraw-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
       cursor: pointer;
+      padding: 4px;
     }
 
-    .collection-card:hover {
+    .deposit-instructions, .withdraw-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .address-container {
       background: rgba(255, 255, 255, 0.05);
-      transform: translateY(-2px);
-      border-color: var(--accent);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      position: relative;
     }
 
-    .collection-card img {
+    .wallet-address {
+      font-family: 'Menlo', monospace;
+      word-break: break-all;
+      padding-right: 40px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+    }
+
+    .confirm-btn, .action-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
       width: 100%;
-      height: 120px;
-      object-fit: cover;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-btn:hover, .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .action-btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
       display: block;
-    }
-
-    .collection-card p {
-      text-align: center;
-      padding: 12px;
-      font-weight: 500;
+      margin-bottom: 8px;
       font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      color: var(--muted);
     }
 
-    /* Bottom Navigation - Matches Index.html */
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -438,257 +651,13 @@
       stroke-width: 2.2;
     }
 
-    /* Overlays - From Index.html */
-    .deposit-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(14, 17, 26, 0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .deposit-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .deposit-box {
-      background: rgba(22, 26, 34, 0.95);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      width: 90%;
-      max-width: 400px;
-      padding: 24px;
-    }
-
-    .deposit-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .deposit-title {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 4px;
-    }
-
-    .deposit-instructions {
-      color: var(--muted);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    .address-container {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .wallet-address {
-      font-family: 'Menlo', monospace;
-      word-break: break-all;
-      padding-right: 40px;
-    }
-
-    .copy-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      border-radius: 6px;
-      padding: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .copy-btn:hover {
-      background: var(--accent);
-    }
-
-    .confirm-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .confirm-btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Withdraw Overlay Styles */
-    .withdraw-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(14, 17, 26, 0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .withdraw-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .withdraw-box {
-      background: rgba(22, 26, 34, 0.95);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      width: 90%;
-      max-width: 400px;
-      padding: 24px;
-    }
-
-    .withdraw-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .withdraw-title {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .withdraw-instructions {
-      color: var(--muted);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    /* Input Styles */
-    .input-group {
-      margin-bottom: 16px;
-    }
-
-    .input-label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 15px;
-      transition: all 0.2s ease;
-    }
-
-    .input-field:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .error-message {
-      color: var(--error);
-      font-size: 13px;
-      margin-top: 4px;
+    /* Page Transitions */
+    .page {
       display: none;
     }
 
-    /* Action Button Styles */
-    .action-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 8px;
-    }
-
-    .action-btn:hover {
-      opacity: 0.9;
-    }
-
-    .action-btn:disabled {
-      background: var(--muted);
-      cursor: not-allowed;
-    }
-
-    /* Notification Styles */
-    .notification {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-
-    .notification.show {
-      opacity: 1;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--muted);
-    }
-
-    .empty-icon {
-      width: 60px;
-      height: 60px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .empty-text {
-      font-size: 14px;
-      margin-bottom: 8px;
+    .page.active {
+      display: block;
     }
 
     /* Responsive adjustments */
@@ -710,11 +679,15 @@
       .profile-name {
         font-size: 18px;
       }
+
+      .collection-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Top Bar - Matches Index.html -->
+  <!-- Top Bar -->
   <div class="top-bar">
     <div class="balance-container">
       <div class="balance">
@@ -740,88 +713,108 @@
     </div>
   </div>
 
-  <!-- Profile Card - Enhanced -->
-  <div class="profile-card">
-    <div class="profile-info">
-      <div class="profile-avatar">
-        <img id="userAvatar" src="" alt="Profile Photo">
+  <!-- Market Page -->
+  <div class="page active" id="marketPage">
+    <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..." />
+    
+    <div class="content-section">
+      <div class="section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        Collections
       </div>
-      <div>
-        <div class="profile-name" id="userName">Loading...</div>
-        <div class="profile-telegram" id="userUsername"></div>
-      </div>
+      <div class="collection-grid" id="nftGrid"></div>
     </div>
-    <div class="profile-stats">
-      <div class="stat">
-        <div class="stat-value">
-          <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" style="width: 16px; height: 16px;">
-          0.00
+  </div>
+
+  <!-- Profile Page -->
+  <div class="page" id="profilePage">
+    <!-- Profile Card -->
+    <div class="profile-card">
+      <div class="profile-info">
+        <div class="profile-avatar">
+          <img id="userAvatar" src="" alt="Profile Photo">
         </div>
-        <div class="stat-label">Total Volume</div>
-      </div>
-      <div class="stat">
-        <div class="stat-value">
-          <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" style="width: 16px; height: 16px;">
-          0
+        <div>
+          <div class="profile-name" id="userName">Loading...</div>
+          <div class="profile-telegram" id="userUsername"></div>
         </div>
-        <div class="stat-label">Portfolio</div>
+      </div>
+      <div class="profile-stats">
+        <div class="stat">
+          <div class="stat-value">
+            <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" style="width: 16px; height: 16px;">
+            0.00
+          </div>
+          <div class="stat-label">Total Volume</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">
+            <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" style="width: 16px; height: 16px;">
+            0
+          </div>
+          <div class="stat-label">Portfolio</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" data-tab="collections">Collections</button>
-    <button class="tab" data-tab="roadmap">Roadmap</button>
-  </div>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="collections">Collections</button>
+      <button class="tab" data-tab="roadmap">Roadmap</button>
+    </div>
 
-  <!-- Collections Section -->
-  <div class="content-section" id="collectionsSection">
-    <div class="section-title">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"></rect>
-        <rect x="14" y="3" width="7" height="7"></rect>
-        <rect x="14" y="14" width="7" height="7"></rect>
-        <rect x="3" y="14" width="7" height="7"></rect>
-      </svg>
-      Your Collections
+    <!-- Collections Section -->
+    <div class="content-section" id="collectionsSection">
+      <div class="section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        Your Collections
+      </div>
+      <div class="empty-state">
+        <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        <div class="empty-text">No collections available</div>
+        <div class="empty-subtext">Send your sticker to market to see it here</div>
+      </div>
     </div>
-    <div class="empty-state">
-      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-      </svg>
-      <div class="empty-text">No collections available</div>
-      <div class="empty-subtext">Send your sticker to market to see it here</div>
-    </div>
-  </div>
 
-  <!-- Roadmap Section -->
-  <div class="content-section" id="roadmapSection" style="display: none;">
-    <div class="section-title">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"></circle>
-        <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-      Getting Started
-    </div>
-    <div class="roadmap-steps">
-      <div class="step">
-        <div class="step-number">1</div>
-        <div class="step-text">Press Start</div>
+    <!-- Roadmap Section -->
+    <div class="content-section" id="roadmapSection" style="display: none;">
+      <div class="section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        Getting Started
       </div>
-      <div class="step">
-        <div class="step-number">2</div>
-        <div class="step-text">Send your sticker to @palacerelayer in @sticker_bot</div>
-      </div>
-      <div class="step">
-        <div class="step-number">3</div>
-        <div class="step-text">Top up your wallet with 0.1 TON to activate it</div>
-      </div>
-      <div class="step">
-        <div class="step-number">4</div>
-        <div class="step-text">Now you can list your sticker on the marketplace!</div>
+      <div class="roadmap-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-text">Press Start</div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-text">Send your sticker to @palacerelayer in @sticker_bot</div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-text">Top up your wallet with 0.1 TON to activate it</div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-text">Now you can list your sticker on the marketplace!</div>
+        </div>
       </div>
     </div>
   </div>
@@ -891,24 +884,16 @@
   <!-- Notification -->
   <div class="notification" id="notification">Copied to clipboard!</div>
 
-  <!-- Bottom Navigation - Matches Index.html -->
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
-    <a href="index.html" class="nav-item">
+    <a href="#" class="nav-item active" data-page="marketPage">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
-      Home
-    </a>
-    <a href="market.html" class="nav-item">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
       Market
     </a>
-    <a href="profile.html" class="nav-item active">
+    <a href="#" class="nav-item" data-page="profilePage">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
         <circle cx="12" cy="7" r="4"></circle>
@@ -920,9 +905,30 @@
   <script>
     // Initialize Telegram WebApp
     const tg = window.Telegram.WebApp;
-    tg.expand(); // Expand to full screen
+    if (tg) {
+      tg.expand(); // Expand to full screen
+    }
 
-    // Tab switching functionality
+    // Page navigation
+    const navItems = document.querySelectorAll('.nav-item');
+    const pages = document.querySelectorAll('.page');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = item.getAttribute('data-page');
+        
+        // Update active nav item
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Show selected page
+        pages.forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+      });
+    });
+
+    // Tab switching functionality in profile
     const tabs = document.querySelectorAll('.tab');
     const sections = {
       collections: document.getElementById('collectionsSection'),
@@ -984,8 +990,9 @@
     });
 
     // Set user data from Telegram WebApp
-    const user = tg.initDataUnsafe.user;
-    if (user) {
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      const user = tg.initDataUnsafe.user;
+      
       // Set user name
       const userNameElement = document.getElementById('userName');
       const name = `${user.first_name || ''} ${user.last_name || ''}`.trim();
@@ -1014,6 +1021,50 @@
       document.getElementById('userUsername').textContent = 'username';
       document.getElementById('userAvatar').src = 'https://via.placeholder.com/64';
     }
+
+    // Collections grid functionality
+    const collections = [
+      { name: "Void", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", comingSoon: false },
+      { name: "Notcoin", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", comingSoon: false },
+      { name: "Not Pixel", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", comingSoon: false },
+      { name: "Lost Dogs", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", comingSoon: true },
+      { name: "Glance", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", comingSoon: true },
+      { name: "Disk Trickster", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", comingSoon: true },
+      { name: "Hitoku", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", comingSoon: true },
+    ];
+
+    const grid = document.getElementById("nftGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    function getPageLink(name) {
+      const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+      return `${firstWord}.html`;
+    }
+
+    function renderCollections(filter = "") {
+      grid.innerHTML = "";
+      collections
+        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(c => {
+          const card = document.createElement("div");
+          card.className = "collection-card";
+          card.innerHTML = `
+            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}" ${c.comingSoon ? 'onclick="return false;"' : ''}>
+              <div style="position: relative;">
+                <img src="${c.img}" alt="${c.name}" />
+                ${c.comingSoon ? '<div class="coming-soon-overlay">Coming Soon</div>' : ''}
+              </div>
+              <p>${c.name}</p>
+            </a>`;
+          grid.appendChild(card);
+        });
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      renderCollections(e.target.value);
+    });
+
+    renderCollections();
   </script>
 </body>
 </html>
