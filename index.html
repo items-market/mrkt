@@ -719,4 +719,75 @@
     const closeWithdrawBtn = document.getElementById("closeWithdraw");
     const notification = document.getElementById("notification");
     const withdrawAmount = document.getElementById("withdrawAmount");
-    const withdrawAddress = document.getElemen
+    const withdrawAddress = document.getElementById("withdrawAddress");
+    const amountError = document.getElementById("amountError");
+    const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
+    const balanceAmount = 0.00; // Example balance
+
+    // Show/hide overlay
+    showWithdrawBtn.addEventListener("click", () => {
+      withdrawOverlay.classList.add("active");
+      // Reset form when opening
+      withdrawAmount.value = "";
+      withdrawAddress.value = "";
+      confirmWithdrawBtn.disabled = true;
+      amountError.style.display = "none";
+    });
+    
+    closeWithdrawBtn.addEventListener("click", () => withdrawOverlay.classList.remove("active"));
+    
+    withdrawOverlay.addEventListener("click", (e) => {
+      if (e.target === withdrawOverlay) withdrawOverlay.classList.remove("active");
+    });
+
+    // Validate form inputs
+    function validateForm() {
+      const amount = parseFloat(withdrawAmount.value);
+      const address = withdrawAddress.value.trim();
+      
+      // Check if amount is valid and not exceeding balance
+      if (isNaN(amount) || amount <= 0) {
+        confirmWithdrawBtn.disabled = true;
+        return;
+      }
+      
+      if (amount > balanceAmount) {
+        amountError.style.display = "block";
+        confirmWithdrawBtn.disabled = true;
+        return;
+      } else {
+        amountError.style.display = "none";
+      }
+      
+      // Check if address is not empty
+      if (address === "") {
+        confirmWithdrawBtn.disabled = true;
+        return;
+      }
+      
+      // If all validations pass
+      confirmWithdrawBtn.disabled = false;
+    }
+
+    // Add event listeners for input validation
+    withdrawAmount.addEventListener("input", validateForm);
+    withdrawAddress.addEventListener("input", validateForm);
+    
+    confirmWithdrawBtn.addEventListener("click", () => {
+      if (parseFloat(withdrawAmount.value) > balanceAmount) return;
+      
+      withdrawOverlay.classList.remove("active");
+      showNotification(`Withdrew ${withdrawAmount.value} TON`);
+      withdrawAmount.value = "";
+      withdrawAddress.value = "";
+    });
+
+    // Notification helper
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.classList.add("show");
+      setTimeout(() => notification.classList.remove("show"), 2000);
+    }
+  </script>
+</body>
+</html>
