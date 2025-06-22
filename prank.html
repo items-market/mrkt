@@ -33,6 +33,10 @@
       font-weight: 600;
       cursor: pointer;
     }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -46,16 +50,17 @@
     const tonAmount = document.getElementById('tonAmount');
 
     depositBtn.addEventListener('click', () => {
+      depositBtn.disabled = true; // Prevent double click
+
       const amountTon = parseFloat(tonAmount.value);
       if (isNaN(amountTon) || amountTon <= 0) {
         alert("Enter a valid TON amount");
+        depositBtn.disabled = false; // Re-enable button
         return;
       }
 
       const amountNanoTon = Math.round(amountTon * 1_000_000_000);
-
       const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
-
       const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
 
       if (window.Telegram && Telegram.WebApp) {
@@ -63,6 +68,11 @@
       } else {
         window.open(url, "_blank");
       }
+
+      // Optional: re-enable after some time if needed
+      setTimeout(() => {
+        depositBtn.disabled = false;
+      }, 5000);
     });
   </script>
 
