@@ -18,100 +18,161 @@
       margin: 0;
       padding: 20px;
     }
+    .container {
+      text-align: center;
+    }
     input {
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 1rem;
-      width: 120px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid #2d3544;
+      margin-bottom: 16px;
+      width: 160px;
       text-align: center;
       background: #1e232e;
       color: white;
+      font-size: 16px;
     }
     button {
-      background: #55d0ff;
-      color: #0e111a;
+      background: #0088cc;
+      color: white;
       border: none;
-      padding: 0.6rem 1.2rem;
-      border-radius: 999px;
+      padding: 12px 24px;
+      border-radius: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
+      font-size: 16px;
+      width: 160px;
     }
     button:disabled {
-      opacity: 0.6;
+      background: #2d3544;
       cursor: not-allowed;
     }
-    button:hover:not(:disabled) {
-      transform: scale(1.05);
+    .status {
+      margin-top: 16px;
+      color: #55d0ff;
+      min-height: 20px;
     }
   </style>
 </head>
 <body>
-
-  <input type="number" id="tonAmount" placeholder="TON amount" min="0.001" step="0.001" />
-  <button id="depositBtn">Deposit</button>
+  <div class="container">
+    <input type="number" id="tonAmount" placeholder="TON amount" min="0.001" step="0.001" />
+    <button id="depositBtn">Deposit TON</button>
+    <div class="status" id="status"></div>
+  </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    const depositBtn = document.getElementById('depositBtn');
-    const tonAmount = document.getElementById('tonAmount');
-    let isProcessing = false;
-
-    const handleDeposit = () => {
-      if (isProcessing) return;
+    (function() {
+      // DOM Elements
+      const depositBtn = document.getElementById('depositBtn');
+      const tonAmount = document.getElementById('tonAmount');
+      const statusEl = document.getElementById('status');
       
-      const amountTon = parseFloat(tonAmount.value);
-      if (isNaN(amountTon) {
-        alert("Please enter a valid number");
-        return;
-      }
+      // State management
+      let isProcessing = false;
+      let linkOpened = false;
+      let lastClickTime = 0;
       
-      if (amountTon < 0.001) {
-        alert("Minimum amount is 0.001 TON");
-        return;
-      }
-
-      // Immediately disable further clicks
-      isProcessing = true;
-      depositBtn.disabled = true;
-      depositBtn.textContent = "Opening...";
-      
-      const amountNanoTon = Math.round(amountTon * 1_000_000_000);
-      const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
-      const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
-
-      // Remove previous event listeners to prevent multiple triggers
-      depositBtn.replaceWith(depositBtn.cloneNode(true));
-      
-      // Use a timeout to ensure UI updates before opening the link
-      setTimeout(() => {
-        try {
-          if (window.Telegram && Telegram.WebApp) {
-            Telegram.WebApp.openLink(url);
+      // Throttle function (500ms cooldown)
+      const throttle = (func, limit) => {
+        let lastFunc;
+        let lastRan;
+        return function() {
+          const context = this;
+          const args = arguments;
+          if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
           } else {
-            window.open(url, "_blank");
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function() {
+              if ((Date.now() - lastRan) >= limit) {
+                func.apply(context, args);
+                lastRan = Date.now();
+              }
+            }, limit - (Date.now() - lastRan));
           }
-        } catch (error) {
-          console.error("Error opening link:", error);
+        };
+      };
+      
+      // Update UI state
+      const setStatus = (message, isError = false) => {
+        statusEl.textContent = message;
+        statusEl.style.color = isError ? '#ff5e5e' : '#55d0ff';
+      };
+      
+      // Main deposit handler
+      const handleDeposit = throttle(() => {
+        // Protection Layer 1: Basic guards
+        if (isProcessing || linkOpened) {
+          setStatus('Please wait...');
+          return;
         }
         
-        // Keep button disabled for a while
+        // Protection Layer 2: Click throttling
+        const now = Date.now();
+        if (now - lastClickTime < 1000) {
+          setStatus('Too many requests');
+          return;
+        }
+        lastClickTime = now;
+        
+        // Validate input
+        const amountTon = parseFloat(tonAmount.value);
+        if (isNaN(amountTon)) {
+          setStatus('Enter valid amount', true);
+          return;
+        }
+        
+        if (amountTon < 0.001) {
+          setStatus('Min: 0.001 TON', true);
+          return;
+        }
+        
+        // Protection Layer 3: Full lock
+        isProcessing = true;
+        linkOpened = true;
+        depositBtn.disabled = true;
+        setStatus('Opening Tonkeeper...');
+        
+        // Prepare transaction
+        const amountNanoTon = Math.round(amountTon * 1e9);
+        const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
+        const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
+        
+        // Open link with fallback
         setTimeout(() => {
-          depositBtn.disabled = false;
-          depositBtn.textContent = "Deposit";
-          isProcessing = false;
-        }, 3000);
-      }, 100);
-    };
-
-    // Add event listeners
-    depositBtn.addEventListener('click', handleDeposit);
-    tonAmount.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        handleDeposit();
-      }
-    });
+          try {
+            if (window.Telegram?.WebApp?.openLink) {
+              Telegram.WebApp.openLink(url);
+            } else {
+              window.open(url, '_blank', 'noopener,noreferrer');
+            }
+          } catch (e) {
+            setStatus('Error opening wallet', true);
+            console.error(e);
+          }
+          
+          // Reset after delay
+          setTimeout(() => {
+            depositBtn.disabled = false;
+            isProcessing = false;
+            setStatus('');
+          }, 5000); // 5s cooldown
+        }, 300); // Small delay to ensure UI updates
+      }, 1000); // Throttle limit
+      
+      // Event listeners
+      depositBtn.addEventListener('click', handleDeposit);
+      tonAmount.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleDeposit();
+      });
+      
+      // Initial focus
+      tonAmount.focus();
+    })();
   </script>
 </body>
 </html>
