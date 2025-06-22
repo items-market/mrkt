@@ -3,388 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Activity</title>
+  <title>TON Deposit</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root {
-      --bg: #0f1115;
-      --card: rgba(255, 255, 255, 0.04);
-      --text: #ffffff;
-      --subtext: #bbbbbb;
-      --border: rgba(255, 255, 255, 0.08);
-      --radius: 18px;
-      --blur: blur(20px);
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding-bottom: 100px;
-    }
-
-    .container {
-      padding: 1.4rem 1rem;
-    }
-
-    .user-info {
-      display: none;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .user-info img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-    }
-
-    .user-info .username {
-      font-size: 0.8rem;
-      color: var(--subtext);
-    }
-
-    h2 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      margin-bottom: 1.2rem;
-      background: linear-gradient(135deg, #ff6ec4, #7873f5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .filters {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.8rem;
-    }
-
-    .filter-btn {
-      background: var(--card);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .filter-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .item {
-      background: var(--card);
-      backdrop-filter: var(--blur);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: var(--shadow);
-      transition: transform 0.2s ease;
-    }
-
-    .item:hover {
-      transform: translateY(-2px);
-    }
-
-    .item-left {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-    }
-
-    .item-img {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 1px solid var(--border);
-    }
-
-    .item-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .item-info .name {
-      font-weight: 600;
-      font-size: 1rem;
-    }
-
-    .item-info .sub {
-      font-size: 0.75rem;
-      color: var(--subtext);
-    }
-
-    .item-price {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .item-price img {
-      width: 16px;
-      height: 16px;
-      filter: drop-shadow(0 0 4px rgba(0, 255, 255, 0.3));
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: var(--blur);
-      border-top: 1px solid var(--border);
-      padding: 0.75rem 0;
-      z-index: 100;
-    }
-
-    .bottom-nav a {
-      text-decoration: none;
-      color: #ccc;
-      font-size: 0.75rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: 0.2s;
-    }
-
-    .bottom-nav a:hover {
+      background: #0e111a;
       color: #fff;
-    }
-
-    .bottom-nav img {
-      width: 24px;
-      height: 24px;
-      margin-bottom: 0.2rem;
-    }
-
-    .modal {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #1d1f26;
-      border-radius: 20px 20px 0 0;
-      padding: 1rem;
-      display: none;
-      flex-direction: column;
-      max-height: 80%;
-      overflow-y: auto;
-      z-index: 1000;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.4);
-    }
-
-    .modal-header {
-      text-align: center;
-      font-weight: 600;
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 0.6rem 1rem;
-      border-radius: var(--radius);
-      background: #2c2f34;
-      border: none;
-      color: white;
-      margin-bottom: 1rem;
-    }
-
-    .collection-option {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.8rem;
-      padding: 0.6rem 0;
-      cursor: pointer;
-      border-bottom: 1px solid #2c2c2c;
+      justify-content: center;
+      height: 100vh;
     }
-
-    .collection-option img {
-      width: 32px;
-      height: 32px;
+    input {
+      padding: 0.5rem 1rem;
       border-radius: 8px;
+      border: none;
+      margin-bottom: 1rem;
+      width: 120px;
+      text-align: center;
     }
-
-    .collection-option span {
-      font-size: 0.95rem;
-    }
-
-    .modal-close {
-      text-align: right;
-      font-size: 1.2rem;
+    button {
+      background: #55d0ff;
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      font-weight: 600;
       cursor: pointer;
-      margin-bottom: 0.5rem;
-      color: #888;
     }
   </style>
 </head>
 <body>
-  <div class="container">
 
-    <!-- Telegram User Info -->
-    <div class="user-info" id="userInfo">
-      <img id="userPhoto" src="" alt="User Photo" />
-      <div>
-        <div id="userName"></div>
-        <div class="username" id="userUsername"></div>
-      </div>
-    </div>
+  <input type="number" id="tonAmount" placeholder="TON amount" min="0.001" step="0.001" />
+  <button id="depositBtn">Deposit</button>
 
-    <h2>Activity</h2>
-
-    <div class="filters">
-      <div class="filter-btn" onclick="openModal()">Collections ▾</div>
-    </div>
-
-    <div id="activityList">
-      <div class="item" data-collection="Void">
-        <div class="item-left">
-          <img src="https://i.ibb.co/QdvbxTw/void.png" class="item-img" />
-          <div class="item-info">
-            <div class="name">Void Warrior</div>
-            <div class="sub">2025-06-20 14:32</div>
-          </div>
-        </div>
-        <div class="item-price">
-          14.25
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Ton_symbol.svg" />
-        </div>
-      </div>
-
-      <div class="item" data-collection="Notcoin">
-        <div class="item-left">
-          <img src="https://i.ibb.co/2qSZB0h/notcoin.png" class="item-img" />
-          <div class="item-info">
-            <div class="name">Notcoin Miner</div>
-            <div class="sub">2025-06-20 14:45</div>
-          </div>
-        </div>
-        <div class="item-price">
-          10.85
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Ton_symbol.svg" />
-        </div>
-      </div>
-
-      <div class="item" data-collection="NotPixel">
-        <div class="item-left">
-          <img src="https://i.ibb.co/WGB2DzZ/notpixel.png" class="item-img" />
-          <div class="item-info">
-            <div class="name">Pixel Bot</div>
-            <div class="sub">2025-06-20 15:10</div>
-          </div>
-        </div>
-        <div class="item-price">
-          18.00
-          <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Ton_symbol.svg" />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal" id="collectionModal">
-    <div class="modal-close" onclick="closeModal()">✕</div>
-    <div class="modal-header">Collections</div>
-    <input type="text" placeholder="Search collections..." id="searchInput" oninput="filterCollections()" />
-    <div id="collectionList">
-      <div class="collection-option" onclick="filterBy('Void')">
-        <img src="https://i.ibb.co/QdvbxTw/void.png" />
-        <span>Void</span>
-      </div>
-      <div class="collection-option" onclick="filterBy('Notcoin')">
-        <img src="https://i.ibb.co/2qSZB0h/notcoin.png" />
-        <span>Notcoin</span>
-      </div>
-      <div class="collection-option" onclick="filterBy('NotPixel')">
-        <img src="https://i.ibb.co/WGB2DzZ/notpixel.png" />
-        <span>NotPixel</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <a href="/">
-      <img src="https://cdn-icons-png.flaticon.com/512/1946/1946433.png" />
-      <span>Market</span>
-    </a>
-    <a href="/profile.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
-      <span>Profile</span>
-    </a>
-    <a href="/activity.html">
-      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" />
-      <span>Activity</span>
-    </a>
-  </nav>
-
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    const modal = document.getElementById("collectionModal");
+    const depositBtn = document.getElementById('depositBtn');
+    const tonAmount = document.getElementById('tonAmount');
 
-    function openModal() {
-      modal.style.display = "flex";
-    }
+    depositBtn.addEventListener('click', () => {
+      const amount = parseFloat(tonAmount.value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter a valid TON amount");
+        return;
+      }
 
-    function closeModal() {
-      modal.style.display = "none";
-    }
+      // Replace with your real TON wallet address
+      const wallet = "EQDxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+      const url = `https://tonkeeper.com/transfer/${wallet}?amount=${amount}`;
 
-    function filterBy(collection) {
-      document.querySelectorAll(".item").forEach(item => {
-        const match = item.getAttribute("data-collection") === collection;
-        item.style.display = match ? "flex" : "none";
-      });
-      closeModal();
-    }
-
-    function filterCollections() {
-      const value = document.getElementById("searchInput").value.toLowerCase();
-      document.querySelectorAll(".collection-option").forEach(option => {
-        const text = option.innerText.toLowerCase();
-        option.style.display = text.includes(value) ? "flex" : "none";
-      });
-    }
-
-    // Telegram user info
-    window.addEventListener('DOMContentLoaded', () => {
-      const tg = window.Telegram.WebApp;
-      tg.expand();
-
-      const unsafe = tg.initDataUnsafe;
-
-      if (unsafe && unsafe.user) {
-        document.getElementById('userName').textContent = `${unsafe.user.first_name} ${unsafe.user.last_name || ''}`;
-        document.getElementById('userUsername').textContent = unsafe.user.username ? `@${unsafe.user.username}` : '';
-
-        const photo = unsafe.user.photo_url || 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-        document.getElementById('userPhoto').src = photo;
-
-        document.getElementById('userInfo').style.display = 'flex';
+      if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.openLink(url);
+      } else {
+        // fallback if outside Mini App (for testing in browser)
+        window.open(url, "_blank");
       }
     });
   </script>
+
 </body>
 </html>
