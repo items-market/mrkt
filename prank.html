@@ -48,14 +48,18 @@
   <script>
     const depositBtn = document.getElementById('depositBtn');
     const tonAmount = document.getElementById('tonAmount');
+    let isProcessing = false; // Prevent multiple requests
 
     depositBtn.addEventListener('click', () => {
-      depositBtn.disabled = true; // Prevent double click
+      if (isProcessing) return; // Ignore if already processing
+      isProcessing = true;
+      depositBtn.disabled = true;
 
       const amountTon = parseFloat(tonAmount.value);
       if (isNaN(amountTon) || amountTon <= 0) {
         alert("Enter a valid TON amount");
-        depositBtn.disabled = false; // Re-enable button
+        depositBtn.disabled = false;
+        isProcessing = false;
         return;
       }
 
@@ -63,16 +67,20 @@
       const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
       const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
 
-      if (window.Telegram && Telegram.WebApp) {
-        Telegram.WebApp.openLink(url);
-      } else {
-        window.open(url, "_blank");
+      try {
+        if (window.Telegram && Telegram.WebApp) {
+          Telegram.WebApp.openLink(url);
+        } else {
+          window.open(url, "_blank");
+        }
+      } finally {
+        // Do not reset isProcessing immediately to avoid rapid re-clicks
+        // You can reset manually after confirmation or after some time
+        setTimeout(() => {
+          isProcessing = false;
+          depositBtn.disabled = false;
+        }, 5000); // 5 seconds lock — adjust as needed
       }
-
-      // Optional: re-enable after some time if needed
-      setTimeout(() => {
-        depositBtn.disabled = false;
-      }, 5000);
     });
   </script>
 
