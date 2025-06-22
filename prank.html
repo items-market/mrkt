@@ -15,6 +15,8 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
     input {
       padding: 0.5rem 1rem;
@@ -23,20 +25,25 @@
       margin-bottom: 1rem;
       width: 120px;
       text-align: center;
+      background: #1e232e;
+      color: white;
     }
     button {
       background: #55d0ff;
-      color: #fff;
+      color: #0e111a;
       border: none;
       padding: 0.6rem 1.2rem;
       border-radius: 999px;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: all 0.2s;
     }
     button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
     }
   </style>
 </head>
@@ -50,10 +57,9 @@
     const depositBtn = document.getElementById('depositBtn');
     const tonAmount = document.getElementById('tonAmount');
     let isProcessing = false;
-    let linkOpened = false; // Track if link was already opened
 
     const handleDeposit = () => {
-      if (isProcessing || linkOpened) return;
+      if (isProcessing) return;
       
       const amountTon = parseFloat(tonAmount.value);
       if (isNaN(amountTon) {
@@ -66,35 +72,40 @@
         return;
       }
 
+      // Immediately disable further clicks
       isProcessing = true;
       depositBtn.disabled = true;
+      depositBtn.textContent = "Opening...";
       
       const amountNanoTon = Math.round(amountTon * 1_000_000_000);
       const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
       const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
 
-      try {
-        if (window.Telegram && Telegram.WebApp) {
-          Telegram.WebApp.openLink(url);
-        } else {
-          window.open(url, "_blank");
+      // Remove previous event listeners to prevent multiple triggers
+      depositBtn.replaceWith(depositBtn.cloneNode(true));
+      
+      // Use a timeout to ensure UI updates before opening the link
+      setTimeout(() => {
+        try {
+          if (window.Telegram && Telegram.WebApp) {
+            Telegram.WebApp.openLink(url);
+          } else {
+            window.open(url, "_blank");
+          }
+        } catch (error) {
+          console.error("Error opening link:", error);
         }
-        linkOpened = true; // Mark that link was opened
         
-        // Reset after some time to allow new deposits
+        // Keep button disabled for a while
         setTimeout(() => {
-          isProcessing = false;
-          linkOpened = false;
           depositBtn.disabled = false;
-        }, 10000); // 10 seconds cooldown
-      } catch (error) {
-        console.error("Error opening link:", error);
-        isProcessing = false;
-        depositBtn.disabled = false;
-      }
+          depositBtn.textContent = "Deposit";
+          isProcessing = false;
+        }, 3000);
+      }, 100);
     };
 
-    // Handle both click and keyboard Enter
+    // Add event listeners
     depositBtn.addEventListener('click', handleDeposit);
     tonAmount.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
