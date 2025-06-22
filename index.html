@@ -791,3 +791,21 @@
   </script>
 </body>
 </html>
+
+<script>
+    // Save user data before any navigation occurs
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            const tg = window.Telegram.WebApp;
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                const userData = {
+                    name: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
+                    username: user.username || '',
+                    photo_url: user.photo_url || ''
+                };
+                localStorage.setItem('telegramUser', JSON.stringify(userData));
+            }
+        });
+    });
+</script>
