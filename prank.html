@@ -32,6 +32,7 @@
       border-radius: 999px;
       font-weight: 600;
       cursor: pointer;
+      transition: opacity 0.2s;
     }
     button:disabled {
       opacity: 0.6;
@@ -48,21 +49,26 @@
   <script>
     const depositBtn = document.getElementById('depositBtn');
     const tonAmount = document.getElementById('tonAmount');
-    let isProcessing = false; // Prevent multiple requests
+    let isProcessing = false;
+    let linkOpened = false; // Track if link was already opened
 
-    depositBtn.addEventListener('click', () => {
-      if (isProcessing) return; // Ignore if already processing
-      isProcessing = true;
-      depositBtn.disabled = true;
-
+    const handleDeposit = () => {
+      if (isProcessing || linkOpened) return;
+      
       const amountTon = parseFloat(tonAmount.value);
-      if (isNaN(amountTon) || amountTon <= 0) {
-        alert("Enter a valid TON amount");
-        depositBtn.disabled = false;
-        isProcessing = false;
+      if (isNaN(amountTon) {
+        alert("Please enter a valid number");
+        return;
+      }
+      
+      if (amountTon < 0.001) {
+        alert("Minimum amount is 0.001 TON");
         return;
       }
 
+      isProcessing = true;
+      depositBtn.disabled = true;
+      
       const amountNanoTon = Math.round(amountTon * 1_000_000_000);
       const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
       const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
@@ -73,16 +79,28 @@
         } else {
           window.open(url, "_blank");
         }
-      } finally {
-        // Do not reset isProcessing immediately to avoid rapid re-clicks
-        // You can reset manually after confirmation or after some time
+        linkOpened = true; // Mark that link was opened
+        
+        // Reset after some time to allow new deposits
         setTimeout(() => {
           isProcessing = false;
+          linkOpened = false;
           depositBtn.disabled = false;
-        }, 5000); // 5 seconds lock — adjust as needed
+        }, 10000); // 10 seconds cooldown
+      } catch (error) {
+        console.error("Error opening link:", error);
+        isProcessing = false;
+        depositBtn.disabled = false;
+      }
+    };
+
+    // Handle both click and keyboard Enter
+    depositBtn.addEventListener('click', handleDeposit);
+    tonAmount.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleDeposit();
       }
     });
   </script>
-
 </body>
 </html>
