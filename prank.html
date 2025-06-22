@@ -671,6 +671,25 @@
       opacity: 1;
     }
 
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 480px) {
       body {
@@ -724,11 +743,11 @@
   <div class="profile-card">
     <div class="profile-info">
       <div class="profile-avatar">
-        <img src="https://via.placeholder.com/64" alt="Profile Photo">
+        <img id="userAvatar" src="" alt="Profile Photo">
       </div>
       <div>
-        <div class="profile-name">Maruf Hasan</div>
-        <div class="profile-telegram">marufhasan</div>
+        <div class="profile-name" id="userName">Loading...</div>
+        <div class="profile-telegram" id="userUsername"></div>
       </div>
     </div>
     <div class="profile-stats">
@@ -751,8 +770,8 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active">Collections</button>
-    <button class="tab">Roadmap</button>
+    <button class="tab active" data-tab="collections">Collections</button>
+    <button class="tab" data-tab="roadmap">Roadmap</button>
   </div>
 
   <!-- Collections Section -->
@@ -766,15 +785,14 @@
       </svg>
       Your Collections
     </div>
-    <div class="collection-grid">
-      <div class="collection-card">
-        <img src="https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif" alt="Void">
-        <p>Void</p>
-      </div>
-      <div class="collection-card">
-        <img src="https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg" alt="Notcoin">
-        <p>Notcoin</p>
-      </div>
+    <div class="empty-state">
+      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+      <div class="empty-text">No collections available</div>
+      <div class="empty-subtext">Send your sticker to market to see it here</div>
     </div>
   </div>
 
@@ -832,9 +850,9 @@
         </button>
       </div>
       
-      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
+      <p class="deposit-instructions">After making the transfer, it may take a few minutes to reflect in your balance.</p>
       
-      <button class="confirm-btn" id="confirmBtn">I sent</button>
+      <button class="confirm-btn" id="confirmDeposit">I've Sent the TON</button>
     </div>
   </div>
 
@@ -851,165 +869,154 @@
         </button>
       </div>
       
-      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw your TON.</p>
       
       <div class="input-group">
         <label class="input-label">Amount (TON)</label>
-        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
-        <div class="error-message" id="amountError">Insufficient balance</div>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.0" step="0.01" min="0">
+        <div class="error-message" id="amountError">Please enter a valid amount</div>
       </div>
       
       <div class="input-group">
         <label class="input-label">Wallet Address</label>
-        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="UQB...">
+        <div class="error-message" id="addressError">Please enter a valid address</div>
       </div>
       
-      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
+      <button class="action-btn" id="confirmWithdraw">Withdraw</button>
     </div>
   </div>
 
   <!-- Notification -->
-  <div class="notification" id="notification">Notification message</div>
+  <div class="notification" id="notification">Copied to clipboard!</div>
 
   <!-- Bottom Navigation - Matches Index.html -->
-  <nav class="bottom-nav">
+  <div class="bottom-nav">
     <a href="index.html" class="nav-item">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
         <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
-      <span>Market</span>
+      Home
+    </a>
+    <a href="market.html" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      Market
     </a>
     <a href="profile.html" class="nav-item active">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
         <circle cx="12" cy="7" r="4"></circle>
       </svg>
-      <span>Profile</span>
+      Profile
     </a>
-    <a href="activity.html" class="nav-item">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-      <span>Activity</span>
-    </a>
-  </nav>
+  </div>
 
   <script>
     // Tab switching functionality
     const tabs = document.querySelectorAll('.tab');
-    const collectionsSection = document.getElementById('collectionsSection');
-    const roadmapSection = document.getElementById('roadmapSection');
-    
+    const sections = {
+      collections: document.getElementById('collectionsSection'),
+      roadmap: document.getElementById('roadmapSection')
+    };
+
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
+        // Remove active class from all tabs
         tabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
         tab.classList.add('active');
         
-        if (tab.textContent === 'Collections') {
-          collectionsSection.style.display = 'block';
-          roadmapSection.style.display = 'none';
-        } else {
-          collectionsSection.style.display = 'none';
-          roadmapSection.style.display = 'block';
-        }
+        // Hide all sections
+        Object.values(sections).forEach(section => {
+          section.style.display = 'none';
+        });
+        
+        // Show the selected section
+        const tabName = tab.getAttribute('data-tab');
+        sections[tabName].style.display = 'block';
       });
     });
 
-    // Deposit/Withdraw functionality from index.html
+    // Overlay functionality
     const depositOverlay = document.getElementById('depositOverlay');
     const withdrawOverlay = document.getElementById('withdrawOverlay');
     const showDepositBtn = document.getElementById('showDeposit');
     const showWithdrawBtn = document.getElementById('showWithdraw');
     const closeDepositBtn = document.getElementById('closeDeposit');
     const closeWithdrawBtn = document.getElementById('closeWithdraw');
-    const notification = document.getElementById('notification');
-    const walletAddress = document.getElementById('walletAddress');
     const copyBtn = document.getElementById('copyBtn');
-    const confirmBtn = document.getElementById('confirmBtn');
-    const withdrawAmount = document.getElementById('withdrawAmount');
-    const withdrawAddress = document.getElementById('withdrawAddress');
-    const amountError = document.getElementById('amountError');
-    const confirmWithdrawBtn = document.getElementById('confirmWithdraw');
-    const fullAddress = "UQBiasModFullAddressf5eSDEitj";
+    const notification = document.getElementById('notification');
 
-    // Show/hide overlays
-    showDepositBtn.addEventListener('click', () => depositOverlay.classList.add('active'));
-    showWithdrawBtn.addEventListener('click', () => withdrawOverlay.classList.add('active'));
-    
-    closeDepositBtn.addEventListener('click', () => depositOverlay.classList.remove('active'));
-    closeWithdrawBtn.addEventListener('click', () => withdrawOverlay.classList.remove('active'));
+    showDepositBtn.addEventListener('click', () => {
+      depositOverlay.classList.add('active');
+    });
 
-    [depositOverlay, withdrawOverlay].forEach(overlay => {
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.classList.remove('active');
+    showWithdrawBtn.addEventListener('click', () => {
+      withdrawOverlay.classList.add('active');
+    });
+
+    closeDepositBtn.addEventListener('click', () => {
+      depositOverlay.classList.remove('active');
+    });
+
+    closeWithdrawBtn.addEventListener('click', () => {
+      withdrawOverlay.classList.remove('active');
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const address = document.getElementById('walletAddress').textContent;
+      navigator.clipboard.writeText(address).then(() => {
+        notification.classList.add('show');
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 2000);
       });
     });
 
-    // Copy address functionality
-    function copyToClipboard() {
-      navigator.clipboard.writeText(fullAddress).then(() => {
-        showNotification('Address copied!');
-      });
-    }
-    walletAddress.addEventListener('click', copyToClipboard);
-    copyBtn.addEventListener('click', copyToClipboard);
-
-    // Withdraw validation
-    withdrawAmount.addEventListener('input', validateWithdraw);
-    
-    function validateWithdraw() {
-      const amount = parseFloat(withdrawAmount.value);
-      if (isNaN(amount)) {
-        amountError.style.display = 'none';
-        confirmWithdrawBtn.disabled = true;
-        return;
-      }
-      
-      if (amount > 0) { // Replace with actual balance check
-        amountError.style.display = 'none';
-        confirmWithdrawBtn.disabled = false;
-      } else if (amount <= 0) {
-        amountError.style.display = 'block';
-        amountError.textContent = 'Amount must be positive';
-        confirmWithdrawBtn.disabled = true;
-      } else {
-        amountError.style.display = 'none';
-        confirmWithdrawBtn.disabled = false;
-      }
-    }
-
-    // Notification helper
-    function showNotification(message) {
-      notification.textContent = message;
-      notification.classList.add('show');
-      setTimeout(() => notification.classList.remove('show'), 2000);
-    }
-
-    // Initialize Telegram WebApp
-    function initTelegramWebApp() {
+    // Telegram Mini App user data
+    function initTelegramUserData() {
       if (window.Telegram && window.Telegram.WebApp) {
-        const webApp = window.Telegram.WebApp;
-        const user = webApp.initDataUnsafe.user;
-        
+        const user = Telegram.WebApp.initDataUnsafe.user;
         if (user) {
-          // Update profile info with Telegram data
-          document.querySelector('.profile-name').textContent = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-          document.querySelector('.profile-telegram').textContent = user.username || '';
+          // Set user name
+          const userNameElement = document.getElementById('userName');
+          userNameElement.textContent = user.first_name || 'Telegram User';
           
-          // Set profile photo if available
+          // Set username if available
+          const userUsernameElement = document.getElementById('userUsername');
+          if (user.username) {
+            userUsernameElement.textContent = user.username;
+            userUsernameElement.style.display = 'flex';
+          } else {
+            userUsernameElement.style.display = 'none';
+          }
+          
+          // Set avatar if available
+          const userAvatarElement = document.getElementById('userAvatar');
           if (user.photo_url) {
-            document.querySelector('.profile-avatar img').src = user.photo_url;
+            userAvatarElement.src = user.photo_url;
+          } else {
+            // Default avatar if no photo
+            userAvatarElement.src = 'https://via.placeholder.com/64';
           }
         }
-        
-        // Expand the WebApp to full height
-        webApp.expand();
+      } else {
+        // Fallback for testing outside Telegram
+        document.getElementById('userName').textContent = 'Telegram User';
+        document.getElementById('userUsername').textContent = 'username';
+        document.getElementById('userAvatar').src = 'https://via.placeholder.com/64';
       }
     }
 
-    // Initialize the app
-    document.addEventListener('DOMContentLoaded', initTelegramWebApp);
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      initTelegramUserData();
+    });
   </script>
 </body>
 </html>
