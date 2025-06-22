@@ -2,177 +2,231 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TON Deposit</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegram Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #0e111a;
+      --section-bg: rgba(22, 26, 34, 0.95);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-color: #ffffff;
+      --muted-text: #a0a4b8;
+      --accent-color: #55d0ff;
+      --radius: 14px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Inter', sans-serif;
-      background: #0e111a;
-      color: #fff;
+      background: var(--bg-color);
+      color: var(--text-color);
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-bottom: 100px;
+    }
+    .profile-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .profile-info {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .profile-avatar {
+      width: 52px;
+      height: 52px;
+      background: #333;
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .profile-name {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .profile-meta {
+      font-size: 12px;
+      color: var(--muted-text);
+    }
+    .profile-stats {
+      display: flex;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .stat {
+      flex: 1;
+      text-align: center;
+      background: var(--bg-color);
+      border-radius: var(--radius);
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+    .stat-value {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted-text);
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius);
+      background: var(--section-bg);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tab:hover {
+      background: var(--bg-color);
+      color: var(--accent-color);
+    }
+    .tab.active {
+      background: var(--accent-color);
+      color: #000;
+      font-weight: 600;
+    }
+    .no-collection {
+      text-align: center;
+      padding: 50px 0;
+      color: var(--muted-text);
+      font-size: 14px;
+    }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      background: rgba(22, 26, 34, 0.95);
+      border-top: 1px solid var(--border-color);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.4);
+    }
+    .nav-item {
+      color: var(--muted-text);
+      font-size: 11px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      padding: 20px;
+      gap: 3px;
+      text-decoration: none;
+      transition: color 0.3s ease;
     }
-    .container {
-      text-align: center;
+    .nav-item:hover {
+      color: var(--accent-color);
     }
-    input {
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid #2d3544;
-      margin-bottom: 16px;
-      width: 160px;
-      text-align: center;
-      background: #1e232e;
-      color: white;
-      font-size: 16px;
-    }
-    button {
-      background: #0088cc;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
+    .nav-item.active {
+      color: var(--accent-color);
       font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-size: 16px;
-      width: 160px;
     }
-    button:disabled {
-      background: #2d3544;
-      cursor: not-allowed;
-    }
-    .status {
-      margin-top: 16px;
-      color: #55d0ff;
-      min-height: 20px;
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <input type="number" id="tonAmount" placeholder="TON amount" min="0.001" step="0.001" />
-    <button id="depositBtn">Deposit TON</button>
-    <div class="status" id="status"></div>
+
+  <div class="profile-card">
+    <div class="profile-info">
+      <div class="profile-avatar" id="avatar">
+        <!-- Avatar image loads here -->
+      </div>
+      <div>
+        <div class="profile-name" id="name">Loading...</div>
+        <div class="profile-meta" id="username">@loading</div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="stat">
+        <div class="stat-value">0.00 ●</div>
+        <div class="stat-label">Total Volume</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0 ●</div>
+        <div class="stat-label">Portfolio</div>
+      </div>
+    </div>
   </div>
+
+  <div class="tabs">
+    <div class="tab active">Not Games</div>
+    <div class="tab">Unlisted</div>
+    <div class="tab">Listed</div>
+  </div>
+
+  <div class="no-collection">
+    No collections to display.
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Market</span>
+    </a>
+    <a href="#" class="nav-item active">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+    <a href="#" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span>Activity</span>
+    </a>
+  </nav>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    (function() {
-      // DOM Elements
-      const depositBtn = document.getElementById('depositBtn');
-      const tonAmount = document.getElementById('tonAmount');
-      const statusEl = document.getElementById('status');
-      
-      // State management
-      let isProcessing = false;
-      let linkOpened = false;
-      let lastClickTime = 0;
-      
-      // Throttle function (500ms cooldown)
-      const throttle = (func, limit) => {
-        let lastFunc;
-        let lastRan;
-        return function() {
-          const context = this;
-          const args = arguments;
-          if (!lastRan) {
-            func.apply(context, args);
-            lastRan = Date.now();
-          } else {
-            clearTimeout(lastFunc);
-            lastFunc = setTimeout(function() {
-              if ((Date.now() - lastRan) >= limit) {
-                func.apply(context, args);
-                lastRan = Date.now();
-              }
-            }, limit - (Date.now() - lastRan));
-          }
-        };
-      };
-      
-      // Update UI state
-      const setStatus = (message, isError = false) => {
-        statusEl.textContent = message;
-        statusEl.style.color = isError ? '#ff5e5e' : '#55d0ff';
-      };
-      
-      // Main deposit handler
-      const handleDeposit = throttle(() => {
-        // Protection Layer 1: Basic guards
-        if (isProcessing || linkOpened) {
-          setStatus('Please wait...');
-          return;
-        }
-        
-        // Protection Layer 2: Click throttling
-        const now = Date.now();
-        if (now - lastClickTime < 1000) {
-          setStatus('Too many requests');
-          return;
-        }
-        lastClickTime = now;
-        
-        // Validate input
-        const amountTon = parseFloat(tonAmount.value);
-        if (isNaN(amountTon)) {
-          setStatus('Enter valid amount', true);
-          return;
-        }
-        
-        if (amountTon < 0.001) {
-          setStatus('Min: 0.001 TON', true);
-          return;
-        }
-        
-        // Protection Layer 3: Full lock
-        isProcessing = true;
-        linkOpened = true;
-        depositBtn.disabled = true;
-        setStatus('Opening Tonkeeper...');
-        
-        // Prepare transaction
-        const amountNanoTon = Math.round(amountTon * 1e9);
-        const wallet = "UQB3Yk7IcbWwQTZ3M8vOUsOCY7qO2j2SSRg9_eBDKl93Ya9n";
-        const url = `https://app.tonkeeper.com/transfer/${wallet}?amount=${amountNanoTon}`;
-        
-        // Open link with fallback
-        setTimeout(() => {
-          try {
-            if (window.Telegram?.WebApp?.openLink) {
-              Telegram.WebApp.openLink(url);
-            } else {
-              window.open(url, '_blank', 'noopener,noreferrer');
-            }
-          } catch (e) {
-            setStatus('Error opening wallet', true);
-            console.error(e);
-          }
-          
-          // Reset after delay
-          setTimeout(() => {
-            depositBtn.disabled = false;
-            isProcessing = false;
-            setStatus('');
-          }, 5000); // 5s cooldown
-        }, 300); // Small delay to ensure UI updates
-      }, 1000); // Throttle limit
-      
-      // Event listeners
-      depositBtn.addEventListener('click', handleDeposit);
-      tonAmount.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleDeposit();
-      });
-      
-      // Initial focus
-      tonAmount.focus();
-    })();
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user || {};
+
+    document.getElementById('name').textContent = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+    document.getElementById('username').textContent = user.username ? '@' + user.username : '';
+
+    if (user.photo_url) {
+      const img = document.createElement('img');
+      img.src = user.photo_url;
+      img.alt = 'Avatar';
+      document.getElementById('avatar').appendChild(img);
+    } else {
+      document.getElementById('avatar').style.background = '#555';
+    }
   </script>
 </body>
 </html>
