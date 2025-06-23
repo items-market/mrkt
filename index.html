@@ -714,27 +714,36 @@
   <script>
     // Enhanced Loader Functionality
     document.addEventListener('DOMContentLoaded', function() {
+      // Check if loader has been shown before using localStorage
+      const loaderShown = localStorage.getItem('loaderShown');
       const loader = document.getElementById('loaderOverlay');
       
-      // Immediately show loader
-      loader.style.display = 'flex';
-      
-      // Simulate loading process (replace with actual loading logic)
-      setTimeout(() => {
-        // First hide the spinner and text
-        loader.querySelector('.loader-progress').style.opacity = '0';
-        loader.querySelector('.loader-text').textContent = 'Ready!';
+      if (!loaderShown) {
+        // Show loader only if it hasn't been shown before
+        loader.style.display = 'flex';
         
-        // Then fade out the entire loader
+        // Simulate loading process
         setTimeout(() => {
-          loader.classList.add('hidden');
+          // First hide the spinner and text
+          loader.querySelector('.loader-progress').style.opacity = '0';
+          loader.querySelector('.loader-text').textContent = 'Ready!';
           
-          // Remove loader from DOM after animation completes
+          // Then fade out the entire loader
           setTimeout(() => {
-            loader.style.display = 'none';
-          }, 600);
-        }, 500);
-      }, 2000); // Adjust timing as needed
+            loader.classList.add('hidden');
+            
+            // Remove loader from DOM after animation completes
+            setTimeout(() => {
+              loader.style.display = 'none';
+              // Set flag in localStorage
+              localStorage.setItem('loaderShown', 'true');
+            }, 600);
+          }, 500);
+        }, 2000); // Adjust timing as needed
+      } else {
+        // If loader has been shown before, hide it immediately
+        loader.style.display = 'none';
+      }
       
       // Initialize the rest of your app
       initApp();
