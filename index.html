@@ -6,6 +6,81 @@
   <title>Sticker Collections</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ===== LOADER STYLES ===== */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-start);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: all 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    
+    .loader-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-20px);
+    }
+    
+    .loader-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .loader-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      animation: fadeScale 1.8s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .loader-progress {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(85, 208, 255, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1.5s linear infinite;
+    }
+    
+    .loader-text {
+      margin-top: 24px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.3s forwards;
+    }
+    
+    @keyframes fadeScale {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== EXISTING STYLES ===== */
     :root {
       --bg-start: #0e111a;
       --bg-end: #1c1f2e;
@@ -511,6 +586,15 @@
   </style>
 </head>
 <body>
+  <!-- Professional Loader -->
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="loader-container">
+      <div class="loader-progress"></div>
+      <img class="loader-image" src="https://i.imgur.com/iqfmvdT.png" alt="Loading">
+    </div>
+    <div class="loader-text">Preparing your experience</div>
+  </div>
+
   <div class="top-bar">
     <div class="balance-container">
       <div class="balance">
@@ -628,290 +712,220 @@
   </nav>
 
   <script>
-    // Collections grid functionality
-    const collections = [
-      { name: "Void", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", comingSoon: false },
-      { name: "Notcoin", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", comingSoon: false },
-      { name: "Not Pixel", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", comingSoon: false },
-      { name: "Lost Dogs", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", comingSoon: true },
-      { name: "Glance", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", comingSoon: true },
-      { name: "Disk Trickster", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", comingSoon: true },
-      { name: "Hitoku", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", comingSoon: true },
-    ];
-
-    const grid = document.getElementById("nftGrid");
-    const searchInput = document.getElementById("searchInput");
-
-    function getPageLink(name) {
-      const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
-      return `${firstWord}.html`;
-    }
-
-    function renderCollections(filter = "") {
-      grid.innerHTML = "";
-      collections
-        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(c => {
-          const card = document.createElement("div");
-          card.className = "collection-card";
-          card.innerHTML = `
-            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}" ${c.comingSoon ? 'onclick="return false;"' : ''}>
-              <div style="position: relative;">
-                <img src="${c.img}" alt="${c.name}" />
-                ${c.comingSoon ? '<div class="coming-soon-overlay">Coming Soon</div>' : ''}
-              </div>
-              <p>${c.name}</p>
-            </a>`;
-          grid.appendChild(card);
-        });
-    }
-
-    searchInput.addEventListener("input", (e) => {
-      renderCollections(e.target.value);
-    });
-
-    renderCollections();
-
-    // Deposit overlay functionality
-    const depositOverlay = document.getElementById("depositOverlay");
-    const showDepositBtn = document.getElementById("showDeposit");
-    const closeDepositBtn = document.getElementById("closeDeposit");
-    const walletAddress = document.getElementById("walletAddress");
-    const copyBtn = document.getElementById("copyBtn");
-    const copyNotification = document.getElementById("copyNotification");
-    const confirmBtn = document.getElementById("confirmBtn");
-    const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
-
-    showDepositBtn.addEventListener("click", () => {
-      depositOverlay.classList.add("active");
-    });
-
-    closeDepositBtn.addEventListener("click", () => {
-      depositOverlay.classList.remove("active");
-    });
-
-    depositOverlay.addEventListener("click", (e) => {
-      if (e.target === depositOverlay) {
-        depositOverlay.classList.remove("active");
-      }
-    });
-
-    function copyToClipboard() {
-      navigator.clipboard.writeText(fullAddress).then(() => {
-        copyNotification.classList.add("show");
+    // Enhanced Loader Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const loader = document.getElementById('loaderOverlay');
+      
+      // Immediately show loader
+      loader.style.display = 'flex';
+      
+      // Simulate loading process (replace with actual loading logic)
+      setTimeout(() => {
+        // First hide the spinner and text
+        loader.querySelector('.loader-progress').style.opacity = '0';
+        loader.querySelector('.loader-text').textContent = 'Ready!';
+        
+        // Then fade out the entire loader
         setTimeout(() => {
-          copyNotification.classList.remove("show");
-        }, 2000);
+          loader.classList.add('hidden');
+          
+          // Remove loader from DOM after animation completes
+          setTimeout(() => {
+            loader.style.display = 'none';
+          }, 600);
+        }, 500);
+      }, 2000); // Adjust timing as needed
+      
+      // Initialize the rest of your app
+      initApp();
+    });
+
+    function initApp() {
+      // Collections grid functionality
+      const collections = [
+        { name: "Void", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", comingSoon: false },
+        { name: "Notcoin", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", comingSoon: false },
+        { name: "Not Pixel", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", comingSoon: false },
+        { name: "Lost Dogs", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", comingSoon: true },
+        { name: "Glance", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", comingSoon: true },
+        { name: "Disk Trickster", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", comingSoon: true },
+        { name: "Hitoku", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", comingSoon: true },
+      ];
+
+      const grid = document.getElementById("nftGrid");
+      const searchInput = document.getElementById("searchInput");
+
+      function getPageLink(name) {
+        const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+        return `${firstWord}.html`;
+      }
+
+      function renderCollections(filter = "") {
+        grid.innerHTML = "";
+        collections
+          .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+          .forEach(c => {
+            const card = document.createElement("div");
+            card.className = "collection-card";
+            card.innerHTML = `
+              <a href="${c.comingSoon ? '#' : getPageLink(c.name)}" ${c.comingSoon ? 'onclick="return false;"' : ''}>
+                <div style="position: relative;">
+                  <img src="${c.img}" alt="${c.name}" />
+                  ${c.comingSoon ? '<div class="coming-soon-overlay">Coming Soon</div>' : ''}
+                </div>
+                <p>${c.name}</p>
+              </a>`;
+            grid.appendChild(card);
+          });
+      }
+
+      searchInput.addEventListener("input", (e) => {
+        renderCollections(e.target.value);
       });
-    }
 
-    walletAddress.addEventListener("click", copyToClipboard);
-    copyBtn.addEventListener("click", copyToClipboard);
+      renderCollections();
 
-    confirmBtn.addEventListener("click", () => {
-      depositOverlay.classList.remove("active");
-      // Add your confirmation logic here
-    });
+      // Deposit overlay functionality
+      const depositOverlay = document.getElementById("depositOverlay");
+      const showDepositBtn = document.getElementById("showDeposit");
+      const closeDepositBtn = document.getElementById("closeDeposit");
+      const walletAddress = document.getElementById("walletAddress");
+      const copyBtn = document.getElementById("copyBtn");
+      const copyNotification = document.getElementById("copyNotification");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
 
-    // Withdraw functionality
-    const withdrawOverlay = document.getElementById("withdrawOverlay");
-    const showWithdrawBtn = document.getElementById("showWithdraw");
-    const closeWithdrawBtn = document.getElementById("closeWithdraw");
-    const notification = document.getElementById("notification");
-    const withdrawAmount = document.getElementById("withdrawAmount");
-    const withdrawAddress = document.getElementById("withdrawAddress");
-    const amountError = document.getElementById("amountError");
-    const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
-    const balanceAmount = 0.00; // Example balance
+      showDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.add("active");
+      });
 
-    // Show/hide overlay
-    showWithdrawBtn.addEventListener("click", () => {
-      withdrawOverlay.classList.add("active");
-      // Reset form when opening
-      withdrawAmount.value = "";
-      withdrawAddress.value = "";
-      confirmWithdrawBtn.disabled = true;
-      amountError.style.display = "none";
-    });
-    
-    closeWithdrawBtn.addEventListener("click", () => withdrawOverlay.classList.remove("active"));
-    
-    withdrawOverlay.addEventListener("click", (e) => {
-      if (e.target === withdrawOverlay) withdrawOverlay.classList.remove("active");
-    });
+      closeDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+      });
 
-    // Validate form inputs
-    function validateForm() {
-      const amount = parseFloat(withdrawAmount.value);
-      const address = withdrawAddress.value.trim();
-      
-      // Check if amount is valid and not exceeding balance
-      if (isNaN(amount) || amount <= 0) {
-        confirmWithdrawBtn.disabled = true;
-        return;
+      depositOverlay.addEventListener("click", (e) => {
+        if (e.target === depositOverlay) {
+          depositOverlay.classList.remove("active");
+        }
+      });
+
+      function copyToClipboard() {
+        navigator.clipboard.writeText(fullAddress).then(() => {
+          copyNotification.classList.add("show");
+          setTimeout(() => {
+            copyNotification.classList.remove("show");
+          }, 2000);
+        });
       }
-      
-      if (amount > balanceAmount) {
-        amountError.style.display = "block";
+
+      walletAddress.addEventListener("click", copyToClipboard);
+      copyBtn.addEventListener("click", copyToClipboard);
+
+      confirmBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+        // Add your confirmation logic here
+      });
+
+      // Withdraw functionality
+      const withdrawOverlay = document.getElementById("withdrawOverlay");
+      const showWithdrawBtn = document.getElementById("showWithdraw");
+      const closeWithdrawBtn = document.getElementById("closeWithdraw");
+      const notification = document.getElementById("notification");
+      const withdrawAmount = document.getElementById("withdrawAmount");
+      const withdrawAddress = document.getElementById("withdrawAddress");
+      const amountError = document.getElementById("amountError");
+      const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
+      const balanceAmount = 0.00; // Example balance
+
+      // Show/hide overlay
+      showWithdrawBtn.addEventListener("click", () => {
+        withdrawOverlay.classList.add("active");
+        // Reset form when opening
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
         confirmWithdrawBtn.disabled = true;
-        return;
-      } else {
         amountError.style.display = "none";
-      }
+      });
       
-      // Check if address is not empty
-      if (address === "") {
-        confirmWithdrawBtn.disabled = true;
-        return;
-      }
+      closeWithdrawBtn.addEventListener("click", () => withdrawOverlay.classList.remove("active"));
       
-      // If all validations pass
-      confirmWithdrawBtn.disabled = false;
+      withdrawOverlay.addEventListener("click", (e) => {
+        if (e.target === withdrawOverlay) withdrawOverlay.classList.remove("active");
+      });
+
+      // Validate form inputs
+      function validateForm() {
+        const amount = parseFloat(withdrawAmount.value);
+        const address = withdrawAddress.value.trim();
+        
+        // Check if amount is valid and not exceeding balance
+        if (isNaN(amount) || amount <= 0) {
+          confirmWithdrawBtn.disabled = true;
+          return;
+        }
+        
+        if (amount > balanceAmount) {
+          amountError.style.display = "block";
+          confirmWithdrawBtn.disabled = true;
+          return;
+        } else {
+          amountError.style.display = "none";
+        }
+        
+        // Check if address is not empty
+        if (address === "") {
+          confirmWithdrawBtn.disabled = true;
+          return;
+        }
+        
+        // If all validations pass
+        confirmWithdrawBtn.disabled = false;
+      }
+
+      // Add event listeners for input validation
+      withdrawAmount.addEventListener("input", validateForm);
+      withdrawAddress.addEventListener("input", validateForm);
+      
+      confirmWithdrawBtn.addEventListener("click", () => {
+        if (parseFloat(withdrawAmount.value) > balanceAmount) return;
+        
+        withdrawOverlay.classList.remove("active");
+        showNotification(`Withdrew ${withdrawAmount.value} TON`);
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
+      });
+
+      // Notification helper
+      function showNotification(message) {
+        notification.textContent = message;
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 2000);
+      }
+
+      // Initialize Telegram WebApp
+      initTelegramWebApp();
     }
 
-    // Add event listeners for input validation
-    withdrawAmount.addEventListener("input", validateForm);
-    withdrawAddress.addEventListener("input", validateForm);
-    
-    confirmWithdrawBtn.addEventListener("click", () => {
-      if (parseFloat(withdrawAmount.value) > balanceAmount) return;
-      
-      withdrawOverlay.classList.remove("active");
-      showNotification(`Withdrew ${withdrawAmount.value} TON`);
-      withdrawAmount.value = "";
-      withdrawAddress.value = "";
-    });
-
-    // Notification helper
-    function showNotification(message) {
-      notification.textContent = message;
-      notification.classList.add("show");
-      setTimeout(() => notification.classList.remove("show"), 2000);
+    function initTelegramWebApp() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        // Store user data in localStorage
+        const user = tg.initDataUnsafe.user;
+        if (user) {
+          const userData = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name || '',
+            username: user.username || '',
+            photo_url: user.photo_url || ''
+          };
+          localStorage.setItem('tg_user', JSON.stringify(userData));
+        }
+      }
     }
   </script>
-<script>
-  // Initialize Telegram WebApp
-  const tg = window.Telegram.WebApp;
-  
-  // Function to get and store user data
-  function initUserData() {
-    // Check if we already have user data in local storage
-    const storedUser = localStorage.getItem('tg_user');
-    
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      displayUserData(user);
-    } else if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-      // Get user data from Telegram
-      const user = tg.initDataUnsafe.user;
-      // Store in local storage
-      localStorage.setItem('tg_user', JSON.stringify(user));
-      displayUserData(user);
-    } else {
-      console.log('User data not available');
-    }
-  }
-  
-  // Function to display user data
-  function displayUserData(user) {
-    const userNameElement = document.getElementById('userName');
-    const userUsernameElement = document.getElementById('userUsername');
-    const userAvatarElement = document.getElementById('userAvatar');
-    
-    if (user.first_name || user.last_name) {
-      const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
-      userNameElement.textContent = fullName;
-    } else {
-      userNameElement.textContent = 'Telegram User';
-    }
-    
-    if (user.username) {
-      userUsernameElement.textContent = user.username;
-    } else {
-      userUsernameElement.textContent = 'username';
-    }
-    
-    if (user.photo_url) {
-      userAvatarElement.src = user.photo_url;
-    } else {
-      // Default avatar if no photo
-      userAvatarElement.src = 'https://via.placeholder.com/64';
-    }
-  }
-  
-  // Initialize when page loads
-  document.addEventListener('DOMContentLoaded', function() {
-    initUserData();
-    
-    // Tab switching functionality
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', function() {
-        // Remove active class from all tabs
-        tabs.forEach(t => t.classList.remove('active'));
-        // Add active class to clicked tab
-        this.classList.add('active');
-        
-        // Hide all sections
-        document.getElementById('collectionsSection').style.display = 'none';
-        document.getElementById('roadmapSection').style.display = 'none';
-        
-        // Show selected section
-        const tabName = this.getAttribute('data-tab');
-        document.getElementById(`${tabName}Section`).style.display = 'block';
-      });
-    });
-    
-    // Deposit/Withdraw overlay functionality
-    document.getElementById('showDeposit').addEventListener('click', function() {
-      document.getElementById('depositOverlay').classList.add('active');
-    });
-    
-    document.getElementById('closeDeposit').addEventListener('click', function() {
-      document.getElementById('depositOverlay').classList.remove('active');
-    });
-    
-    document.getElementById('showWithdraw').addEventListener('click', function() {
-      document.getElementById('withdrawOverlay').classList.add('active');
-    });
-    
-    document.getElementById('closeWithdraw').addEventListener('click', function() {
-      document.getElementById('withdrawOverlay').classList.remove('active');
-    });
-  });
-</script>
 </body>
 </html>
-
-
-<script>
-  // Telegram WebApp Initialization (runs in background)
-  document.addEventListener('DOMContentLoaded', function() {
-    // Initialize WebApp
-    if (window.Telegram && window.Telegram.WebApp) {
-      Telegram.WebApp.expand();
-      Telegram.WebApp.enableClosingConfirmation();
-      
-      // Store user data in localStorage
-      const user = Telegram.WebApp.initDataUnsafe.user;
-      if (user) {
-        const userData = {
-          id: user.id,
-          first_name: user.first_name,
-          last_name: user.last_name || '',
-          username: user.username || '',
-          photo_url: user.photo_url || ''
-        };
-        localStorage.setItem('tg_user', JSON.stringify(userData));
-        console.log('User data stored:', userData);
-      }
-    }
-    
-    // Your existing collection grid code
-    const collections = [
-      // ... your existing collections array ...
-    ];
-    
-    // ... rest of your existing index.html JavaScript ...
-  });
-</script>
