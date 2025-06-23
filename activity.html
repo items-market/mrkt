@@ -125,6 +125,8 @@
       margin-bottom: 12px;
       backdrop-filter: blur(16px);
       transition: all 0.3s ease;
+      animation: fadeIn 0.3s ease-out forwards;
+      opacity: 0;
     }
 
     .activity-card:hover {
@@ -268,11 +270,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .activity-card {
-      animation: fadeIn 0.3s ease-out forwards;
-      opacity: 0;
-    }
-
     .activity-card:nth-child(1) { animation-delay: 0.1s; }
     .activity-card:nth-child(2) { animation-delay: 0.2s; }
     .activity-card:nth-child(3) { animation-delay: 0.3s; }
@@ -281,31 +278,11 @@
     .activity-card:nth-child(6) { animation-delay: 0.6s; }
     .activity-card:nth-child(7) { animation-delay: 0.7s; }
 
-    /* Hidden Sell Button */
-    .sell-fab {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 56px;
-      height: 56px;
-      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      z-index: 100;
-      transition: all 0.3s ease;
-    }
-
-    .sell-fab:hover {
-      transform: scale(1.1);
-    }
-
-    .sell-fab i {
-      color: white;
-      font-size: 24px;
+    /* Loading state */
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: var(--muted);
     }
   </style>
 </head>
@@ -330,179 +307,8 @@
     <div class="filter-chip" data-filter="oldest">Oldest</div>
   </div>
 
-  <div class="activity-container">
-    <!-- Flags -->
-    <div class="activity-card" data-tags="notcoin" data-date="2025-06-23T05:42:00">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://notcoin.com/logo.png" alt="Flags">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">Flags</div>
-            <div class="collection-id">#1033</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">0.85</span>
-        </div>
-      </div>
-      <div class="collection-tag">Notcoin</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 05:42:00 UTC</span>
-      </div>
-    </div>
-
-    <!-- Doo Doo Moods -->
-    <div class="activity-card" data-tags="baby" data-date="2025-06-23T05:16:11">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://babyshark.com/logo.png" alt="Doo Doo Moods">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">Doo Doo Moods</div>
-            <div class="collection-id">#2017</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">1.20</span>
-        </div>
-      </div>
-      <div class="collection-tag">Baby Shark</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 05:16:11 UTC</span>
-      </div>
-    </div>
-
-    <!-- Emo Boy -->
-    <div class="activity-card" data-tags="dogs" data-date="2025-06-23T05:11:44">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://dogs.og/logo.png" alt="Emo Boy">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">Emo Boy</div>
-            <div class="collection-id">#5478</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">0.45</span>
-        </div>
-      </div>
-      <div class="collection-tag">DOGS OG</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 05:11:44 UTC</span>
-      </div>
-    </div>
-
-    <!-- Witch -->
-    <div class="activity-card" data-tags="dogs" data-date="2025-06-23T05:11:38">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://dogs.og/logo.png" alt="Witch">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">Witch</div>
-            <div class="collection-id">#3399</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">0.50</span>
-        </div>
-      </div>
-      <div class="collection-tag">DOGS OG</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 05:11:38 UTC</span>
-      </div>
-    </div>
-
-    <!-- General -->
-    <div class="activity-card" data-tags="blum" data-date="2025-06-23T04:44:09">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://blum.com/logo.png" alt="General">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">General</div>
-            <div class="collection-id">#1806</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">2.15</span>
-        </div>
-      </div>
-      <div class="collection-tag">Blum</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 04:44:09 UTC</span>
-      </div>
-    </div>
-
-    <!-- Not Memes 1 -->
-    <div class="activity-card" data-tags="notcoin" data-date="2025-06-23T04:40:01">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://notcoin.com/logo.png" alt="Not Memes">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">Not Memes</div>
-            <div class="collection-id">#1630</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">0.75</span>
-        </div>
-      </div>
-      <div class="collection-tag">Notcoin</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 04:40:01 UTC</span>
-      </div>
-    </div>
-
-    <!-- Not Memes 2 -->
-    <div class="activity-card" data-tags="notcoin" data-date="2025-06-23T04:38:29">
-      <div class="activity-header">
-        <div class="activity-header-left">
-          <div class="collection-logo">
-            <img src="https://notcoin.com/logo.png" alt="Not Memes">
-          </div>
-          <div class="collection-info">
-            <div class="collection-name">Not Memes</div>
-            <div class="collection-id">#1775</div>
-          </div>
-        </div>
-        <div class="ton-price">
-          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-          <span class="price-value">0.80</span>
-        </div>
-      </div>
-      <div class="collection-tag">Notcoin</div>
-      <div class="activity-time">
-        <i class="fas fa-clock"></i>
-        <span>2025-06-23 04:38:29 UTC</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Floating Action Button for Sell Page (Hidden from regular users) -->
-  <div class="sell-fab" id="sellFab" style="display: none;">
-    <i class="fas fa-plus"></i>
+  <div class="activity-container" id="activity-container">
+    <div class="loading">Loading activities...</div>
   </div>
 
   <nav class="bottom-nav">
@@ -529,112 +335,81 @@
   </nav>
 
   <script>
-    // Telegram WebApp Initialization
     document.addEventListener('DOMContentLoaded', function() {
+      // Telegram WebApp Initialization
       if (window.Telegram && window.Telegram.WebApp) {
         Telegram.WebApp.expand();
         Telegram.WebApp.enableClosingConfirmation();
       }
 
-      // Filter System Functionality
-      const filterChips = document.querySelectorAll('.filter-chip');
-      const activityCards = document.querySelectorAll('.activity-card');
+      // Load activity items from external file
+      function loadActivityItems() {
+        fetch('actisell.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('activity-container').innerHTML = html;
+            initializeActivityCards();
+          })
+          .catch(err => {
+            console.error('Failed to load activity items:', err);
+            document.getElementById('activity-container').innerHTML = 
+              '<div class="loading">Failed to load activities. Please try again later.</div>';
+          });
+      }
 
-      filterChips.forEach(chip => {
-        chip.addEventListener('click', function() {
-          // Remove active class from all chips
-          filterChips.forEach(c => c.classList.remove('active'));
-          // Add active class to clicked chip
-          this.classList.add('active');
-          
-          const filterValue = this.getAttribute('data-filter');
-          filterActivities(filterValue);
+      // Initialize activity cards after loading
+      function initializeActivityCards() {
+        const filterChips = document.querySelectorAll('.filter-chip');
+        const activityCards = document.querySelectorAll('.activity-card');
+
+        // Set animation delays for loaded cards
+        activityCards.forEach((card, index) => {
+          card.style.animationDelay = `${0.1 * (index + 1)}s`;
         });
-      });
 
-      function filterActivities(filter) {
-        activityCards.forEach(card => {
-          const tags = card.getAttribute('data-tags');
-          const date = card.getAttribute('data-date');
-          const now = new Date();
-          const cardDate = new Date(date);
-          const timeDiff = now - cardDate;
-          const hoursDiff = timeDiff / (1000 * 60 * 60);
-          
-          let shouldShow = true;
-          
-          if (filter === 'all') {
-            shouldShow = true;
-          } 
-          else if (filter === 'recent') {
-            shouldShow = hoursDiff <= 24; // Last 24 hours
-          } 
-          else if (filter === 'oldest') {
-            shouldShow = hoursDiff > 24; // Older than 24 hours
-          }
-          else {
-            shouldShow = tags.includes(filter);
-          }
-          
-          card.style.display = shouldShow ? 'block' : 'none';
+        filterChips.forEach(chip => {
+          chip.addEventListener('click', function() {
+            filterChips.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            const filterValue = this.getAttribute('data-filter');
+            filterActivities(filterValue);
+          });
         });
+
+        function filterActivities(filter) {
+          activityCards.forEach(card => {
+            const tags = card.getAttribute('data-tags');
+            const date = card.getAttribute('data-date');
+            const now = new Date();
+            const cardDate = new Date(date);
+            const timeDiff = now - cardDate;
+            const hoursDiff = timeDiff / (1000 * 60 * 60);
+            
+            let shouldShow = true;
+            
+            if (filter === 'all') {
+              shouldShow = true;
+            } 
+            else if (filter === 'recent') {
+              shouldShow = hoursDiff <= 24;
+            } 
+            else if (filter === 'oldest') {
+              shouldShow = hoursDiff > 24;
+            }
+            else {
+              shouldShow = tags.includes(filter);
+            }
+            
+            card.style.display = shouldShow ? 'block' : 'none';
+          });
+        }
+
+        // Initialize with all activities shown
+        filterActivities('all');
       }
 
-      // Initialize with all activities shown
-      filterActivities('all');
-
-      // Function to add new activity
-      function addNewActivity(item) {
-        const activityContainer = document.querySelector('.activity-container');
-        
-        const newCard = document.createElement('div');
-        newCard.className = 'activity-card';
-        newCard.setAttribute('data-tags', item.tag);
-        newCard.setAttribute('data-date', new Date().toISOString());
-        
-        newCard.innerHTML = `
-          <div class="activity-header">
-            <div class="activity-header-left">
-              <div class="collection-logo">
-                <img src="${item.logo}" alt="${item.name}">
-              </div>
-              <div class="collection-info">
-                <div class="collection-name">${item.name}</div>
-                <div class="collection-id">#${item.id}</div>
-              </div>
-            </div>
-            <div class="ton-price">
-              <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
-              <span class="price-value">${item.price}</span>
-            </div>
-          </div>
-          <div class="collection-tag">${item.tag}</div>
-          <div class="activity-time">
-            <i class="fas fa-clock"></i>
-            <span>${new Date().toISOString().replace('T', ' ').replace(/\.\d+Z/, ' UTC')}</span>
-          </div>
-        `;
-        
-        newCard.style.animation = 'fadeIn 0.3s ease-out forwards';
-        activityContainer.insertBefore(newCard, activityContainer.firstChild);
-      }
-
-      // Check for new items from actisell.html
-      const newItem = JSON.parse(localStorage.getItem('newActivityItem'));
-      if (newItem) {
-        addNewActivity(newItem);
-        localStorage.removeItem('newActivityItem');
-      }
-
-      // Show/hide sell FAB based on some condition (e.g., admin user)
-      // In a real app, you would check user permissions here
-      const isAdmin = true; // Change this based on your auth logic
-      if (isAdmin) {
-        document.getElementById('sellFab').style.display = 'flex';
-        document.getElementById('sellFab').addEventListener('click', function() {
-          window.location.href = 'actisell.html';
-        });
-      }
+      // Initial load
+      loadActivityItems();
     });
   </script>
 </body>
