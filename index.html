@@ -719,4 +719,184 @@
     const closeWithdrawBtn = document.getElementById("closeWithdraw");
     const notification = document.getElementById("notification");
     const withdrawAmount = document.getElementById("withdrawAmount");
-    const withdrawAddress = document.getElemen
+    const withdrawAddress = document.getElementById("withdrawAddress");
+    const amountError = document.getElementById("amountError");
+    const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
+    const balanceAmount = 0.00; // Example balance
+
+    // Show/hide overlay
+    showWithdrawBtn.addEventListener("click", () => {
+      withdrawOverlay.classList.add("active");
+      // Reset form when opening
+      withdrawAmount.value = "";
+      withdrawAddress.value = "";
+      confirmWithdrawBtn.disabled = true;
+      amountError.style.display = "none";
+    });
+    
+    closeWithdrawBtn.addEventListener("click", () => withdrawOverlay.classList.remove("active"));
+    
+    withdrawOverlay.addEventListener("click", (e) => {
+      if (e.target === withdrawOverlay) withdrawOverlay.classList.remove("active");
+    });
+
+    // Validate form inputs
+    function validateForm() {
+      const amount = parseFloat(withdrawAmount.value);
+      const address = withdrawAddress.value.trim();
+      
+      // Check if amount is valid and not exceeding balance
+      if (isNaN(amount) || amount <= 0) {
+        confirmWithdrawBtn.disabled = true;
+        return;
+      }
+      
+      if (amount > balanceAmount) {
+        amountError.style.display = "block";
+        confirmWithdrawBtn.disabled = true;
+        return;
+      } else {
+        amountError.style.display = "none";
+      }
+      
+      // Check if address is not empty
+      if (address === "") {
+        confirmWithdrawBtn.disabled = true;
+        return;
+      }
+      
+      // If all validations pass
+      confirmWithdrawBtn.disabled = false;
+    }
+
+    // Add event listeners for input validation
+    withdrawAmount.addEventListener("input", validateForm);
+    withdrawAddress.addEventListener("input", validateForm);
+    
+    confirmWithdrawBtn.addEventListener("click", () => {
+      if (parseFloat(withdrawAmount.value) > balanceAmount) return;
+      
+      withdrawOverlay.classList.remove("active");
+      showNotification(`Withdrew ${withdrawAmount.value} TON`);
+      withdrawAmount.value = "";
+      withdrawAddress.value = "";
+    });
+
+    // Notification helper
+    function showNotification(message) {
+      notification.textContent = message;
+      notification.classList.add("show");
+      setTimeout(() => notification.classList.remove("show"), 2000);
+    }
+  </script>
+<script>
+  // Initialize Telegram WebApp
+  const tg = window.Telegram.WebApp;
+  
+  // Function to get and store user data
+  function initUserData() {
+    // Check if we already have user data in local storage
+    const storedUser = localStorage.getItem('tg_user');
+    
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      displayUserData(user);
+    } else if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      // Get user data from Telegram
+      const user = tg.initDataUnsafe.user;
+      // Store in local storage
+      localStorage.setItem('tg_user', JSON.stringify(user));
+      displayUserData(user);
+    } else {
+      console.log('User data not available');
+    }
+  }
+  
+  // Function to display user data
+  function displayUserData(user) {
+    const userNameElement = document.getElementById('userName');
+    const userUsernameElement = document.getElementById('userUsername');
+    const userAvatarElement = document.getElementById('userAvatar');
+    
+    if (user.first_name || user.last_name) {
+      const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
+      userNameElement.textContent = fullName;
+    } else {
+      userNameElement.textContent = 'Telegram User';
+    }
+    
+    if (user.username) {
+      userUsernameElement.textContent = user.username;
+    } else {
+      userUsernameElement.textContent = 'username';
+    }
+    
+    if (user.photo_url) {
+      userAvatarElement.src = user.photo_url;
+    } else {
+      // Default avatar if no photo
+      userAvatarElement.src = 'https://via.placeholder.com/64';
+    }
+  }
+  
+  // Initialize when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    initUserData();
+    
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        tabs.forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+        
+        // Hide all sections
+        document.getElementById('collectionsSection').style.display = 'none';
+        document.getElementById('roadmapSection').style.display = 'none';
+        
+        // Show selected section
+        const tabName = this.getAttribute('data-tab');
+        document.getElementById(`${tabName}Section`).style.display = 'block';
+      });
+    });
+    
+    // Deposit/Withdraw overlay functionality
+    document.getElementById('showDeposit').addEventListener('click', function() {
+      document.getElementById('depositOverlay').classList.add('active');
+    });
+    
+    document.getElementById('closeDeposit').addEventListener('click', function() {
+      document.getElementById('depositOverlay').classList.remove('active');
+    });
+    
+    document.getElementById('showWithdraw').addEventListener('click', function() {
+      document.getElementById('withdrawOverlay').classList.add('active');
+    });
+    
+    document.getElementById('closeWithdraw').addEventListener('click', function() {
+      document.getElementById('withdrawOverlay').classList.remove('active');
+    });
+  });
+</script>
+</body>
+</html>
+
+<script>
+    // Save user data before any navigation occurs
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            const tg = window.Telegram.WebApp;
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                const userData = {
+                    name: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
+                    username: user.username || '',
+                    photo_url: user.photo_url || ''
+                };
+                localStorage.setItem('telegramUser', JSON.stringify(userData));
+            }
+        });
+    });
+</script>
