@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticker Collections</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --accent: #55d0ff;
+      --text: #fff;
+      --muted: #a0a4b8;
+      --radius: 18px;
+      --border: rgba(255, 255, 255, 0.08);
+      --error: #ff6b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 72px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .balance-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .balance {
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(85, 208, 255, 0.1);
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(85, 208, 255, 0.2);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .ton-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    .balance-amount {
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 5px;
+      font-size: 16px;
+    }
+
+    .balance-currency {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .deposit-btn {
+      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .withdraw-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .deposit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .withdraw-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .button-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Deposit Overlay Styles */
+    .deposit-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .deposit-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .deposit-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .deposit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .deposit-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .deposit-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .address-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .wallet-address {
+      font-family: 'Menlo', monospace;
+      word-break: break-all;
+      padding-right: 40px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+    }
+
+    .confirm-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Withdraw Overlay Styles */
+    .withdraw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .withdraw-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .withdraw-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .withdraw-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .withdraw-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .withdraw-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Action Button Styles */
+    .action-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .action-btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .copy-notification.show {
+      opacity: 1;
+    }
+
+    /* Rest of your existing styles... */
+    .search-bar {
+      display: block;
+      margin: 16px auto;
+      padding: 14px 16px;
+      width: calc(100% - 40px);
+      border-radius: 14px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: white;
+      font-size: 16px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      padding: 0 20px;
+      margin-top: 16px;
+      margin-bottom: 12px;
+    }
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+      padding: 0 20px;
+    }
+
+    .collection-card {
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .collection-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .collection-card a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .collection-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .collection-card p {
+      text-align: center;
+      padding: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .coming-soon-overlay {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      z-index: 2;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .bottom-nav a.active {
+      color: var(--accent);
+    }
+
+    .bottom-nav a svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .bottom-nav a:hover:not(.active) {
+      color: rgba(160, 164, 184, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="balance-container">
+      <div class="balance">
+        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+        <span class="balance-amount">0</span>
+        <span class="balance-currency">TON</span>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
+    </div>
+  </div>
+
+  <!-- Deposit Overlay -->
+  <div class="deposit-overlay" id="depositOverlay">
+    <div class="deposit-box">
+      <div class="deposit-header">
+        <h2 class="deposit-title">Deposit</h2>
+        <button class="close-btn" id="closeDeposit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
+      
+      <div class="address-container">
+        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
+      
+      <button class="confirm-btn" id="confirmBtn">I sent</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
+        <div class="error-message" id="amountError">Insufficient balance</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copyNotification">Address copied!</div>
+  <div class="notification" id="notification">Notification message</div>
+
+  <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..." />
+  <h2>Collections</h2>
+  <main class="collection-grid" id="nftGrid"></main>
+
+  <nav class="bottom-nav">
+    <a href="/" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Market</span>
+    </a>
+    <a href="/profile.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+    <a href="/activity.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span>Activity</span>
+    </a>
+  </nav>
+
+  <script>
+    // Collections grid functionality
+    const collections = [
+      { name: "Void", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", comingSoon: false },
+      { name: "Notcoin", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", comingSoon: false },
+      { name: "Not Pixel", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", comingSoon: false },
+      { name: "Lost Dogs", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", comingSoon: true },
+      { name: "Glance", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", comingSoon: true },
+      { name: "Disk Trickster", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", comingSoon: true },
+      { name: "Hitoku", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", comingSoon: true },
+    ];
+
+    const grid = document.getElementById("nftGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    function getPageLink(name) {
+      const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+      return `${firstWord}.html`;
+    }
+
+    function renderCollections(filter = "") {
+      grid.innerHTML = "";
+      collections
+        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(c => {
+          const card = document.createElement("div");
+          card.className = "collection-card";
+          card.innerHTML = `
+            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}" ${c.comingSoon ? 'onclick="return false;"' : ''}>
+              <div style="position: relative;">
+                <img src="${c.img}" alt="${c.name}" />
+                ${c.comingSoon ? '<div class="coming-soon-overlay">Coming Soon</div>' : ''}
+              </div>
+              <p>${c.name}</p>
+            </a>`;
+          grid.appendChild(card);
+        });
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      renderCollections(e.target.value);
+    });
+
+    renderCollections();
+
+    // Deposit overlay functionality
+    const depositOverlay = document.getElementById("depositOverlay");
+    const showDepositBtn = document.getElementById("showDeposit");
+    const closeDepositBtn = document.getElementById("closeDeposit");
+    const walletAddress = document.getElementById("walletAddress");
+    const copyBtn = document.getElementById("copyBtn");
+    const copyNotification = document.getElementById("copyNotification");
+    const confirmBtn = document.getElementById("confirmBtn");
+    const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
+
+    showDepositBtn.addEventListener("click", () => {
+      depositOverlay.classList.add("active");
+    });
+
+    closeDepositBtn.addEventListener("click", () => {
+      depositOverlay.classList.remove("active");
+    });
+
+    depositOverlay.addEventListener("click", (e) => {
+      if (e.target === depositOverlay) {
+        depositOverlay.classList.remove("active");
+      }
+    });
+
+    function copyToClipboard() {
+      navigator.clipboard.writeText(fullAddress).then(() => {
+        copyNotification.classList.add("show");
+        setTimeout(() => {
+          copyNotification.classList.remove("show");
+        }, 2000);
+      });
+    }
+
+    walletAddress.addEventListener("click", copyToClipboard);
+    copyBtn.addEventListener("click", copyToClipboard);
+
+    confirmBtn.addEventListener("click", () => {
+      depositOverlay.classList.remove("active");
+      // Add your confirmation logic here
+    });
+
+    // Withdraw functionality
+    const withdrawOverlay = document.getElementById("withdrawOverlay");
+    const showWithdrawBtn = document.getElementById("showWithdraw");
+    const closeWithdrawBtn = document.getElementById("closeWithdraw");
+    const notification = document.getElementById("notification");
+    const withdrawAmount = document.getElementById("withdrawAmount");
+    const withdrawAddress = document.getElemen
