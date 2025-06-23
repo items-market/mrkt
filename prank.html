@@ -8,85 +8,80 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg-gradient-start: #0a0c15;
-      --bg-gradient-end: #1a1d2e;
-      --surface-1: rgba(22, 25, 38, 0.95);
-      --surface-2: rgba(30, 34, 52, 0.8);
-      --surface-3: rgba(40, 45, 68, 0.6);
-      --accent-primary: #55d0ff;
-      --accent-secondary: #7ddbff;
-      --text-primary: #ffffff;
-      --text-secondary: #b8bccc;
-      --text-tertiary: #7a8099;
-      --border-light: rgba(255, 255, 255, 0.08);
-      --border-dark: rgba(0, 0, 0, 0.2);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
-      --transition-fast: all 0.15s ease-out;
-      --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      --transition-slow: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --accent: #55d0ff;
+      --text: #fff;
+      --muted: #a0a4b8;
+      --radius: 18px;
+      --border: rgba(255, 255, 255, 0.08);
       --error: #ff6b6b;
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(165deg, var(--bg-gradient-start), var(--bg-gradient-end));
-      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
       min-height: 100vh;
-      padding-bottom: 88px;
-      line-height: 1.5;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      padding-bottom: 72px;
     }
 
-    /* App Bar - Premium Design */
-    .app-bar {
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 20px;
-      background: var(--surface-1);
-      backdrop-filter: blur(20px);
+      padding: 14px 20px;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 100;
-      border-bottom: 1px solid var(--border-light);
-      box-shadow: var(--shadow-sm);
+      z-index: 10;
     }
 
-    .balance-display {
+    .balance-container {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 600;
+      gap: 12px;
+      position: relative;
     }
 
-    .ton-logo {
-      width: 20px;
-      height: 20px;
-      filter: drop-shadow(0 0 4px rgba(85, 208, 255, 0.3));
+    .balance {
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(85, 208, 255, 0.1);
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(85, 208, 255, 0.2);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .ton-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
     }
 
     .balance-amount {
-      color: var(--accent-primary);
+      color: var(--accent);
       font-weight: 700;
-      margin-right: 4px;
-      font-feature-settings: 'tnum' on, 'lnum' on;
+      margin-right: 5px;
+      font-size: 16px;
+    }
+
+    .balance-currency {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
     }
 
     .action-buttons {
@@ -97,38 +92,36 @@
     .deposit-btn {
       background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
       color: white;
-      padding: 10px 16px;
-      border-radius: var(--radius-md);
+      padding: 9px 16px;
+      border-radius: 12px;
       border: none;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: var(--transition-normal);
+      transition: all 0.3s ease;
       font-size: 14px;
-      box-shadow: 0 2px 12px rgba(85, 208, 255, 0.2);
     }
 
     .withdraw-btn {
       background: rgba(255, 255, 255, 0.05);
       color: white;
-      padding: 10px 16px;
-      border-radius: var(--radius-md);
+      padding: 9px 16px;
+      border-radius: 12px;
       border: 1px solid rgba(255, 255, 255, 0.1);
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: var(--transition-normal);
+      transition: all 0.3s ease;
       font-size: 14px;
     }
 
     .deposit-btn:hover {
       opacity: 0.9;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(85, 208, 255, 0.3);
     }
 
     .withdraw-btn:hover {
@@ -167,12 +160,12 @@
 
     .deposit-box {
       background: rgba(22, 26, 34, 0.95);
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
       width: 90%;
       max-width: 400px;
       padding: 24px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .deposit-header {
@@ -190,13 +183,13 @@
     .close-btn {
       background: none;
       border: none;
-      color: var(--text-secondary);
+      color: var(--muted);
       cursor: pointer;
       padding: 4px;
     }
 
     .deposit-instructions {
-      color: var(--text-secondary);
+      color: var(--muted);
       margin-bottom: 16px;
       line-height: 1.5;
     }
@@ -206,7 +199,7 @@
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 20px;
-      border: 1px solid var(--border-light);
+      border: 1px solid var(--border);
       position: relative;
     }
 
@@ -230,11 +223,11 @@
     }
 
     .copy-btn:hover {
-      background: var(--accent-primary);
+      background: var(--accent);
     }
 
     .confirm-btn {
-      background: var(--accent-primary);
+      background: var(--accent);
       color: white;
       border: none;
       width: 100%;
@@ -274,12 +267,12 @@
 
     .withdraw-box {
       background: rgba(22, 26, 34, 0.95);
-      border-radius: var(--radius-xl);
-      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
       width: 90%;
       max-width: 400px;
       padding: 24px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .withdraw-header {
@@ -295,7 +288,7 @@
     }
 
     .withdraw-instructions {
-      color: var(--text-secondary);
+      color: var(--muted);
       margin-bottom: 16px;
       line-height: 1.5;
     }
@@ -309,22 +302,22 @@
       display: block;
       margin-bottom: 8px;
       font-size: 14px;
-      color: var(--text-secondary);
+      color: var(--muted);
     }
 
     .input-field {
       width: 100%;
       padding: 14px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-light);
+      border: 1px solid var(--border);
       border-radius: 12px;
-      color: var(--text-primary);
+      color: var(--text);
       font-size: 15px;
       transition: all 0.2s ease;
     }
 
     .input-field:focus {
-      border-color: var(--accent-primary);
+      border-color: var(--accent);
       outline: none;
     }
 
@@ -337,7 +330,7 @@
 
     /* Action Button Styles */
     .action-btn {
-      background: var(--accent-primary);
+      background: var(--accent);
       color: white;
       border: none;
       width: 100%;
@@ -354,7 +347,7 @@
     }
 
     .action-btn:disabled {
-      background: var(--text-tertiary);
+      background: var(--muted);
       cursor: not-allowed;
     }
 
@@ -364,7 +357,7 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--accent-primary);
+      background: var(--accent);
       color: white;
       padding: 8px 16px;
       border-radius: 8px;
@@ -383,7 +376,7 @@
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--accent-primary);
+      background: var(--accent);
       color: white;
       padding: 8px 16px;
       border-radius: 8px;
@@ -397,63 +390,29 @@
       opacity: 1;
     }
 
-    /* Profile Card - Premium Design */
+    /* Profile Card Styles */
     .profile-card {
-      background: var(--surface-2);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      margin: 20px;
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-md);
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 20px;
+      border: 1px solid var(--border);
       backdrop-filter: blur(16px);
-      transition: var(--transition-slow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .profile-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--accent-primary),
-        transparent
-      );
-      opacity: 0.3;
     }
 
     .profile-header {
       display: flex;
       gap: 16px;
       align-items: center;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 1;
+      margin-bottom: 20px;
     }
 
     .avatar-container {
       width: 80px;
       height: 80px;
-      background: linear-gradient(145deg, #242a3d, #1a1e2e);
       border-radius: 50%;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
       border: 2px solid rgba(85, 208, 255, 0.3);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: var(--transition-normal);
-    }
-
-    .avatar-container:hover {
-      transform: scale(1.03);
-      box-shadow: 0 6px 24px rgba(85, 208, 255, 0.2);
     }
 
     .avatar-image {
@@ -464,76 +423,33 @@
 
     .profile-info {
       flex: 1;
-      min-width: 0;
     }
 
     .profile-name {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       margin-bottom: 4px;
-      letter-spacing: -0.3px;
-      background: linear-gradient(
-        to right,
-        var(--accent-primary),
-        var(--accent-secondary)
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-fill-color: transparent;
+      color: var(--text);
     }
 
     .profile-handle {
       font-size: 14px;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--muted);
     }
 
-    .profile-handle::before {
-      content: '@';
-      opacity: 0.6;
-    }
-
-    /* Stats Grid - Premium Design */
+    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      position: relative;
-      z-index: 1;
     }
 
     .stat-card {
-      background: var(--surface-3);
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      border: 1px solid var(--border-light);
-      transition: var(--transition-normal);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
-        135deg,
-        rgba(85, 208, 255, 0.05) 0%,
-        rgba(85, 208, 255, 0) 100%
-      );
-      z-index: -1;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-sm);
-      border-color: rgba(85, 208, 255, 0.3);
+      background: var(--glass-bg);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      text-align: center;
     }
 
     .stat-value {
@@ -543,105 +459,86 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      font-feature-settings: 'tnum' on, 'lnum' on;
+      gap: 6px;
     }
 
     .stat-label {
       font-size: 12px;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      text-align: center;
+      color: var(--muted);
     }
 
-    /* Navigation Tabs - Premium Design */
+    /* Navigation Tabs */
     .nav-tabs {
       display: flex;
-      margin: 0 20px 24px;
-      background: var(--surface-3);
-      border-radius: var(--radius-lg);
+      margin: 0 20px 20px;
+      background: var(--glass-bg);
+      border-radius: 12px;
       padding: 6px;
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
     }
 
     .nav-tab {
       flex: 1;
-      padding: 12px 0;
+      padding: 10px 0;
       background: transparent;
       border: none;
-      border-radius: var(--radius-md);
-      color: var(--text-secondary);
+      border-radius: 8px;
+      color: var(--muted);
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition-normal);
+      transition: all 0.2s ease;
       font-size: 14px;
-      position: relative;
-      z-index: 1;
     }
 
     .nav-tab.active {
-      color: var(--text-primary);
+      color: var(--text);
       background: rgba(85, 208, 255, 0.15);
     }
 
-    .nav-tab:not(.active):hover {
-      color: var(--accent-primary);
-    }
-
-    /* Tab Content - Premium Design */
+    /* Tab Content */
     .tab-panel {
-      padding: 0 20px 20px;
-      animation: fadeIn 0.4s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .tab-panel.hidden {
+      padding: 0 20px;
       display: none;
     }
 
-    /* Empty States - Premium Design */
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Empty States */
     .empty-state {
       text-align: center;
       padding: 40px 20px;
-      animation: fadeIn 0.6s ease-out;
     }
 
     .empty-icon {
       width: 64px;
       height: 64px;
       margin-bottom: 16px;
-      opacity: 0.6;
-      color: var(--accent-primary);
+      color: var(--muted);
     }
 
     .empty-title {
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 8px;
-      color: var(--text-primary);
+      color: var(--text);
     }
 
     .empty-description {
       font-size: 14px;
-      color: var(--text-secondary);
+      color: var(--muted);
       max-width: 300px;
-      margin: 0 auto 20px;
+      margin: 0 auto;
     }
 
-    /* Instructions - Premium Design */
+    /* Instructions */
     .instructions {
-      background: var(--surface-3);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      border: 1px solid var(--border-light);
-      animation: fadeIn 0.6s ease-out;
+      background: var(--glass-bg);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      margin-top: 20px;
     }
 
     .instruction-step {
@@ -653,7 +550,7 @@
 
     .step-number {
       background: rgba(85, 208, 255, 0.2);
-      color: var(--accent-primary);
+      color: var(--accent);
       width: 24px;
       height: 24px;
       border-radius: 50%;
@@ -662,115 +559,68 @@
       justify-content: center;
       font-size: 12px;
       font-weight: 700;
-      flex-shrink: 0;
     }
 
     .step-text {
       font-size: 14px;
-      color: var(--text-secondary);
+      color: var(--muted);
       flex: 1;
     }
 
     .step-text b {
-      color: var(--accent-primary);
-      font-weight: 600;
+      color: var(--accent);
     }
 
-    /* Bottom Navigation - Premium Design */
+    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
-      right: 0;
-      background: var(--surface-1);
-      backdrop-filter: blur(20px);
+      width: 100%;
       display: flex;
       justify-content: space-around;
-      border-top: 1px solid var(--border-light);
-      z-index: 100;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(12px);
       padding: 12px 0;
-      box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
+      border-top: 1px solid var(--border);
+      z-index: 1000;
     }
 
-    .nav-item {
+    .bottom-nav a {
       text-decoration: none;
-      color: var(--text-secondary);
+      color: var(--muted);
       font-size: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      flex: 1;
-      transition: var(--transition-fast);
-      position: relative;
+      font-weight: 500;
+      transition: all 0.3s ease;
     }
 
-    .nav-item.active {
-      color: var(--accent-primary);
+    .bottom-nav a.active {
+      color: var(--accent);
     }
 
-    .nav-item.active::after {
-      content: '';
-      position: absolute;
-      top: -8px;
-      width: 6px;
-      height: 6px;
-      background: var(--accent-primary);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-primary);
-    }
-
-    .nav-icon {
+    .bottom-nav a svg {
       width: 24px;
       height: 24px;
       stroke: currentColor;
-      stroke-width: 1.8;
-      transition: var(--transition-fast);
     }
 
-    .nav-item.active .nav-icon {
-      stroke-width: 2.2;
-      filter: drop-shadow(0 0 4px rgba(85, 208, 255, 0.4));
-    }
-
-    /* Responsive Design */
-    @media (max-width: 480px) {
-      .profile-card {
-        margin: 16px;
-        padding: 20px;
-      }
-      
-      .avatar-container {
-        width: 72px;
-        height: 72px;
-      }
-      
-      .profile-name {
-        font-size: 20px;
-      }
-      
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .nav-tabs {
-        margin: 0 16px 20px;
-      }
-      
-      .tab-panel {
-        padding: 0 16px 16px;
-      }
+    .bottom-nav a:hover:not(.active) {
+      color: rgba(160, 164, 184, 0.8);
     }
   </style>
 </head>
 <body>
-
-  <!-- App Bar -->
-  <div class="app-bar">
-    <div class="balance-display">
-      <img class="ton-logo" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
-      <span class="balance-amount">0</span>
-      <span>TON</span>
+  <div class="top-bar">
+    <div class="balance-container">
+      <div class="balance">
+        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+        <span class="balance-amount">0</span>
+        <span class="balance-currency">TON</span>
+      </div>
     </div>
     <div class="action-buttons">
       <button class="deposit-btn" id="showDeposit">
@@ -867,14 +717,14 @@
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-value">
-          <img class="ton-logo" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+          <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
           0.00
         </div>
         <div class="stat-label">Total Volume</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">
-          <img class="ton-logo" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+          <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
           0
         </div>
         <div class="stat-label">Portfolio</div>
@@ -890,7 +740,7 @@
   </div>
 
   <!-- Sticker Pack Tab -->
-  <div class="tab-panel hidden" id="tab-pack">
+  <div class="tab-panel" id="tab-pack">
     <div class="empty-state">
       <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="7" height="7"></rect>
@@ -904,7 +754,7 @@
   </div>
 
   <!-- Storage Tab -->
-  <div class="tab-panel" id="tab-storage">
+  <div class="tab-panel active" id="tab-storage">
     <div class="empty-state">
       <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
@@ -933,7 +783,7 @@
   </div>
 
   <!-- On Sale Tab -->
-  <div class="tab-panel hidden" id="tab-sale">
+  <div class="tab-panel" id="tab-sale">
     <div class="empty-state">
       <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="6" x2="12" y2="18"></line>
@@ -946,27 +796,25 @@
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
-    <a href="/" class="nav-item">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <a href="/" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
       </svg>
       <span>Market</span>
     </a>
-    <a href="/mynft.html" class="nav-item active">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"></rect>
-        <rect x="14" y="3" width="7" height="7"></rect>
-        <rect x="14" y="14" width="7" height="7"></rect>
-        <rect x="3" y="14" width="7" height="7"></rect>
-      </svg>
-      <span>My NFTs</span>
-    </a>
-    <a href="/profile.html" class="nav-item">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <a href="/profile.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
         <circle cx="12" cy="7" r="4"></circle>
       </svg>
       <span>Profile</span>
+    </a>
+    <a href="/activity.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span>Activity</span>
     </a>
   </nav>
 
@@ -974,15 +822,13 @@
     // Tab Switching
     function switchTab(tab) {
       document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
       document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
-      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      document.getElementById(`tab-${tab}`).classList.add('active');
     }
 
     // Load Telegram User Data
     document.addEventListener("DOMContentLoaded", () => {
-      switchTab('storage');
-      
       if (window.Telegram && window.Telegram.WebApp) {
         const user = Telegram.WebApp.initDataUnsafe.user;
         if (user) {
@@ -1133,6 +979,5 @@
       }
     }
   </script>
-
 </body>
 </html>
