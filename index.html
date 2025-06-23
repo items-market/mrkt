@@ -880,23 +880,70 @@
     });
   });
 </script>
+  <script>
+  // Tab Switching
+  function switchTab(tab) {
+    document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+    document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+  }
+
+  // Load Telegram User Data
+  document.addEventListener("DOMContentLoaded", () => {
+    // Try to get user data from localStorage first
+    let userData = localStorage.getItem('tg_user');
+    
+    if (userData) {
+      userData = JSON.parse(userData);
+      displayUserProfile(userData);
+    }
+    
+    // If WebApp is available, use fresh data and update storage
+    if (window.Telegram && window.Telegram.WebApp) {
+      Telegram.WebApp.expand();
+      Telegram.WebApp.enableClosingConfirmation();
+      
+      const user = Telegram.WebApp.initDataUnsafe.user;
+      if (user) {
+        const freshUserData = {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name || '',
+          username: user.username || '',
+          photo_url: user.photo_url || ''
+        };
+        
+        localStorage.setItem('tg_user', JSON.stringify(freshUserData));
+        displayUserProfile(freshUserData);
+      }
+    }
+
+    // Initialize deposit/withdraw functionality
+    initWalletFunctions();
+  });
+
+  function displayUserProfile(user) {
+    document.getElementById('userName').textContent = 
+      `${user.first_name} ${user.last_name || ''}`.trim();
+      
+    if (user.username) {
+      document.getElementById('userUsername').textContent = user.username;
+    } else {
+      document.getElementById('userUsername').style.display = 'none';
+    }
+    
+    if (user.photo_url) {
+      document.getElementById('userAvatar').src = user.photo_url;
+    } else {
+      // Fallback avatar
+      const avatar = document.getElementById('userAvatar');
+      avatar.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="20" fill="%2355d0ff"/><circle cx="50" cy="90" r="30" fill="%2355d0ff"/></svg>';
+    }
+  }
+
+  // ... rest of your existing wallet functions ...
+</script>
 </body>
 </html>
 
-<script>
-    // Save user data before any navigation occurs
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            const tg = window.Telegram.WebApp;
-            const user = tg.initDataUnsafe?.user;
-            if (user) {
-                const userData = {
-                    name: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
-                    username: user.username || '',
-                    photo_url: user.photo_url || ''
-                };
-                localStorage.setItem('telegramUser', JSON.stringify(userData));
-            }
-        });
-    });
-</script>
