@@ -280,6 +280,33 @@
     .activity-card:nth-child(5) { animation-delay: 0.5s; }
     .activity-card:nth-child(6) { animation-delay: 0.6s; }
     .activity-card:nth-child(7) { animation-delay: 0.7s; }
+
+    /* Hidden Sell Button */
+    .sell-fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .sell-fab:hover {
+      transform: scale(1.1);
+    }
+
+    .sell-fab i {
+      color: white;
+      font-size: 24px;
+    }
   </style>
 </head>
 <body>
@@ -473,6 +500,11 @@
     </div>
   </div>
 
+  <!-- Floating Action Button for Sell Page (Hidden from regular users) -->
+  <div class="sell-fab" id="sellFab" style="display: none;">
+    <i class="fas fa-plus"></i>
+  </div>
+
   <nav class="bottom-nav">
     <a href="index.html">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -550,6 +582,59 @@
 
       // Initialize with all activities shown
       filterActivities('all');
+
+      // Function to add new activity
+      function addNewActivity(item) {
+        const activityContainer = document.querySelector('.activity-container');
+        
+        const newCard = document.createElement('div');
+        newCard.className = 'activity-card';
+        newCard.setAttribute('data-tags', item.tag);
+        newCard.setAttribute('data-date', new Date().toISOString());
+        
+        newCard.innerHTML = `
+          <div class="activity-header">
+            <div class="activity-header-left">
+              <div class="collection-logo">
+                <img src="${item.logo}" alt="${item.name}">
+              </div>
+              <div class="collection-info">
+                <div class="collection-name">${item.name}</div>
+                <div class="collection-id">#${item.id}</div>
+              </div>
+            </div>
+            <div class="ton-price">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+              <span class="price-value">${item.price}</span>
+            </div>
+          </div>
+          <div class="collection-tag">${item.tag}</div>
+          <div class="activity-time">
+            <i class="fas fa-clock"></i>
+            <span>${new Date().toISOString().replace('T', ' ').replace(/\.\d+Z/, ' UTC')}</span>
+          </div>
+        `;
+        
+        newCard.style.animation = 'fadeIn 0.3s ease-out forwards';
+        activityContainer.insertBefore(newCard, activityContainer.firstChild);
+      }
+
+      // Check for new items from actisell.html
+      const newItem = JSON.parse(localStorage.getItem('newActivityItem'));
+      if (newItem) {
+        addNewActivity(newItem);
+        localStorage.removeItem('newActivityItem');
+      }
+
+      // Show/hide sell FAB based on some condition (e.g., admin user)
+      // In a real app, you would check user permissions here
+      const isAdmin = true; // Change this based on your auth logic
+      if (isAdmin) {
+        document.getElementById('sellFab').style.display = 'flex';
+        document.getElementById('sellFab').addEventListener('click', function() {
+          window.location.href = 'actisell.html';
+        });
+      }
     });
   </script>
 </body>
