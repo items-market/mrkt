@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity | Sticker Collections</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --accent: #55d0ff;
+      --text: #fff;
+      --muted: #a0a4b8;
+      --radius: 18px;
+      --border: rgba(255, 255, 255, 0.08);
+      --error: #ff6b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 72px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon i {
+      color: white;
+      font-size: 14px;
+    }
+
+    .page-title {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #55d0ff 0%, #2a9ef4 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Filter System */
+    .filter-system {
+      padding: 0 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filter-system::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-chip.active {
+      background: rgba(85, 208, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filter-chip:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* Activity Cards */
+    .activity-container {
+      padding: 0 20px;
+    }
+
+    .activity-card {
+      background: var(--glass-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s ease;
+    }
+
+    .activity-card:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .activity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .collection-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .collection-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .collection-id {
+      font-family: 'Menlo', monospace;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .ton-price {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .ton-logo {
+      width: 16px;
+      height: 16px;
+    }
+
+    .price-value {
+      color: var(--accent);
+    }
+
+    .collection-tag {
+      display: inline-block;
+      background: rgba(85, 208, 255, 0.1);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .activity-time {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .activity-time i {
+      color: var(--accent);
+    }
+
+    /* Collection logos */
+    .collection-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      overflow: hidden;
+    }
+
+    .collection-logo img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .activity-header-left {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .bottom-nav a.active {
+      color: var(--accent);
+    }
+
+    .bottom-nav a svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .bottom-nav a:hover:not(.active) {
+      color: rgba(160, 164, 184, 0.8);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .activity-card {
+      animation: fadeIn 0.3s ease-out forwards;
+      opacity: 0;
+    }
+
+    .activity-card:nth-child(1) { animation-delay: 0.1s; }
+    .activity-card:nth-child(2) { animation-delay: 0.2s; }
+    .activity-card:nth-child(3) { animation-delay: 0.3s; }
+    .activity-card:nth-child(4) { animation-delay: 0.4s; }
+    .activity-card:nth-child(5) { animation-delay: 0.5s; }
+    .activity-card:nth-child(6) { animation-delay: 0.6s; }
+    .activity-card:nth-child(7) { animation-delay: 0.7s; }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="logo-container">
+      <div class="logo-icon">
+        <i class="fas fa-bolt"></i>
+      </div>
+      <div class="page-title">Activity</div>
+    </div>
+  </div>
+
+  <!-- Filter System -->
+  <div class="filter-system">
+    <div class="filter-chip active" data-filter="all">All</div>
+    <div class="filter-chip" data-filter="notcoin">Notcoin</div>
+    <div class="filter-chip" data-filter="dogs">DOGS OG</div>
+    <div class="filter-chip" data-filter="blum">Blum</div>
+    <div class="filter-chip" data-filter="baby">Baby Shark</div>
+    <div class="filter-chip" data-filter="recent">Recent</div>
+    <div class="filter-chip" data-filter="oldest">Oldest</div>
+  </div>
+
+  <div class="activity-container">
+    <!-- Flags -->
+    <div class="activity-card" data-tags="notcoin" data-date="2025-06-23T05:42:00">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://notcoin.com/logo.png" alt="Flags">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">Flags</div>
+            <div class="collection-id">#1033</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">0.85</span>
+        </div>
+      </div>
+      <div class="collection-tag">Notcoin</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 05:42:00 UTC</span>
+      </div>
+    </div>
+
+    <!-- Doo Doo Moods -->
+    <div class="activity-card" data-tags="baby" data-date="2025-06-23T05:16:11">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://babyshark.com/logo.png" alt="Doo Doo Moods">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">Doo Doo Moods</div>
+            <div class="collection-id">#2017</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">1.20</span>
+        </div>
+      </div>
+      <div class="collection-tag">Baby Shark</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 05:16:11 UTC</span>
+      </div>
+    </div>
+
+    <!-- Emo Boy -->
+    <div class="activity-card" data-tags="dogs" data-date="2025-06-23T05:11:44">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://dogs.og/logo.png" alt="Emo Boy">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">Emo Boy</div>
+            <div class="collection-id">#5478</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">0.45</span>
+        </div>
+      </div>
+      <div class="collection-tag">DOGS OG</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 05:11:44 UTC</span>
+      </div>
+    </div>
+
+    <!-- Witch -->
+    <div class="activity-card" data-tags="dogs" data-date="2025-06-23T05:11:38">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://dogs.og/logo.png" alt="Witch">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">Witch</div>
+            <div class="collection-id">#3399</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">0.50</span>
+        </div>
+      </div>
+      <div class="collection-tag">DOGS OG</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 05:11:38 UTC</span>
+      </div>
+    </div>
+
+    <!-- General -->
+    <div class="activity-card" data-tags="blum" data-date="2025-06-23T04:44:09">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://blum.com/logo.png" alt="General">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">General</div>
+            <div class="collection-id">#1806</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">2.15</span>
+        </div>
+      </div>
+      <div class="collection-tag">Blum</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 04:44:09 UTC</span>
+      </div>
+    </div>
+
+    <!-- Not Memes 1 -->
+    <div class="activity-card" data-tags="notcoin" data-date="2025-06-23T04:40:01">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://notcoin.com/logo.png" alt="Not Memes">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">Not Memes</div>
+            <div class="collection-id">#1630</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">0.75</span>
+        </div>
+      </div>
+      <div class="collection-tag">Notcoin</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 04:40:01 UTC</span>
+      </div>
+    </div>
+
+    <!-- Not Memes 2 -->
+    <div class="activity-card" data-tags="notcoin" data-date="2025-06-23T04:38:29">
+      <div class="activity-header">
+        <div class="activity-header-left">
+          <div class="collection-logo">
+            <img src="https://notcoin.com/logo.png" alt="Not Memes">
+          </div>
+          <div class="collection-info">
+            <div class="collection-name">Not Memes</div>
+            <div class="collection-id">#1775</div>
+          </div>
+        </div>
+        <div class="ton-price">
+          <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON" class="ton-logo">
+          <span class="price-value">0.80</span>
+        </div>
+      </div>
+      <div class="collection-tag">Notcoin</div>
+      <div class="activity-time">
+        <i class="fas fa-clock"></i>
+        <span>2025-06-23 04:38:29 UTC</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="index.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Market</span>
+    </a>
+    <a href="profile.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+    <a href="activity.html" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+      </svg>
+      <span>Activity</span>
+    </a>
+  </nav>
+
+  <script>
+    // Telegram WebApp Initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        Telegram.WebApp.expand();
+        Telegram.WebApp.enableClosingConfirmation();
+      }
+
+      // Filter System Functionality
+      const filterChips = document.querySelectorAll('.filter-chip');
+      const activityCards = document.querySelectorAll('.activity-card');
+
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          // Remove active class from all chips
+          filterChips.forEach(c => c.classList.remove('active'));
+          // Add active class to clicked chip
+          this.classList.add('active');
+          
+          const filterValue = this.getAttribute('data-filter');
+          filterActivities(filterValue);
+        });
+      });
+
+      function filterActivities(filter) {
+        activityCards.forEach(card => {
+          const tags = card.getAttribute('data-tags');
+          const date = card.getAttribute('data-date');
+          const now = new Date();
+          const cardDate = new Date(date);
+          const timeDiff = now - cardDate;
+          const hoursDiff = timeDiff / (1000 * 60 * 60);
+          
+          let shouldShow = true;
+          
+          if (filter === 'all') {
+            shouldShow = true;
+          } 
+          else if (filter === 'recent') {
+            shouldShow = hoursDiff <= 24; // Last 24 hours
+          } 
+          else if (filter === 'oldest') {
+            shouldShow = hoursDiff > 24; // Older than 24 hours
+          }
+          else {
+            shouldShow = tags.includes(filter);
+          }
+          
+          card.style.display = shouldShow ? 'block' : 'none';
+        });
+      }
+
+      // Initialize with all activities shown
+      filterActivities('all');
+    });
+  </script>
+</body>
+</html>
