@@ -1,457 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFT Portfolio | TON Marketplace</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Keep all your existing head content -->
   <style>
-    :root {
-      --bg-start: #0e111a;
-      --bg-end: #1c1f2e;
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --accent: #55d0ff;
-      --text: #fff;
-      --muted: #a0a4b8;
-      --radius: 18px;
-      --border: rgba(255, 255, 255, 0.08);
-      --error: #ff6b6b;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
-      color: var(--text);
-      min-height: 100vh;
-      padding-bottom: 72px;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 20px;
-      background: rgba(22, 26, 34, 0.95);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .balance-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: relative;
-    }
-
-    .balance {
-      font-size: 15px;
-      font-weight: 600;
-      background: rgba(85, 208, 255, 0.1);
-      padding: 9px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(85, 208, 255, 0.2);
-      display: flex;
-      align-items: center;
-      transition: all 0.3s ease;
-    }
-
-    .ton-icon {
-      width: 18px;
-      height: 18px;
-      margin-right: 8px;
-    }
-
-    .balance-amount {
-      color: var(--accent);
-      font-weight: 700;
-      margin-right: 5px;
-      font-size: 16px;
-    }
-
-    .balance-currency {
-      font-size: 14px;
-      opacity: 0.9;
-      font-weight: 500;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .deposit-btn {
-      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
-      color: white;
-      padding: 9px 16px;
-      border-radius: 12px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.3s ease;
-      font-size: 14px;
-    }
-
-    .withdraw-btn {
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
-      padding: 9px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.3s ease;
-      font-size: 14px;
-    }
-
-    .deposit-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
-    .withdraw-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-1px);
-    }
-
-    .button-icon {
-      width: 15px;
-      height: 15px;
-    }
-
-    /* Deposit Overlay Styles */
-    .deposit-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(14, 17, 26, 0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .deposit-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .deposit-box {
-      background: rgba(22, 26, 34, 0.95);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      width: 90%;
-      max-width: 400px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .deposit-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .deposit-title {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      padding: 4px;
-    }
-
-    .deposit-instructions {
-      color: var(--muted);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    .address-container {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .wallet-address {
-      font-family: 'Menlo', monospace;
-      word-break: break-all;
-      padding-right: 40px;
-    }
-
-    .copy-btn {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      border-radius: 6px;
-      padding: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .copy-btn:hover {
-      background: var(--accent);
-    }
-
-    .confirm-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .confirm-btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Withdraw Overlay Styles */
-    .withdraw-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(14, 17, 26, 0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .withdraw-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .withdraw-box {
-      background: rgba(22, 26, 34, 0.95);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      width: 90%;
-      max-width: 400px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-
-    .withdraw-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .withdraw-title {
-      font-size: 20px;
-      font-weight: 700;
-    }
-
-    .withdraw-instructions {
-      color: var(--muted);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    /* Input Styles */
-    .input-group {
-      margin-bottom: 16px;
-    }
-
-    .input-label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 15px;
-      transition: all 0.2s ease;
-    }
-
-    .input-field:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-
-    .error-message {
-      color: var(--error);
-      font-size: 13px;
-      margin-top: 4px;
-      display: none;
-    }
-
-    /* Action Button Styles */
-    .action-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: 8px;
-    }
-
-    .action-btn:hover {
-      opacity: 0.9;
-    }
-
-    .action-btn:disabled {
-      background: var(--muted);
-      cursor: not-allowed;
-    }
-
-    /* Notification Styles */
-    .notification {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-
-    .notification.show {
-      opacity: 1;
-    }
-
-    .copy-notification {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-
-    .copy-notification.show {
-      opacity: 1;
-    }
-
-    /* Profile Card Styles */
-    .profile-card {
-      background: var(--glass-bg);
-      border-radius: var(--radius);
+    /* Add this new profile section style */
+    .profile-section {
       padding: 20px;
       margin: 16px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius);
       border: 1px solid var(--border);
       backdrop-filter: blur(16px);
     }
-
+    
     .profile-header {
       display: flex;
-      gap: 16px;
       align-items: center;
+      gap: 16px;
       margin-bottom: 20px;
     }
-
+    
     .avatar-container {
-      width: 80px;
-      height: 80px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
       overflow: hidden;
       border: 2px solid rgba(85, 208, 255, 0.3);
     }
-
+    
     .avatar-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
+    
     .profile-info {
       flex: 1;
     }
-
+    
     .profile-name {
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 4px;
       color: var(--text);
     }
-
-    .profile-handle {
+    
+    .profile-username {
       font-size: 14px;
       color: var(--muted);
     }
-
-    /* Stats Grid */
+    
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
-
+    
     .stat-card {
-      background: var(--glass-bg);
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 12px;
       padding: 16px;
-      border: 1px solid var(--border);
       text-align: center;
+      border: 1px solid var(--border);
     }
-
+    
     .stat-value {
       font-weight: 700;
       font-size: 18px;
@@ -461,259 +73,28 @@
       justify-content: center;
       gap: 6px;
     }
-
+    
     .stat-label {
       font-size: 12px;
       color: var(--muted);
     }
-
-    /* Navigation Tabs */
-    .nav-tabs {
-      display: flex;
-      margin: 0 20px 20px;
-      background: var(--glass-bg);
-      border-radius: 12px;
-      padding: 6px;
-      border: 1px solid var(--border);
-    }
-
-    .nav-tab {
-      flex: 1;
-      padding: 10px 0;
-      background: transparent;
-      border: none;
-      border-radius: 8px;
-      color: var(--muted);
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-size: 14px;
-    }
-
-    .nav-tab.active {
-      color: var(--text);
-      background: rgba(85, 208, 255, 0.15);
-    }
-
-    /* Tab Content */
-    .tab-panel {
-      padding: 0 20px;
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-    }
-
-    /* Empty States */
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .empty-icon {
-      width: 64px;
-      height: 64px;
-      margin-bottom: 16px;
-      color: var(--muted);
-    }
-
-    .empty-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      color: var(--text);
-    }
-
-    .empty-description {
-      font-size: 14px;
-      color: var(--muted);
-      max-width: 300px;
-      margin: 0 auto;
-    }
-
-    /* Instructions */
-    .instructions {
-      background: var(--glass-bg);
-      border-radius: 12px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      margin-top: 20px;
-    }
-
-    .instruction-step {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      align-items: flex-start;
-    }
-
-    .step-number {
-      background: rgba(85, 208, 255, 0.2);
-      color: var(--accent);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .step-text {
-      font-size: 14px;
-      color: var(--muted);
-      flex: 1;
-    }
-
-    .step-text b {
-      color: var(--accent);
-    }
-
-    /* Bottom Navigation */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: rgba(22, 26, 34, 0.95);
-      backdrop-filter: blur(12px);
-      padding: 12px 0;
-      border-top: 1px solid var(--border);
-      z-index: 1000;
-    }
-
-    .bottom-nav a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .bottom-nav a.active {
-      color: var(--accent);
-    }
-
-    .bottom-nav a svg {
-      width: 24px;
-      height: 24px;
-      stroke: currentColor;
-    }
-
-    .bottom-nav a:hover:not(.active) {
-      color: rgba(160, 164, 184, 0.8);
-    }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="balance-container">
-      <div class="balance">
-        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
-        <span class="balance-amount">0</span>
-        <span class="balance-currency">TON</span>
-      </div>
-    </div>
-    <div class="action-buttons">
-      <button class="deposit-btn" id="showDeposit">
-        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Deposit
-      </button>
-      <button class="withdraw-btn" id="showWithdraw">
-        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        Withdraw
-      </button>
-    </div>
-  </div>
+  <!-- Keep all your existing top bar and overlays -->
 
-  <!-- Deposit Overlay -->
-  <div class="deposit-overlay" id="depositOverlay">
-    <div class="deposit-box">
-      <div class="deposit-header">
-        <h2 class="deposit-title">Deposit</h2>
-        <button class="close-btn" id="closeDeposit">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      
-      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
-      
-      <div class="address-container">
-        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
-        <button class="copy-btn" id="copyBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
-      </div>
-      
-      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
-      
-      <button class="confirm-btn" id="confirmBtn">I sent</button>
-    </div>
-  </div>
-
-  <!-- Withdraw Overlay -->
-  <div class="withdraw-overlay" id="withdrawOverlay">
-    <div class="withdraw-box">
-      <div class="withdraw-header">
-        <h2 class="withdraw-title">Withdraw</h2>
-        <button class="close-btn" id="closeWithdraw">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
-      
-      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
-      
-      <div class="input-group">
-        <label class="input-label">Amount (TON)</label>
-        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
-        <div class="error-message" id="amountError">Insufficient balance</div>
-      </div>
-      
-      <div class="input-group">
-        <label class="input-label">Wallet Address</label>
-        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
-      </div>
-      
-      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
-    </div>
-  </div>
-
-  <div class="copy-notification" id="copyNotification">Address copied!</div>
-  <div class="notification" id="notification">Notification message</div>
-
-  <!-- Profile Card -->
-  <div class="profile-card">
+  <!-- Add this profile section -->
+  <div class="profile-section">
     <div class="profile-header">
       <div class="avatar-container">
-        <img class="avatar-image" id="userAvatar" src="" alt="Profile Photo">
+        <img class="avatar-image" id="userAvatar" alt="Profile">
       </div>
       <div class="profile-info">
         <div class="profile-name" id="userName">Loading...</div>
-        <div class="profile-handle" id="userUsername"></div>
+        <div class="profile-username" id="userUsername"></div>
       </div>
     </div>
+    
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-value">
@@ -732,252 +113,90 @@
     </div>
   </div>
 
-  <!-- Navigation Tabs -->
-  <div class="nav-tabs">
-    <button class="nav-tab" onclick="switchTab('pack')">Sticker Pack</button>
-    <button class="nav-tab active" onclick="switchTab('storage')">Storage</button>
-    <button class="nav-tab" onclick="switchTab('sale')">On Sale</button>
-  </div>
-
-  <!-- Sticker Pack Tab -->
-  <div class="tab-panel" id="tab-pack">
-    <div class="empty-state">
-      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"></rect>
-        <rect x="14" y="3" width="7" height="7"></rect>
-        <rect x="14" y="14" width="7" height="7"></rect>
-        <rect x="3" y="14" width="7" height="7"></rect>
-      </svg>
-      <div class="empty-title">No Sticker Packs</div>
-      <div class="empty-description">Create or purchase your first sticker pack to get started</div>
-    </div>
-  </div>
-
-  <!-- Storage Tab -->
-  <div class="tab-panel active" id="tab-storage">
-    <div class="empty-state">
-      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-      </svg>
-      <div class="empty-title">Empty Storage</div>
-      <div class="empty-description">Upload your first NFT to begin building your collection</div>
-    </div>
-    <div class="instructions">
-      <div class="instruction-step">
-        <div class="step-number">1</div>
-        <div class="step-text">Press <b>Start</b> to begin the process</div>
-      </div>
-      <div class="instruction-step">
-        <div class="step-number">2</div>
-        <div class="step-text">Send your sticker to <b>@palacerelayer</b> in <b>@sticker_bot</b></div>
-      </div>
-      <div class="instruction-step">
-        <div class="step-number">3</div>
-        <div class="step-text">Top up your wallet with <b>0.1 TON</b> to activate it</div>
-      </div>
-      <div class="instruction-step">
-        <div class="step-number">4</div>
-        <div class="step-text">Now you can list your sticker on the marketplace!</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- On Sale Tab -->
-  <div class="tab-panel" id="tab-sale">
-    <div class="empty-state">
-      <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="6" x2="12" y2="18"></line>
-        <line x1="6" y1="12" x2="18" y2="12"></line>
-      </svg>
-      <div class="empty-title">No Items Listed</div>
-      <div class="empty-description">List your NFTs to start trading on the marketplace</div>
-    </div>
-  </div>
-
-  <!-- Bottom Navigation -->
-  <nav class="bottom-nav">
-    <a href="/" class="active">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-      </svg>
-      <span>Market</span>
-    </a>
-    <a href="/profile.html">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-        <circle cx="12" cy="7" r="4"></circle>
-      </svg>
-      <span>Profile</span>
-    </a>
-    <a href="/activity.html">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-      <span>Activity</span>
-    </a>
-  </nav>
+  <!-- Keep the rest of your existing profile.html content -->
 
   <script>
-    // Tab Switching
-    function switchTab(tab) {
-      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
-      document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
-      document.getElementById(`tab-${tab}`).classList.add('active');
-    }
-
-    // Load Telegram User Data
-    document.addEventListener("DOMContentLoaded", () => {
-      if (window.Telegram && window.Telegram.WebApp) {
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        if (user) {
-          document.getElementById('userName').textContent = `${user.first_name} ${user.last_name || ''}`.trim();
-          document.getElementById('userUsername').textContent = user.username;
-          if (user.photo_url) {
-            document.getElementById('userAvatar').src = user.photo_url;
-          } else {
-            // Fallback avatar
-            const avatar = document.getElementById('userAvatar');
-            avatar.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="20" fill="%2355d0ff"/><circle cx="50" cy="90" r="30" fill="%2355d0ff"/></svg>';
-          }
+    // Load and display profile data
+    document.addEventListener('DOMContentLoaded', function() {
+      // Try to load from localStorage first
+      const storedUser = localStorage.getItem('tg_user');
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          displayProfile(userData);
+          console.log('Loaded profile from localStorage:', userData);
+        } catch (e) {
+          console.error('Error parsing user data:', e);
         }
       }
 
-      // Initialize deposit/withdraw functionality
-      initWalletFunctions();
+      // Check for fresh Telegram data
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tgUser = Telegram.WebApp.initDataUnsafe.user;
+        if (tgUser) {
+          const freshData = {
+            id: tgUser.id,
+            first_name: tgUser.first_name,
+            last_name: tgUser.last_name || '',
+            username: tgUser.username || '',
+            photo_url: tgUser.photo_url || ''
+          };
+          
+          // Update localStorage
+          localStorage.setItem('tg_user', JSON.stringify(freshData));
+          
+          // Update display
+          displayProfile(freshData);
+          console.log('Updated profile from Telegram:', freshData);
+        }
+      }
+
+      // Fallback if no data
+      if (!storedUser && (!window.Telegram || !Telegram.WebApp.initDataUnsafe.user)) {
+        displayProfile({
+          first_name: 'Anonymous',
+          last_name: 'User',
+          username: '',
+          photo_url: ''
+        });
+        console.log('Using fallback profile data');
+      }
     });
 
-    // Deposit/Withdraw Functionality
-    function initWalletFunctions() {
-      const depositOverlay = document.getElementById("depositOverlay");
-      const showDepositBtn = document.getElementById("showDeposit");
-      const closeDepositBtn = document.getElementById("closeDeposit");
-      const walletAddress = document.getElementById("walletAddress");
-      const copyBtn = document.getElementById("copyBtn");
-      const copyNotification = document.getElementById("copyNotification");
-      const confirmBtn = document.getElementById("confirmBtn");
-      const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
-
-      const withdrawOverlay = document.getElementById("withdrawOverlay");
-      const showWithdrawBtn = document.getElementById("showWithdraw");
-      const closeWithdrawBtn = document.getElementById("closeWithdraw");
-      const notification = document.getElementById("notification");
-      const withdrawAmount = document.getElementById("withdrawAmount");
-      const withdrawAddress = document.getElementById("withdrawAddress");
-      const amountError = document.getElementById("amountError");
-      const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
-
-      // Deposit overlay functionality
-      showDepositBtn.addEventListener("click", () => {
-        depositOverlay.classList.add("active");
-      });
-
-      closeDepositBtn.addEventListener("click", () => {
-        depositOverlay.classList.remove("active");
-      });
-
-      depositOverlay.addEventListener("click", (e) => {
-        if (e.target === depositOverlay) {
-          depositOverlay.classList.remove("active");
-        }
-      });
-
-      function copyToClipboard() {
-        navigator.clipboard.writeText(fullAddress).then(() => {
-          copyNotification.classList.add("show");
-          setTimeout(() => {
-            copyNotification.classList.remove("show");
-          }, 2000);
-        });
+    function displayProfile(user) {
+      const nameEl = document.getElementById('userName');
+      const usernameEl = document.getElementById('userUsername');
+      const avatarEl = document.getElementById('userAvatar');
+      
+      // Set name
+      if (user.first_name) {
+        nameEl.textContent = `${user.first_name} ${user.last_name || ''}`.trim();
       }
-
-      walletAddress.addEventListener("click", copyToClipboard);
-      copyBtn.addEventListener("click", copyToClipboard);
-
-      confirmBtn.addEventListener("click", () => {
-        depositOverlay.classList.remove("active");
-        showNotification("Deposit request received. Processing...");
-      });
-
-      // Withdraw overlay functionality
-      showWithdrawBtn.addEventListener("click", () => {
-        withdrawOverlay.classList.add("active");
-      });
-
-      closeWithdrawBtn.addEventListener("click", () => {
-        withdrawOverlay.classList.remove("active");
-        resetWithdrawForm();
-      });
-
-      withdrawOverlay.addEventListener("click", (e) => {
-        if (e.target === withdrawOverlay) {
-          withdrawOverlay.classList.remove("active");
-          resetWithdrawForm();
-        }
-      });
-
-      withdrawAmount.addEventListener("input", validateWithdrawForm);
-      withdrawAddress.addEventListener("input", validateWithdrawForm);
-
-      confirmWithdrawBtn.addEventListener("click", () => {
-        const amount = parseFloat(withdrawAmount.value);
-        const address = withdrawAddress.value.trim();
-        
-        if (!isValidTONAddress(address)) {
-          showNotification("Invalid TON wallet address");
-          return;
-        }
-        
-        withdrawOverlay.classList.remove("active");
-        showNotification(`Withdrawing ${amount} TON to ${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
-        resetWithdrawForm();
-      });
-
-      function validateWithdrawForm() {
-        const amount = parseFloat(withdrawAmount.value);
-        const address = withdrawAddress.value.trim();
-        
-        let isValid = true;
-        
-        // Validate amount
-        if (isNaN(amount) || amount <= 0) {
-          isValid = false;
-        } else if (amount > 1000) { // Assuming 1000 is the current balance
-          amountError.style.display = "block";
-          isValid = false;
-        } else {
-          amountError.style.display = "none";
-        }
-        
-        // Validate address (simple check)
-        if (address.length < 10 || !address.startsWith("UQ") && !address.startsWith("EQ")) {
-          isValid = false;
-        }
-        
-        confirmWithdrawBtn.disabled = !isValid;
+      
+      // Set username
+      if (user.username) {
+        usernameEl.textContent = `@${user.username}`;
+        usernameEl.style.display = 'block';
+      } else {
+        usernameEl.style.display = 'none';
       }
-
-      function resetWithdrawForm() {
-        withdrawAmount.value = "";
-        withdrawAddress.value = "";
-        amountError.style.display = "none";
-        confirmWithdrawBtn.disabled = true;
-      }
-
-      function isValidTONAddress(address) {
-        // Simple validation - in a real app you'd want more robust validation
-        return address.length >= 10 && (address.startsWith("UQ") || address.startsWith("EQ"));
-      }
-
-      function showNotification(message) {
-        notification.textContent = message;
-        notification.classList.add("show");
-        setTimeout(() => {
-          notification.classList.remove("show");
-        }, 3000);
+      
+      // Set avatar
+      if (user.photo_url) {
+        avatarEl.src = user.photo_url;
+        avatarEl.onerror = function() {
+          setFallbackAvatar(avatarEl);
+        };
+      } else {
+        setFallbackAvatar(avatarEl);
       }
     }
+
+    function setFallbackAvatar(el) {
+      el.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="40" r="20" fill="%2355d0ff"/><circle cx="50" cy="90" r="30" fill="%2355d0ff"/></svg>';
+    }
+
+    // Your existing wallet and other functions...
   </script>
 </body>
 </html>
