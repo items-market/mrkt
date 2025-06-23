@@ -3,374 +3,224 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sticker Collections</title>
+  <title>IGLOO Market</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Professional loader styles */
+    /* Loader styles */
+    :root {
+      --primary-color: #00a8ff;
+      --secondary-color: #00f2fe;
+      --text-color: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.7);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+    
     .loader-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      background: linear-gradient(135deg, #0a0a0a 0%, #000000 100%);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       z-index: 9999;
-      transition: opacity 0.6s cubic-bezier(0.65, 0, 0.35, 1), visibility 0.6s linear;
-      overflow: hidden;
-    }
-    
-    .loader-overlay::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(85, 208, 255, 0.1) 0%, rgba(85, 208, 255, 0) 70%);
-      animation: pulseBackground 8s infinite alternate;
-    }
-    
-    .loader-overlay.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      color: var(--text-color);
+      transition: opacity 0.8s ease-out;
     }
     
     .loader-container {
-      position: relative;
-      width: 140px;
-      height: 140px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      perspective: 1000px;
+      text-align: center;
+      max-width: 300px;
+      padding: 0 20px;
     }
     
-    .loader-image {
-      width: 72px;
-      height: 72px;
-      object-fit: contain;
-      animation: float 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 8px rgba(85, 208, 255, 0.4));
-      z-index: 2;
+    .logo-container {
+      margin-bottom: 30px;
+      position: relative;
     }
     
-    .loader-ring {
+    .logo {
+      width: 120px;
+      height: auto;
+      filter: drop-shadow(0 0 10px rgba(0, 168, 255, 0.5));
+    }
+    
+    .loader-text {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .loader-subtext {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    
+    .progress-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 30px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    
+    .particles {
       position: absolute;
-      border: 2px solid transparent;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(0, 168, 255, 0.5);
       border-radius: 50%;
       pointer-events: none;
-    }
-    
-    .loader-ring-1 {
-      width: 100%;
-      height: 100%;
-      border-top-color: var(--accent);
-      border-right-color: var(--accent);
-      animation: spin 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-      box-shadow: 0 0 10px rgba(85, 208, 255, 0.2);
-    }
-    
-    .loader-ring-2 {
-      width: 85%;
-      height: 85%;
-      border-left-color: rgba(85, 208, 255, 0.7);
-      border-bottom-color: rgba(85, 208, 255, 0.7);
-      animation: spinReverse 3s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-    }
-    
-    .loader-ring-3 {
-      width: 70%;
-      height: 70%;
-      border-right-color: rgba(85, 208, 255, 0.4);
-      border-top-color: rgba(85, 208, 255, 0.4);
-      animation: spin 3.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-    }
-    
-    .loader-dots {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      animation: spin 4s linear infinite;
-    }
-    
-    .loader-dot {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-      top: 6px;
-      left: calc(50% - 4px);
-      transform-origin: 0 64px;
-      box-shadow: 0 0 6px rgba(85, 208, 255, 0.6);
-    }
-    
-    .loader-dot:nth-child(2) {
-      transform: rotate(45deg);
-      opacity: 0.8;
-    }
-    
-    .loader-dot:nth-child(3) {
-      transform: rotate(90deg);
-      opacity: 0.6;
-    }
-    
-    .loader-dot:nth-child(4) {
-      transform: rotate(135deg);
-      opacity: 0.4;
-    }
-    
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-    
-    @keyframes spinReverse {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(-360deg);
-      }
     }
     
     @keyframes float {
       0%, 100% {
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
       }
       50% {
-        transform: translateY(-12px) scale(1.05);
+        transform: translateY(-20px);
       }
     }
     
-    @keyframes pulseBackground {
-      0% {
-        transform: translate(0, 0);
-      }
-      25% {
-        transform: translate(10%, 10%);
-      }
-      50% {
-        transform: translate(0, 20%);
-      }
-      75% {
-        transform: translate(-10%, 10%);
-      }
-      100% {
-        transform: translate(0, 0);
-      }
+    .logo-container {
+      animation: float 3s ease-in-out infinite;
     }
     
-    .loader-text {
-      margin-top: 28px;
-      font-size: 16px;
-      font-weight: 500;
-      color: var(--muted);
-      position: relative;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+    .security-badge {
+      margin-top: 25px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     
-    .loader-text::after {
-      content: '...';
-      display: inline-block;
-      width: 24px;
-      text-align: left;
-      animation: ellipsis 1.5s infinite steps(4);
+    .security-badge::before {
+      content: "✓";
+      color: #00ff88;
+      font-weight: bold;
     }
-    
-    @keyframes ellipsis {
-      0% { content: '.'; }
-      33% { content: '..'; }
-      66% { content: '...'; }
-    }
-    
-    .progress-bar {
-      width: 180px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      margin-top: 20px;
-      overflow: hidden;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--accent);
-      border-radius: 2px;
-      transition: width 0.4s ease-out;
-      box-shadow: 0 0 8px rgba(85, 208, 255, 0.4);
-    }
-
-    /* Rest of your existing styles... */
-    :root {
-      --bg-start: #0e111a;
-      --bg-end: #1c1f2e;
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --accent: #55d0ff;
-      --text: #fff;
-      --muted: #a0a4b8;
-      --radius: 18px;
-      --border: rgba(255, 255, 255, 0.08);
-      --error: #ff6b6b;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
-      color: var(--text);
-      min-height: 100vh;
-      padding-bottom: 72px;
-    }
-
-    /* ... rest of your existing CSS ... */
   </style>
 </head>
 <body>
-  <!-- Professional loader overlay -->
   <div class="loader-overlay" id="loaderOverlay">
+    <div class="particles" id="particles"></div>
     <div class="loader-container">
-      <div class="loader-ring loader-ring-1"></div>
-      <div class="loader-ring loader-ring-2"></div>
-      <div class="loader-ring loader-ring-3"></div>
-      <div class="loader-dots">
-        <div class="loader-dot"></div>
-        <div class="loader-dot"></div>
-        <div class="loader-dot"></div>
-        <div class="loader-dot"></div>
+      <div class="logo-container">
+        <img src="https://i.imgur.com/iqfmvdT.png" alt="IGLOO Market" class="logo">
       </div>
-      <img src="https://i.imgur.com/iqfmvdT.png" class="loader-image" alt="Loader Image">
-    </div>
-    <div class="loader-text">Loading</div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
+      <div class="loader-text">Secure Authentication</div>
+      <div class="loader-subtext">Establishing encrypted connection to IGLOO Market servers...</div>
+      
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      
+      <div class="security-badge">Connection secured with end-to-end encryption</div>
     </div>
   </div>
-
-  <!-- Your existing HTML content -->
-  <div class="top-bar">
-    <!-- ... rest of your HTML ... -->
-  </div>
-
-  <!-- ... rest of your HTML ... -->
 
   <script>
-    // Professional loader functionality
     document.addEventListener('DOMContentLoaded', function() {
       const loaderOverlay = document.getElementById('loaderOverlay');
-      const progressFill = document.getElementById('progressFill');
+      const progressBar = document.getElementById('progressBar');
+      const particlesContainer = document.getElementById('particles');
       
-      // First make sure the loader image is loaded
-      const loaderImg = document.querySelector('.loader-image');
+      // Create particles
+      function createParticles() {
+        const particleCount = 30;
+        for (let i = 0; i < particleCount; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('particle');
+          
+          const size = Math.random() * 5 + 1;
+          const posX = Math.random() * window.innerWidth;
+          const posY = Math.random() * window.innerHeight;
+          const opacity = Math.random() * 0.5 + 0.1;
+          const animationDuration = Math.random() * 20 + 10;
+          
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.left = `${posX}px`;
+          particle.style.top = `${posY}px`;
+          particle.style.opacity = opacity;
+          particle.style.animation = `float ${animationDuration}s ease-in-out infinite`;
+          particle.style.animationDelay = `${Math.random() * 5}s`;
+          
+          particlesContainer.appendChild(particle);
+        }
+      }
       
-      // Simulate progress (in a real app, you'd tie this to actual loading events)
+      // Simulate loading process with progress bar
       let progress = 0;
-      const progressInterval = setInterval(() => {
+      const interval = setInterval(() => {
         progress += Math.random() * 10;
         if (progress > 100) progress = 100;
-        progressFill.style.width = `${progress}%`;
+        progressBar.style.width = `${progress}%`;
         
-        if (progress >= 100) {
-          clearInterval(progressInterval);
-          // Hide loader when everything is ready
-          loaderOverlay.classList.add('hidden');
-          
-          // Remove loader from DOM after animation completes
+        if (progress === 100) {
+          clearInterval(interval);
+          loaderOverlay.style.opacity = '0';
           setTimeout(() => {
-            loaderOverlay.remove();
-          }, 600);
+            loaderOverlay.style.display = 'none';
+            // Your content would load here
+          }, 800);
         }
-      }, 200);
+      }, 300);
       
-      loaderImg.onload = function() {
-        // Image is loaded, but we'll let the progress bar complete
-      };
+      createParticles();
       
-      // Fallback in case image is cached
-      if (loaderImg.complete) {
-        loaderImg.onload();
+      // Responsive adjustments
+      function handleResize() {
+        particlesContainer.innerHTML = '';
+        createParticles();
       }
       
-      // Initialize Telegram WebApp (your existing code)
-      if (window.Telegram && window.Telegram.WebApp) {
-        Telegram.WebApp.expand();
-        Telegram.WebApp.enableClosingConfirmation();
-        
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        if (user) {
-          const userData = {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name || '',
-            username: user.username || '',
-            photo_url: user.photo_url || ''
-          };
-          localStorage.setItem('tg_user', JSON.stringify(userData));
-        }
-      }
-      
-      // Render collections after loader is hidden
-      loaderOverlay.addEventListener('transitionend', function() {
-        if (loaderOverlay.classList.contains('hidden')) {
-          renderCollections();
-        }
-      });
+      window.addEventListener('resize', handleResize);
     });
-
-    // Your existing collection grid code
-    function renderCollections(filter = "") {
-      const collections = [
-        { name: "Void", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", comingSoon: false },
-        { name: "Notcoin", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", comingSoon: false },
-        { name: "Not Pixel", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", comingSoon: false },
-        { name: "Lost Dogs", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", comingSoon: true },
-        { name: "Glance", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", comingSoon: true },
-        { name: "Disk Trickster", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", comingSoon: true },
-        { name: "Hitoku", img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", comingSoon: true },
-      ];
-      
-      const grid = document.getElementById("nftGrid");
-      grid.innerHTML = "";
-      
-      collections
-        .filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(c => {
-          const card = document.createElement("div");
-          card.className = "collection-card";
-          card.innerHTML = `
-            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}" ${c.comingSoon ? 'onclick="return false;"' : ''}>
-              <div style="position: relative;">
-                <img src="${c.img}" alt="${c.name}" />
-                ${c.comingSoon ? '<div class="coming-soon-overlay">Coming Soon</div>' : ''}
-              </div>
-              <p>${c.name}</p>
-            </a>`;
-          grid.appendChild(card);
-        });
-    }
-    
-    function getPageLink(name) {
-      const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
-      return `${firstWord}.html`;
-    }
-
-    // ... rest of your existing JavaScript functions ...
   </script>
 </body>
 </html>
