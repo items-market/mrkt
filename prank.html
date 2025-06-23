@@ -1,118 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
+    
+    <script
+      src="https://telegram.org/js/telegram-web-app.js"
+      onload="window.Telegram.WebApp.expand(); window.Telegram.WebApp.colorScheme === 'dark' ? window.Telegram.WebApp.setHeaderColor('#1C1C1E') : window.Telegram.WebApp.setHeaderColor('#FFFFFF'); window.Telegram.WebApp.colorScheme === 'dark' ? window.Telegram.WebApp.setBackgroundColor('#1C1C1E') : window.Telegram.WebApp.setBackgroundColor('#ffffff');"
+    ></script>
+    
+
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <meta name="theme-color" content="#3B82F6" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="NFT Marketplace" />
-    
-    <!-- Telegram Mini App meta tags -->
-    <meta name="telegram-web-app" content="enabled" />
-    
-    <!-- Preconnect to external domains for better performance -->
-    <link rel="preconnect" href="https://images.pexels.com" />
-    
-    <title>NFT Marketplace - Telegram Mini App</title>
-    
-    <!-- Telegram Web App script -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Yandex.Metrika counter -->
-    <!-- В head оставь только <script> -->
-    <script type="text/javascript">
-      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-      m[i].l=1*new Date();
-      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-      ym(102760091, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true,
-            webvisor:true
-      });
-    </script>
-    <!-- /Yandex.Metrika counter -->
-
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://t.me/sticker_bot" />
+    <meta property="og:site_name" content="Telegram Sticker Bot" />
+    <meta property="og:title" content="Telegram Sticker Bot" />
+    <meta property="og:description" content="Telegram Sticker Bot" />
+    <meta property="og:locale" content="en_US" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
+    />
+    <title>Telegram Sticker Bot</title>
     <style>
-      /* Prevent flash of unstyled content */
-      body {
-        background-color: #f9fafb;
-        margin: 0;
+      body,
+      html {
+        background-color: #000;
+        height: 100vh;
+        /* height: 100%; */
         padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-      }
-      
-      /* Loading animation */
-      .initial-loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(135deg, #3B82F6, #1E40AF);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-      }
-      
-      .loader-spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(255, 255, 255, 0.3);
-        border-radius: 50%;
-        border-top-color: white;
-        animation: spin 1s ease-in-out infinite;
-      }
-      
-      @keyframes spin {
-        to { transform: rotate(360deg); }
+        margin: 0;
+        -ms-scroll-chaining: none;
+        overscroll-behavior: none;
+        touch-action: none;
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-DEQvT9Cy.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CdMIZUGa.css">
+    <script
+      defer
+      data-domain="stickerdom.store"
+      src="https://plausible.joincommunity.xyz/js/script.js"
+    ></script>
+    <script type="module" crossorigin src="/assets/index-8831971d.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/vendor-40eba135.js">
+    <link rel="stylesheet" href="/assets/index-36e1efad.css">
   </head>
-  <body>
-    <div id="root">
-      <div class="initial-loader">
-        <div class="loader-spinner"></div>
-      </div>
-    </div>
+  <body data-mode="light">
+    <div id="root"></div>
     
     <script>
-      // Initialize Telegram Web App
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-        
-        // Set header color to match the app theme
-        window.Telegram.WebApp.setHeaderColor('#3B82F6');
-        
-        // Enable closing confirmation
-        window.Telegram.WebApp.enableClosingConfirmation();
+      const urlParams = new URLSearchParams(window.location.search)
+      const themeParam = urlParams.get('theme')
+
+      const themeStorage = localStorage.getItem('theme')
+
+      const theme = themeParam || themeStorage
+
+      if (theme) {
+        localStorage.setItem('theme', theme)
+        document.body.setAttribute('data-mode', theme)
+      } else {
+        window.Telegram.WebApp.colorScheme === 'dark'
+          ? document.body.setAttribute('data-mode', 'dark')
+          : null
       }
-      
-      // Remove initial loader when React app loads
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          const loader = document.querySelector('.initial-loader');
-          if (loader) {
-            loader.style.opacity = '0';
-            loader.style.transition = 'opacity 0.3s ease-out';
-            setTimeout(() => loader.remove(), 300);
-          }
-        }, 500);
-      });
     </script>
-    <noscript>
-      <div>
-        <img src="https://mc.yandex.ru/watch/102760091" style="position:absolute; left:-9999px;" alt="" />
-      </div>
-    </noscript>
   </body>
 </html>
