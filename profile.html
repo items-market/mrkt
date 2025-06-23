@@ -30,6 +30,7 @@
       --transition-fast: all 0.15s ease-out;
       --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       --transition-slow: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      --error: #ff6b6b;
     }
 
     * {
@@ -88,8 +89,13 @@
       font-feature-settings: 'tnum' on, 'lnum' on;
     }
 
-    .action-button {
-      background: var(--accent-primary);
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .deposit-btn {
+      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
       color: white;
       padding: 10px 16px;
       border-radius: var(--radius-md);
@@ -102,34 +108,293 @@
       transition: var(--transition-normal);
       font-size: 14px;
       box-shadow: 0 2px 12px rgba(85, 208, 255, 0.2);
-      position: relative;
-      overflow: hidden;
     }
 
-    .action-button::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(
-        to bottom right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      transform: translateY(100%);
-      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    .withdraw-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-normal);
+      font-size: 14px;
     }
 
-    .action-button:hover {
+    .deposit-btn:hover {
+      opacity: 0.9;
       transform: translateY(-1px);
       box-shadow: 0 4px 16px rgba(85, 208, 255, 0.3);
     }
 
-    .action-button:hover::after {
-      transform: translateY(0);
+    .withdraw-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .button-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Deposit Overlay Styles */
+    .deposit-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .deposit-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .deposit-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-light);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .deposit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .deposit-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .deposit-instructions {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .address-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-light);
+      position: relative;
+    }
+
+    .wallet-address {
+      font-family: 'Menlo', monospace;
+      word-break: break-all;
+      padding-right: 40px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-primary);
+    }
+
+    .confirm-btn {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Withdraw Overlay Styles */
+    .withdraw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .withdraw-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .withdraw-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-light);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .withdraw-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .withdraw-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .withdraw-instructions {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    /* Input Styles */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-primary);
+      outline: none;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Action Button Styles */
+    .action-btn {
+      background: var(--accent-primary);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .action-btn:disabled {
+      background: var(--text-tertiary);
+      cursor: not-allowed;
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-primary);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .copy-notification.show {
+      opacity: 1;
     }
 
     /* Profile Card - Premium Design */
@@ -468,158 +733,6 @@
       filter: drop-shadow(0 0 4px rgba(85, 208, 255, 0.4));
     }
 
-    /* Modal - Premium Design */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(16px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease-out;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .modal-container {
-      background: var(--surface-1);
-      border-radius: var(--radius-xl);
-      padding: 28px;
-      width: 90%;
-      max-width: 420px;
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-lg);
-      transform: translateY(20px);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .modal-overlay.active .modal-container {
-      transform: translateY(0);
-    }
-
-    .modal-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        var(--accent-primary),
-        transparent
-      );
-    }
-
-    .modal-header {
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .modal-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .modal-subtitle {
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-
-    .modal-input {
-      width: 100%;
-      padding: 14px 16px;
-      background: var(--surface-3);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
-      color: var(--text-primary);
-      font-size: 16px;
-      margin-bottom: 24px;
-      transition: var(--transition-fast);
-    }
-
-    .modal-input:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 2px rgba(85, 208, 255, 0.2);
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .modal-btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition-normal);
-      font-size: 15px;
-    }
-
-    .modal-btn-primary {
-      background: var(--accent-primary);
-      color: white;
-      border: none;
-      box-shadow: 0 2px 12px rgba(85, 208, 255, 0.3);
-    }
-
-    .modal-btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(85, 208, 255, 0.4);
-    }
-
-    .modal-btn-secondary {
-      background: var(--surface-3);
-      color: var(--text-primary);
-      border: 1px solid var(--border-light);
-    }
-
-    .modal-btn-secondary:hover {
-      background: var(--surface-2);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: var(--surface-3);
-      border: none;
-      cursor: pointer;
-      transition: var(--transition-fast);
-    }
-
-    .modal-close:hover {
-      background: var(--surface-2);
-      transform: rotate(90deg);
-    }
-
-    .close-icon {
-      width: 18px;
-      height: 18px;
-      stroke: var(--text-secondary);
-    }
-
     /* Responsive Design */
     @media (max-width: 480px) {
       .profile-card {
@@ -659,14 +772,86 @@
       <span class="balance-amount">0</span>
       <span>TON</span>
     </div>
-    <button class="action-button" onclick="toggleModal('depositModal', true)">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-      Deposit
-    </button>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
+    </div>
   </div>
+
+  <!-- Deposit Overlay -->
+  <div class="deposit-overlay" id="depositOverlay">
+    <div class="deposit-box">
+      <div class="deposit-header">
+        <h2 class="deposit-title">Deposit</h2>
+        <button class="close-btn" id="closeDeposit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
+      
+      <div class="address-container">
+        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
+      
+      <button class="confirm-btn" id="confirmBtn">I sent</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
+        <div class="error-message" id="amountError">Insufficient balance</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copyNotification">Address copied!</div>
+  <div class="notification" id="notification">Notification message</div>
 
   <!-- Profile Card -->
   <div class="profile-card">
@@ -785,27 +970,6 @@
     </a>
   </nav>
 
-  <!-- Deposit Modal -->
-  <div class="modal-overlay" id="depositModal">
-    <div class="modal-container">
-      <button class="modal-close" onclick="toggleModal('depositModal', false)">
-        <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-      <div class="modal-header">
-        <h2 class="modal-title">Deposit TON</h2>
-        <p class="modal-subtitle">Enter the amount you want to deposit</p>
-      </div>
-      <input type="number" class="modal-input" id="tonAmount" placeholder="0.00" step="0.01" min="0" />
-      <div class="modal-actions">
-        <button class="modal-btn modal-btn-secondary" onclick="toggleModal('depositModal', false)">Cancel</button>
-        <button class="modal-btn modal-btn-primary" onclick="submitDeposit()">Confirm</button>
-      </div>
-    </div>
-  </div>
-
   <script>
     // Tab Switching
     function switchTab(tab) {
@@ -813,29 +977,6 @@
       document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
       document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
       document.getElementById(`tab-${tab}`).classList.remove('hidden');
-    }
-
-    // Modal Toggle
-    function toggleModal(id, show) {
-      document.getElementById(id).classList.toggle("active", show);
-      if (show) {
-        document.getElementById('tonAmount').focus();
-      }
-    }
-
-    // Deposit Function
-    function submitDeposit() {
-      const TON_ADDRESS = "UQAnasqvWONrKkRrxKOoXiKWLQaRy5eY1Nq93L41zw6-nJPw";
-      const MESSAGE_ID = "fb72628f0425";
-      const tonAmount = parseFloat(document.getElementById("tonAmount").value);
-      
-      if (isNaN(tonAmount) || tonAmount <= 0) {
-        alert("Please enter a valid TON amount");
-        return;
-      }
-      
-      const nanoTON = BigInt(Math.floor(tonAmount * 1e9));
-      window.location.href = `ton://transfer/${TON_ADDRESS}?amount=${nanoTON}&text=${MESSAGE_ID}`;
     }
 
     // Load Telegram User Data
@@ -856,14 +997,141 @@
           }
         }
       }
+
+      // Initialize deposit/withdraw functionality
+      initWalletFunctions();
     });
 
-    // Close modal when clicking outside
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal-overlay')) {
-        toggleModal('depositModal', false);
+    // Deposit/Withdraw Functionality
+    function initWalletFunctions() {
+      const depositOverlay = document.getElementById("depositOverlay");
+      const showDepositBtn = document.getElementById("showDeposit");
+      const closeDepositBtn = document.getElementById("closeDeposit");
+      const walletAddress = document.getElementById("walletAddress");
+      const copyBtn = document.getElementById("copyBtn");
+      const copyNotification = document.getElementById("copyNotification");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
+
+      const withdrawOverlay = document.getElementById("withdrawOverlay");
+      const showWithdrawBtn = document.getElementById("showWithdraw");
+      const closeWithdrawBtn = document.getElementById("closeWithdraw");
+      const notification = document.getElementById("notification");
+      const withdrawAmount = document.getElementById("withdrawAmount");
+      const withdrawAddress = document.getElementById("withdrawAddress");
+      const amountError = document.getElementById("amountError");
+      const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
+
+      // Deposit overlay functionality
+      showDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.add("active");
+      });
+
+      closeDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+      });
+
+      depositOverlay.addEventListener("click", (e) => {
+        if (e.target === depositOverlay) {
+          depositOverlay.classList.remove("active");
+        }
+      });
+
+      function copyToClipboard() {
+        navigator.clipboard.writeText(fullAddress).then(() => {
+          copyNotification.classList.add("show");
+          setTimeout(() => {
+            copyNotification.classList.remove("show");
+          }, 2000);
+        });
       }
-    });
+
+      walletAddress.addEventListener("click", copyToClipboard);
+      copyBtn.addEventListener("click", copyToClipboard);
+
+      confirmBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+        showNotification("Deposit request received. Processing...");
+      });
+
+      // Withdraw overlay functionality
+      showWithdrawBtn.addEventListener("click", () => {
+        withdrawOverlay.classList.add("active");
+      });
+
+      closeWithdrawBtn.addEventListener("click", () => {
+        withdrawOverlay.classList.remove("active");
+        resetWithdrawForm();
+      });
+
+      withdrawOverlay.addEventListener("click", (e) => {
+        if (e.target === withdrawOverlay) {
+          withdrawOverlay.classList.remove("active");
+          resetWithdrawForm();
+        }
+      });
+
+      withdrawAmount.addEventListener("input", validateWithdrawForm);
+      withdrawAddress.addEventListener("input", validateWithdrawForm);
+
+      confirmWithdrawBtn.addEventListener("click", () => {
+        const amount = parseFloat(withdrawAmount.value);
+        const address = withdrawAddress.value.trim();
+        
+        if (!isValidTONAddress(address)) {
+          showNotification("Invalid TON wallet address");
+          return;
+        }
+        
+        withdrawOverlay.classList.remove("active");
+        showNotification(`Withdrawing ${amount} TON to ${address.substring(0, 6)}...${address.substring(address.length - 4)}`);
+        resetWithdrawForm();
+      });
+
+      function validateWithdrawForm() {
+        const amount = parseFloat(withdrawAmount.value);
+        const address = withdrawAddress.value.trim();
+        
+        let isValid = true;
+        
+        // Validate amount
+        if (isNaN(amount) || amount <= 0) {
+          isValid = false;
+        } else if (amount > 1000) { // Assuming 1000 is the current balance
+          amountError.style.display = "block";
+          isValid = false;
+        } else {
+          amountError.style.display = "none";
+        }
+        
+        // Validate address (simple check)
+        if (address.length < 10 || !address.startsWith("UQ") && !address.startsWith("EQ")) {
+          isValid = false;
+        }
+        
+        confirmWithdrawBtn.disabled = !isValid;
+      }
+
+      function resetWithdrawForm() {
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
+        amountError.style.display = "none";
+        confirmWithdrawBtn.disabled = true;
+      }
+
+      function isValidTONAddress(address) {
+        // Simple validation - in a real app you'd want more robust validation
+        return address.length >= 10 && (address.startsWith("UQ") || address.startsWith("EQ"));
+      }
+
+      function showNotification(message) {
+        notification.textContent = message;
+        notification.classList.add("show");
+        setTimeout(() => {
+          notification.classList.remove("show");
+        }, 3000);
+      }
+    }
   </script>
 
 </body>
