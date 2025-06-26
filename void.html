@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Premium Pengu NFT Collection on TON Blockchain">
+  <title>Pengu Collection | Premium NFT Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-bg-light: rgba(255, 255, 255, 0.08);
+      --accent: #55d0ff;
+      --accent-dark: #3aa8d8;
+      --text: rgba(255, 255, 255, 0.95);
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --muted: #a0a4b8;
+      --radius: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --nav-height: 70px;
+      
+      /* Rarity Colors */
+      --common: #7a7e89;
+      --rare: #3a7bd5;
+      --epic: #8a2be2;
+      --legendary: linear-gradient(135deg, #f5d742, #f5a742);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    .container {
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    .filter-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .sort-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      min-width: 120px;
+      justify-content: center;
+    }
+
+    .sort-btn:hover {
+      background: var(--glass-bg-light);
+      border-color: var(--accent);
+    }
+
+    .sort-btn.active {
+      background: rgba(85, 208, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .advanced-filters {
+      display: none;
+      background: rgba(22, 26, 34, 0.95);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-top: 1rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .advanced-filters.show {
+      display: block;
+    }
+
+    .filter-group {
+      margin-bottom: 1rem;
+    }
+
+    .filter-group h4 {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .filter-option {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-option:hover {
+      background: var(--glass-bg-light);
+      border-color: var(--accent);
+    }
+
+    .filter-option.active {
+      background: rgba(85, 208, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      padding-bottom: calc(var(--nav-height) + 1.5rem);
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: var(--transition);
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .card-image-container {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+
+    .card:hover .card-image {
+      transform: scale(1.03);
+    }
+
+    .card-content {
+      width: 100%;
+      text-align: left;
+    }
+
+    .card-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .price-container {
+      display: flex;
+      width: 100%;
+    }
+
+    .price-ton {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(85, 208, 255, 0.15);
+      padding: 0.4rem 0.8rem;
+      border-radius: 99px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .ton-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Premium Rarity Labels - Enhanced */
+    .rarity-label {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-weight: 700;
+      font-size: 0.65rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 99px;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Inter', sans-serif;
+      border: 1px solid transparent;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .rarity-common {
+      background: linear-gradient(135deg, rgba(122, 126, 137, 0.9), rgba(90, 94, 105, 0.9));
+      color: white;
+      border-color: rgba(255,255,255,0.15);
+      font-weight: 600;
+    }
+
+    .rarity-rare {
+      background: linear-gradient(135deg, rgba(58, 123, 213, 0.9), rgba(42, 98, 180, 0.9));
+      color: white;
+      border: 1px solid rgba(120, 180, 255, 0.4);
+    }
+
+    .rarity-epic {
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.9), rgba(106, 29, 176, 0.9));
+      color: white;
+      border: 1px solid rgba(200, 160, 255, 0.4);
+    }
+
+    .rarity-legendary {
+      background: linear-gradient(135deg, rgba(245, 215, 66, 0.9), rgba(245, 167, 66, 0.9));
+      color: #2a2a2a;
+      font-weight: 800;
+      border: 1px solid rgba(255, 225, 120, 0.6);
+    }
+
+    /* Card Border Accents */
+    .card[data-rarity="rare"] {
+      border: 1px solid rgba(58, 123, 213, 0.3);
+    }
+
+    .card[data-rarity="epic"] {
+      border: 1px solid rgba(138, 43, 226, 0.3);
+    }
+
+    .card[data-rarity="legendary"] {
+      border: 1px solid rgba(245, 215, 66, 0.4);
+    }
+
+    /* Card Hover Effects */
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent);
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid var(--border);
+      height: var(--nav-height);
+      z-index: 100;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem 0;
+      flex: 1;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .bottom-nav a:hover,
+    .bottom-nav a.active {
+      color: var(--accent);
+    }
+
+    .bottom-nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    .bottom-nav a i {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .bottom-nav a span {
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+      }
+      
+      .card-image {
+        height: 140px;
+      }
+      
+      .filter-container {
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .sort-btn {
+        min-width: 100px;
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="filter-container">
+      <button class="sort-btn" id="price-sort">
+        <i class="fas fa-sort-amount-down"></i> Price: Low to High
+      </button>
+      <button class="sort-btn" id="advanced-filter-btn">
+        <i class="fas fa-sliders-h"></i> Collections
+      </button>
+    </div>
+    
+    <div class="advanced-filters" id="advanced-filters">
+      <div class="filter-group">
+        <h4>Filter by Collection</h4>
+        <div class="filter-options">
+          <div class="filter-option active" data-filter="collection" data-value="all">All Collections</div>
+          <div class="filter-option" data-filter="collection" data-value="pengu">Pengu Originals</div>
+          <div class="filter-option" data-filter="collection" data-value="winter">Winter Pengus</div>
+          <div class="filter-option" data-filter="collection" data-value="space">Space Pengus</div>
+          <div class="filter-option" data-filter="collection" data-value="golden">Golden Pengus</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid" id="nft-grid">
+      <!-- Common -->
+      <div class="card" data-collection="pengu" data-price="95.50" data-rarity="common">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-common">Common</div>
+          <img src="https://i.imgur.com/JQ1ZfQj.png" alt="Pengu #512" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #512</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              95.50
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rare -->
+      <div class="card" data-collection="pengu" data-price="115.50" data-rarity="rare">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-rare">Rare</div>
+          <img src="https://i.imgur.com/8mZxWqV.png" alt="Pengu #422" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #422</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              115.50
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Epic -->
+      <div class="card" data-collection="winter" data-price="128.00" data-rarity="epic">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-epic">Epic</div>
+          <img src="https://i.imgur.com/vVp3nYQ.png" alt="Pengu #298" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #298</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              128.00
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Legendary -->
+      <div class="card" data-collection="golden" data-price="450.00" data-rarity="legendary">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-legendary">Legendary</div>
+          <img src="https://i.imgur.com/5tQb9Jx.png" alt="Pengu #001" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #001</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              450.00
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Additional cards for demo -->
+      <div class="card" data-collection="space" data-price="105.75" data-rarity="rare">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-rare">Rare</div>
+          <img src="https://i.imgur.com/LkZ3WnD.png" alt="Pengu #177" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #177</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              105.75
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" data-collection="winter" data-price="88.25" data-rarity="common">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-common">Common</div>
+          <img src="https://i.imgur.com/9jQ2Xqy.png" alt="Pengu #341" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #341</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              88.25
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" data-collection="golden" data-price="375.00" data-rarity="epic">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-epic">Epic</div>
+          <img src="https://i.imgur.com/7tQb4Jx.png" alt="Pengu #007" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #007</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              375.00
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" data-collection="space" data-price="142.50" data-rarity="epic">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-epic">Epic</div>
+          <img src="https://i.imgur.com/MkZ3WqD.png" alt="Pengu #066" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #066</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_symbol_white.svg" class="ton-icon" alt="TON">
+              142.50
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/" class="active">
+      <i class="fas fa-store"></i>
+      <span>Market</span>
+    </a>
+    <a href="/mynft.html">
+      <i class="fas fa-layer-group"></i>
+      <span>My NFTs</span>
+    </a>
+    <a href="/profile.html">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize cards with fade-in animation
+      setTimeout(() => {
+        document.querySelectorAll('.card').forEach((card, index) => {
+          card.style.animationDelay = `${index * 0.1}s`;
+        });
+      }, 300);
+      
+      // Price sort button
+      const priceSortBtn = document.getElementById('price-sort');
+      let sortDirection = 'low-high';
+      
+      priceSortBtn.addEventListener('click', () => {
+        sortDirection = sortDirection === 'low-high' ? 'high-low' : 'low-high';
+        priceSortBtn.innerHTML = sortDirection === 'low-high' 
+          ? '<i class="fas fa-sort-amount-down"></i> Price: Low to High'
+          : '<i class="fas fa-sort-amount-up"></i> Price: High to Low';
+        sortCards();
+      });
+      
+      // Advanced filters toggle
+      const advancedFilterBtn = document.getElementById('advanced-filter-btn');
+      const advancedFilters = document.getElementById('advanced-filters');
+      
+      advancedFilterBtn.addEventListener('click', () => {
+        advancedFilters.classList.toggle('show');
+        advancedFilterBtn.classList.toggle('active');
+      });
+      
+      // Filter options
+      const filterOptions = document.querySelectorAll('.filter-option');
+      const activeFilters = { collection: 'all' };
+      
+      filterOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          const filterType = option.dataset.filter;
+          const filterValue = option.dataset.value;
+          activeFilters[filterType] = filterValue;
+          
+          document.querySelectorAll(`.filter-option[data-filter="${filterType}"]`).forEach(opt => {
+            opt.classList.remove('active');
+          });
+          option.classList.add('active');
+          applyFilters();
+        });
+      });
+      
+      // Sort cards
+      function sortCards() {
+        const nftGrid = document.getElementById('nft-grid');
+        const cards = Array.from(nftGrid.querySelectorAll('.card:not([style*="display: none"])'));
+        
+        cards.sort((a, b) => {
+          const priceA = parseFloat(a.dataset.price);
+          const priceB = parseFloat(b.dataset.price);
+          return sortDirection === 'low-high' ? priceA - priceB : priceB - priceA;
+        });
+        
+        cards.forEach(card => nftGrid.appendChild(card));
+      }
+      
+      // Apply filters
+      function applyFilters() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+          const collection = card.dataset.collection;
+          const collectionMatch = activeFilters.collection === 'all' || 
+                                collection === activeFilters.collection;
+          card.style.display = collectionMatch ? 'flex' : 'none';
+        });
+        sortCards();
+      }
+    });
+  </script>
+</body>
+</html>
