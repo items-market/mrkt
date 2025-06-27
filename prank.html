@@ -1,73 +1,1458 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Notcoin Legendary Skins</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Premium Pengu NFT Collection on TON Blockchain">
+  <title>Pengu Collection | Premium NFT Marketplace</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: var(--tg-theme-bg-color, #121212);
-      color: var(--tg-theme-text-color, #ffffff);
-      padding: 20px;
+    /* ===== LOADER STYLES ===== */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-start);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: all 0.6s cubic-bezier(0.77, 0, 0.175, 1);
     }
-    h2 {
-      text-align: center;
+    
+    .loader-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-20px);
     }
-    ul {
-      list-style: none;
+    
+    .loader-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .loader-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      animation: fadeScale 1.8s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .loader-progress {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 3px solid rgba(85, 208, 255, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1.5s linear infinite;
+    }
+    
+    .loader-text {
+      margin-top: 24px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      opacity: 0;
+      animation: fadeIn 0.8s ease-out 0.3s forwards;
+    }
+    
+    @keyframes fadeScale {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== EXISTING STYLES ===== */
+    :root {
+      --bg-start: #0e111a;
+      --bg-end: #1c1f2e;
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-bg-light: rgba(255, 255, 255, 0.08);
+      --accent: #55d0ff;
+      --accent-dark: #3aa8d8;
+      --text: rgba(255, 255, 255, 0.95);
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --muted: #a0a4b8;
+      --radius: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      /* Rarity Colors */
+      --common: #7a7e89;
+      --rare: #3a7bd5;
+      --epic: #8a2be2;
+      --legendary: linear-gradient(135deg, #f5d742, #f5a742);
+    }
+
+    * {
+      margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
-    li {
-      background: #1e1e1e;
-      padding: 12px 16px;
-      margin: 8px 0;
-      border-radius: 8px;
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 72px;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      padding: 14px 20px;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .owned {
-      color: #00ff90;
+
+    .balance-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
     }
-    .not-owned {
-      color: #ff4d4f;
+
+    .balance {
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(85, 208, 255, 0.1);
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(85, 208, 255, 0.2);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .ton-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    .balance-amount {
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 5px;
+      font-size: 16px;
+    }
+
+    .balance-currency {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .deposit-btn {
+      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .withdraw-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .deposit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .withdraw-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .button-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Main content styles */
+    .container {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .sort-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+      min-width: 140px;
+      justify-content: center;
+    }
+
+    .sort-btn:hover {
+      background: var(--glass-bg-light);
+      border-color: var(--accent);
+    }
+
+    .sort-btn.active {
+      background: rgba(85, 208, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .advanced-filters {
+      display: none;
+      background: rgba(22, 26, 34, 0.95);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 1rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .advanced-filters.show {
+      display: block;
+    }
+
+    .filter-group {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .filter-group h4 {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .filter-option {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.6rem 1.2rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-option:hover {
+      background: var(--glass-bg-light);
+      border-color: var(--accent);
+    }
+
+    .filter-option.active {
+      background: rgba(85, 208, 255, 0.1);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 16px;
+      padding: 0 20px;
+      padding-bottom: 72px;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition);
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .card-image-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: var(--transition);
+      border-radius: 12px;
+      background: var(--glass-bg-light);
+    }
+
+    .card:hover .card-image {
+      transform: scale(1.05);
+    }
+
+    .card-content {
+      padding: 0.25rem 1rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      text-align: center;
+    }
+
+    .card-name {
+      font-size: 1rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+      padding: 0;
+      line-height: 1.2;
+    }
+
+    .price-container {
+      display: flex;
+      width: 100%;
+      margin-top: 0.35rem;
+    }
+
+    .price-ton {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      background: rgba(85, 208, 255, 0.15);
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .price-ton:hover {
+      background: rgba(85, 208, 255, 0.25);
+    }
+
+    .rarity-label {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-weight: 700;
+      font-size: 0.65rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 99px;
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'Inter', sans-serif;
+      border: 1px solid transparent;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent);
+    }
+
+    /* Modal for NFT details */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: linear-gradient(to bottom, #1a1e2b, #131722);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      width: 90%;
+      max-width: 400px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal-image-container {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--glass-bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .modal-collection {
+      display: inline-block;
+      background: var(--glass-bg);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .modal-rarity {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+
+    .modal-price {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+
+    .modal-price img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0e111a;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--glass-bg-light);
+      border-color: var(--accent);
+    }
+
+    .error-message {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      text-align: center;
+      display: none;
+      padding: 0.75rem;
+      border-radius: var(--radius);
+      background: rgba(255, 107, 107, 0.2);
+      border: 1px solid #ff6b6b;
+      animation: pulse 1.5s infinite;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .error-message i {
+      font-size: 1rem;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    .rarity-common {
+      background-color: var(--common);
+      color: white;
+    }
+
+    .rarity-rare {
+      background-color: var(--rare);
+      color: white;
+    }
+
+    .rarity-epic {
+      background-color: var(--epic);
+      color: white;
+    }
+
+    .rarity-legendary {
+      background: var(--legendary);
+      color: #0e111a;
+    }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(22, 26, 34, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+      z-index: 1000;
+    }
+
+    .bottom-nav a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .bottom-nav a.active {
+      color: var(--accent);
+    }
+
+    .bottom-nav a svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .bottom-nav a:hover:not(.active) {
+      color: rgba(160, 164, 184, 0.8);
+    }
+
+    /* Notification Styles */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+      }
+      
+      .card-content {
+        padding: 0.2rem 0.75rem 0.75rem;
+      }
+      
+      .card-name {
+        font-size: 0.95rem;
+      }
+      
+      .price-ton {
+        padding: 0.4rem;
+        font-size: 0.9rem;
+      }
+      
+      .ton-icon {
+        width: 16px;
+        height: 16px;
+      }
+      
+      .modal {
+        max-width: 350px;
+        padding: 1.25rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .filter-container {
+        gap: 0.75rem;
+      }
+      
+      .sort-btn {
+        min-width: 120px;
+        padding: 0.5rem;
+      }
+      
+      .filter-option {
+        padding: 0.5rem 0.8rem;
+      }
+      
+      .modal {
+        max-width: 90%;
+        padding: 1rem;
+      }
+      
+      .modal-actions {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <h2>🔮 Legendary Skins</h2>
-  <ul id="skins-list">Loading...</ul>
+  <!-- Professional Loader -->
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="loader-container">
+      <div class="loader-progress"></div>
+      <img class="loader-image" src="https://i.imgur.com/iqfmvdT.png" alt="Loading">
+    </div>
+    <div class="loader-text">Preparing your experience</div>
+  </div>
+
+  <div class="top-bar">
+    <div class="balance-container">
+      <div class="balance">
+        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+        <span class="balance-amount">0</span>
+        <span class="balance-currency">TON</span>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
+    </div>
+  </div>
+
+  <!-- Deposit Overlay -->
+  <div class="deposit-overlay" id="depositOverlay">
+    <div class="deposit-box">
+      <div class="deposit-header">
+        <h2 class="deposit-title">Deposit</h2>
+        <button class="close-btn" id="closeDeposit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
+      
+      <div class="address-container">
+        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
+      
+      <button class="confirm-btn" id="confirmBtn">I sent</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
+        <div class="error-message" id="amountError">Insufficient balance</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copyNotification">Address copied!</div>
+  <div class="notification" id="notification">Notification message</div>
+
+  <main class="container">
+    <div class="filter-container">
+      <button class="sort-btn" id="price-sort">
+        <i class="fas fa-sort-amount-down"></i> Price: Low to High
+      </button>
+      <button class="sort-btn" id="advanced-filter-btn">
+        <i class="fas fa-sliders-h"></i> Collections
+      </button>
+    </div>
+    
+    <div class="advanced-filters" id="advanced-filters">
+      <div class="filter-group">
+        <h4>Filter by Collection</h4>
+        <div class="filter-options">
+          <div class="filter-option active" data-filter="collection" data-value="all">All Collections</div>
+          <div class="filter-option" data-filter="collection" data-value="pengu">Skin</div>
+          <div class="filter-option" data-filter="collection" data-value="winter">Lootbox</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="grid" id="nft-grid">
+      <!-- Common -->
+      <div class="card" data-collection="pengu" data-price="95.50" data-rarity="common">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-common">Common</div>
+          <img src="https://not-platform.fra1.cdn.digitaloceanspaces.com/item/50c531cb-7afa-4dd4-acad-76a97b9e4cb1.png" alt="Pengu #512" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #512</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              95.50
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rare -->
+      <div class="card" data-collection="pengu" data-price="115.50" data-rarity="rare">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-rare">Rare</div>
+          <img src="https://i.imgur.com/8mZxWqV.png" alt="Pengu #422" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #422</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              115.50
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Epic -->
+      <div class="card" data-collection="winter" data-price="128.00" data-rarity="epic">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-epic">Epic</div>
+          <img src="https://i.imgur.com/vVp3nYQ.png" alt="Pengu #298" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #298</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              128.00
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Legendary -->
+      <div class="card" data-collection="golden" data-price="450.00" data-rarity="legendary">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-legendary">Legendary</div>
+          <img src="https://i.imgur.com/5tQb9Jx.png" alt="Pengu #001" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #001</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              450.00
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Additional cards -->
+      <div class="card" data-collection="space" data-price="105.75" data-rarity="rare">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-rare">Rare</div>
+          <img src="https://i.imgur.com/LkZ3WnD.png" alt="Pengu #177" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #177</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              105.75
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" data-collection="winter" data-price="88.25" data-rarity="common">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-common">Common</div>
+          <img src="https://i.imgur.com/9jQ2Xqy.png" alt="Pengu #341" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #341</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              88.25
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" data-collection="golden" data-price="375.00" data-rarity="epic">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-epic">Epic</div>
+          <img src="https://i.imgur.com/7tQb4Jx.png" alt="Pengu #007" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #007</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              375.00
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card" data-collection="space" data-price="142.50" data-rarity="epic">
+        <div class="card-image-container">
+          <div class="rarity-label rarity-epic">Epic</div>
+          <img src="https://i.imgur.com/MkZ3WqD.png" alt="Pengu #066" class="card-image" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3 class="card-name">Pengu #066</h3>
+          <div class="price-container">
+            <div class="price-ton">
+              <img src="https://ton.org/icons/custom/ton_logo.svg" class="ton-icon" alt="TON">
+              142.50
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal for NFT details -->
+  <div class="modal-overlay" id="nft-modal">
+    <div class="modal">
+      <button class="modal-close" id="modal-close">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="modal-content">
+        <div class="modal-image-container">
+          <img id="modal-nft-image" class="modal-image" src="" alt="NFT">
+        </div>
+        <div class="modal-details">
+          <div>
+            <h2 class="modal-title" id="modal-nft-name"></h2>
+            <span class="modal-collection" id="modal-nft-collection"></span>
+            <span class="modal-rarity" id="modal-nft-rarity"></span>
+          </div>
+          
+          <div class="modal-price">
+            <img src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+            <span id="modal-nft-price"></span>
+          </div>
+          
+          <div class="modal-actions">
+            <button class="btn btn-primary" id="buy-button">
+              <i class="fas fa-shopping-cart"></i> Buy Now
+            </button>
+            <button class="btn btn-secondary" id="cancel-button">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+          
+          <div class="error-message" id="error-message">
+            <i class="fas fa-exclamation-circle"></i> Insufficient balance to complete this purchase
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="/" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      <span>Market</span>
+    </a>
+    <a href="/mynft.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <path d="M21 12H3"></path>
+      </svg>
+      <span>My NFTs</span>
+    </a>
+    <a href="/profile.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Profile</span>
+    </a>
+  </nav>
 
   <script>
-    const skins = {
-      "ChampionLegendary": "https://webapp.notcoin.tg/store/2/019662c7-caec-76a8-ad69",
-      "FinalStarLegendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9b5-0262dd04c368-e50d4b1155e8",
-      "ShinyLegendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9",
-      "ParanoidLegendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9b5-0aadeb54010bb5-04c3613368ed",
-      "FriedLegendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a",
-      "MeltdownLegendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9b5-138fed591c3c9b5-0dc71216b7ee"
-    };
-
-    const listEl = document.getElementById('skins-list');
-    listEl.innerHTML = '';
-
-    Object.entries(skins).forEach(([name, url]) => {
-      fetch(url, { method: 'GET', credentials: 'include' })
-        .then(response => {
-          const li = document.createElement('li');
-          li.innerHTML = `${name} <span class="${response.ok ? 'owned' : 'not-owned'}">${response.ok ? '✅ Owned' : '❌ Not Owned'}</span>`;
-          listEl.appendChild(li);
-        })
-        .catch(() => {
-          const li = document.createElement('li');
-          li.innerHTML = `${name} <span class="not-owned">❌ Error</span>`;
-          listEl.appendChild(li);
-        });
+    // Enhanced Loader Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if loader has been shown before using localStorage
+      const loaderShown = localStorage.getItem('loaderShown');
+      const loader = document.getElementById('loaderOverlay');
+      
+      if (!loaderShown) {
+        // Show loader only if it hasn't been shown before
+        loader.style.display = 'flex';
+        
+        // Simulate loading process
+        setTimeout(() => {
+          // First hide the spinner and text
+          loader.querySelector('.loader-progress').style.opacity = '0';
+          loader.querySelector('.loader-text').textContent = 'Ready!';
+          
+          // Then fade out the entire loader
+          setTimeout(() => {
+            loader.classList.add('hidden');
+            
+            // Remove loader from DOM after animation completes
+            setTimeout(() => {
+              loader.style.display = 'none';
+              // Set flag in localStorage
+              localStorage.setItem('loaderShown', 'true');
+            }, 600);
+          }, 500);
+        }, 2000); // Adjust timing as needed
+      } else {
+        // If loader has been shown before, hide it immediately
+        loader.style.display = 'none';
+      }
+      
+      // Initialize the rest of your app
+      initApp();
     });
 
-    Telegram.WebApp.ready();
+    function initApp() {
+      // Price sort button
+      const priceSortBtn = document.getElementById('price-sort');
+      let sortDirection = 'low-high';
+      
+      priceSortBtn.addEventListener('click', () => {
+        sortDirection = sortDirection === 'low-high' ? 'high-low' : 'low-high';
+        priceSortBtn.innerHTML = sortDirection === 'low-high' 
+          ? '<i class="fas fa-sort-amount-down"></i> Price: Low to High'
+          : '<i class="fas fa-sort-amount-up"></i> Price: High to Low';
+        sortCards();
+      });
+      
+      // Advanced filters toggle
+      const advancedFilterBtn = document.getElementById('advanced-filter-btn');
+      const advancedFilters = document.getElementById('advanced-filters');
+      
+      advancedFilterBtn.addEventListener('click', () => {
+        advancedFilters.classList.toggle('show');
+        advancedFilterBtn.classList.toggle('active');
+      });
+      
+      // Filter options
+      const filterOptions = document.querySelectorAll('.filter-option');
+      const activeFilters = { collection: 'all' };
+      
+      filterOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          const filterType = option.dataset.filter;
+          const filterValue = option.dataset.value;
+          activeFilters[filterType] = filterValue;
+          
+          document.querySelectorAll(`.filter-option[data-filter="${filterType}"]`).forEach(opt => {
+            opt.classList.remove('active');
+          });
+          option.classList.add('active');
+          applyFilters();
+        });
+      });
+      
+      // Sort cards
+      function sortCards() {
+        const nftGrid = document.getElementById('nft-grid');
+        const cards = Array.from(nftGrid.querySelectorAll('.card:not([style*="display: none"])'));
+        
+        cards.sort((a, b) => {
+          const priceA = parseFloat(a.dataset.price);
+          const priceB = parseFloat(b.dataset.price);
+          return sortDirection === 'low-high' ? priceA - priceB : priceB - priceA;
+        });
+        
+        cards.forEach(card => nftGrid.appendChild(card));
+      }
+      
+      // Apply filters
+      function applyFilters() {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+          const collection = card.dataset.collection;
+          const collectionMatch = activeFilters.collection === 'all' || 
+                                collection === activeFilters.collection;
+          card.style.display = collectionMatch ? 'flex' : 'none';
+        });
+        sortCards();
+      }
+      
+      // Modal functionality
+      const modal = document.getElementById('nft-modal');
+      const modalClose = document.getElementById('modal-close');
+      const cancelButton = document.getElementById('cancel-button');
+      const buyButton = document.getElementById('buy-button');
+      const errorMessage = document.getElementById('error-message');
+      
+      // Open modal when clicking on price
+      document.querySelectorAll('.price-ton').forEach(priceElement => {
+        priceElement.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const card = priceElement.closest('.card');
+          openModal(card);
+        });
+      });
+      
+      // Open modal when clicking on card (except price)
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (!e.target.closest('.price-ton')) {
+            openModal(card);
+          }
+        });
+      });
+      
+      // Close modal
+      modalClose.addEventListener('click', closeModal);
+      cancelButton.addEventListener('click', closeModal);
+      
+      // Close modal when clicking outside
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+      
+      // Buy button functionality
+      buyButton.addEventListener('click', () => {
+        // Simulate insufficient balance
+        errorMessage.style.display = 'flex';
+        errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Add shake animation to button
+        buyButton.classList.add('shake');
+        setTimeout(() => {
+          buyButton.classList.remove('shake');
+        }, 500);
+        
+        // Hide after 5 seconds
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      });
+      
+      function openModal(card) {
+        const image = card.querySelector('.card-image').src;
+        const name = card.querySelector('.card-name').textContent;
+        const price = card.dataset.price;
+        const collection = card.dataset.collection;
+        const rarity = card.dataset.rarity;
+        
+        // Set modal content
+        document.getElementById('modal-nft-image').src = image;
+        document.getElementById('modal-nft-name').textContent = name;
+        document.getElementById('modal-nft-price').textContent = price;
+        
+        // Format collection name
+        let collectionName = '';
+        switch(collection) {
+          case 'pengu': collectionName = 'Pengu Originals'; break;
+          case 'winter': collectionName = 'Winter Pengus'; break;
+          case 'space': collectionName = 'Space Pengus'; break;
+          case 'golden': collectionName = 'Golden Pengus'; break;
+        }
+        document.getElementById('modal-nft-collection').textContent = collectionName;
+        
+        // Set rarity
+        const rarityElement = document.getElementById('modal-nft-rarity');
+        rarityElement.textContent = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+        rarityElement.className = 'modal-rarity';
+        
+        // Add appropriate rarity class
+        switch(rarity) {
+          case 'common':
+            rarityElement.classList.add('rarity-common');
+            break;
+          case 'rare':
+            rarityElement.classList.add('rarity-rare');
+            break;
+          case 'epic':
+            rarityElement.classList.add('rarity-epic');
+            break;
+          case 'legendary':
+            rarityElement.classList.add('rarity-legendary');
+            break;
+        }
+        
+        // Show modal
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        errorMessage.style.display = 'none';
+      }
+
+      // Deposit overlay functionality
+      const depositOverlay = document.getElementById("depositOverlay");
+      const showDepositBtn = document.getElementById("showDeposit");
+      const closeDepositBtn = document.getElementById("closeDeposit");
+      const walletAddress = document.getElementById("walletAddress");
+      const copyBtn = document.getElementById("copyBtn");
+      const copyNotification = document.getElementById("copyNotification");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
+
+      showDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.add("active");
+      });
+
+      closeDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+      });
+
+      depositOverlay.addEventListener("click", (e) => {
+        if (e.target === depositOverlay) {
+          depositOverlay.classList.remove("active");
+        }
+      });
+
+      function copyToClipboard() {
+        navigator.clipboard.writeText(fullAddress).then(() => {
+          copyNotification.classList.add("show");
+          setTimeout(() => {
+            copyNotification.classList.remove("show");
+          }, 2000);
+        });
+      }
+
+      walletAddress.addEventListener("click", copyToClipboard);
+      copyBtn.addEventListener("click", copyToClipboard);
+
+      confirmBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+      });
+
+      // Withdraw functionality
+      const withdrawOverlay = document.getElementById("withdrawOverlay");
+      const showWithdrawBtn = document.getElementById("showWithdraw");
+      const closeWithdrawBtn = document.getElementById("closeWithdraw");
+      const notification = document.getElementById("notification");
+      const withdrawAmount = document.getElementById("withdrawAmount");
+      const withdrawAddress = document.getElementById("withdrawAddress");
+      const amountError = document.getElementById("amountError");
+      const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
+      const balanceAmount = 0.00; // Example balance
+
+      // Show/hide overlay
+      showWithdrawBtn.addEventListener("click", () => {
+        withdrawOverlay.classList.add("active");
+        // Reset form when opening
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
+        confirmWithdrawBtn.disabled = true;
+        amountError.style.display = "none";
+      });
+      
+      closeWithdrawBtn.addEventListener("click", () => withdrawOverlay.classList.remove("active"));
+      
+      withdrawOverlay.addEventListener("click", (e) => {
+        if (e.target === withdrawOverlay) withdrawOverlay.classList.remove("active");
+      });
+
+      // Validate form inputs
+      function validateForm() {
+        const amount = parseFloat(withdrawAmount.value);
+        const address = withdrawAddress.value.trim();
+        
+        // Check if amount is valid and not exceeding balance
+        if (isNaN(amount) || amount <= 0) {
+          confirmWithdrawBtn.disabled = true;
+          return;
+        }
+        
+        if (amount > balanceAmount) {
+          amountError.style.display = "block";
+          confirmWithdrawBtn.disabled = true;
+          return;
+        } else {
+          amountError.style.display = "none";
+        }
+        
+        // Check if address is not empty
+        if (address === "") {
+          confirmWithdrawBtn.disabled = true;
+          return;
+        }
+        
+        // If all validations pass
+        confirmWithdrawBtn.disabled = false;
+      }
+
+      // Add event listeners for input validation
+      withdrawAmount.addEventListener("input", validateForm);
+      withdrawAddress.addEventListener("input", validateForm);
+      
+      confirmWithdrawBtn.addEventListener("click", () => {
+        if (parseFloat(withdrawAmount.value) > balanceAmount) return;
+        
+        withdrawOverlay.classList.remove("active");
+        showNotification(`Withdrew ${withdrawAmount.value} TON`);
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
+      });
+
+      // Notification helper
+      function showNotification(message) {
+        notification.textContent = message;
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 2000);
+      }
+
+      // Initialize Telegram WebApp
+      initTelegramWebApp();
+    }
+
+    function initTelegramWebApp() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        
+        // Store user data in localStorage
+        const user = tg.initDataUnsafe.user;
+        if (user) {
+          const userData = {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name || '',
+            username: user.username || '',
+            photo_url: user.photo_url || ''
+          };
+          localStorage.setItem('tg_user', JSON.stringify(userData));
+        }
+      }
+    }
   </script>
 </body>
 </html>
