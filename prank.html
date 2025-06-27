@@ -1,66 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    
-    <script
-      src="https://telegram.org/js/telegram-web-app.js"
-      onload="window.Telegram.WebApp.expand(); window.Telegram.WebApp.colorScheme === 'dark' ? window.Telegram.WebApp.setHeaderColor('#1C1C1E') : window.Telegram.WebApp.setHeaderColor('#FFFFFF'); window.Telegram.WebApp.colorScheme === 'dark' ? window.Telegram.WebApp.setBackgroundColor('#1C1C1E') : window.Telegram.WebApp.setBackgroundColor('#ffffff');"
-    ></script>
-    
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Notcoin Legendary Skins</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--tg-theme-bg-color, #121212);
+      color: var(--tg-theme-text-color, #ffffff);
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #1e1e1e;
+      padding: 12px 16px;
+      margin: 8px 0;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .owned {
+      color: #00ff90;
+    }
+    .not-owned {
+      color: #ff4d4f;
+    }
+  </style>
+</head>
+<body>
+  <h2>🔮 Legendary Skins</h2>
+  <ul id="skins-list">Loading...</ul>
 
-    <meta charset="UTF-8" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://t.me/sticker_bot" />
-    <meta property="og:site_name" content="Telegram Sticker Bot" />
-    <meta property="og:title" content="Telegram Sticker Bot" />
-    <meta property="og:description" content="Telegram Sticker Bot" />
-    <meta property="og:locale" content="en_US" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
-    />
-    <title>Telegram Sticker Bot</title>
-    <style>
-      body,
-      html {
-        background-color: #000;
-        height: 100vh;
-        /* height: 100%; */
-        padding: 0;
-        margin: 0;
-        -ms-scroll-chaining: none;
-        overscroll-behavior: none;
-        touch-action: none;
-      }
-    </style>
-    <script
-      defer
-      data-domain="stickerdom.store"
-      src="https://plausible.joincommunity.xyz/js/script.js"
-    ></script>
-    <script type="module" crossorigin src="/assets/index-8831971d.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-40eba135.js">
-    <link rel="stylesheet" href="/assets/index-36e1efad.css">
-  </head>
-  <body data-mode="light">
-    <div id="root"></div>
-    
-    <script>
-      const urlParams = new URLSearchParams(window.location.search)
-      const themeParam = urlParams.get('theme')
+  <script>
+    const skins = {
+      "Champion Legendary": "https://webapp.notcoin.tg/store/2/019662c7-caec-76a8-ad69",
+      "Final Star Legendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9b5-0262dd04c368-e50d4b1155e8",
+      "Shiny Legendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9",
+      "Paranoid Legendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9b5-0aadeb54010bb5-04c3613368ed",
+      "Fried Legendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a",
+      "Meltdown Legendary": "https://webapp.notcoin.tg/store/2/019687e2-ea84-70c8-a9b5-138fed591c3c9b5-0dc71216b7ee"
+    };
 
-      const themeStorage = localStorage.getItem('theme')
+    const listEl = document.getElementById('skins-list');
+    listEl.innerHTML = '';
 
-      const theme = themeParam || themeStorage
+    Object.entries(skins).forEach(([name, url]) => {
+      fetch(url, { method: 'GET', credentials: 'include' })
+        .then(response => {
+          const li = document.createElement('li');
+          li.innerHTML = `${name} <span class="${response.ok ? 'owned' : 'not-owned'}">${response.ok ? '✅ Owned' : '❌ Not Owned'}</span>`;
+          listEl.appendChild(li);
+        })
+        .catch(() => {
+          const li = document.createElement('li');
+          li.innerHTML = `${name} <span class="not-owned">❌ Error</span>`;
+          listEl.appendChild(li);
+        });
+    });
 
-      if (theme) {
-        localStorage.setItem('theme', theme)
-        document.body.setAttribute('data-mode', theme)
-      } else {
-        window.Telegram.WebApp.colorScheme === 'dark'
-          ? document.body.setAttribute('data-mode', 'dark')
-          : null
-      }
-    </script>
-  </body>
+    Telegram.WebApp.ready(); // Optional: signal Telegram you're ready
+  </script>
+</body>
 </html>
