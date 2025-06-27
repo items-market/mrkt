@@ -107,6 +107,313 @@
       font-weight: 500;
     }
 
+    /* Action buttons from index.html */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .deposit-btn {
+      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .withdraw-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .deposit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .withdraw-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .button-icon {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Deposit Overlay Styles from index.html */
+    .deposit-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .deposit-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .deposit-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .deposit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .deposit-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .deposit-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .address-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .wallet-address {
+      font-family: 'Menlo', monospace;
+      word-break: break-all;
+      padding-right: 40px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent);
+    }
+
+    .confirm-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .confirm-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Withdraw Overlay Styles from index.html */
+    .withdraw-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(14, 17, 26, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .withdraw-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .withdraw-box {
+      background: rgba(22, 26, 34, 0.95);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 400px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .withdraw-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .withdraw-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .withdraw-instructions {
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    /* Input Styles from index.html */
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Action Button Styles from index.html */
+    .action-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .action-btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* Notification Styles from index.html */
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .copy-notification.show {
+      opacity: 1;
+    }
+
     /* Main content styles */
     .container {
       padding: 1.5rem;
@@ -639,6 +946,17 @@
       .modal-actions {
         flex-direction: column;
       }
+      
+      /* Adjust action buttons for mobile */
+      .action-buttons {
+        gap: 6px;
+      }
+      
+      .deposit-btn,
+      .withdraw-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -651,7 +969,86 @@
         <span class="balance-currency">TON</span>
       </div>
     </div>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
+    </div>
   </div>
+
+  <!-- Deposit Overlay -->
+  <div class="deposit-overlay" id="depositOverlay">
+    <div class="deposit-box">
+      <div class="deposit-header">
+        <h2 class="deposit-title">Deposit</h2>
+        <button class="close-btn" id="closeDeposit">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">Transfer TON from your wallet to the address:</p>
+      
+      <div class="address-container">
+        <div class="wallet-address" id="walletAddress">UQBiasMod...f5eSDEitj</div>
+        <button class="copy-btn" id="copyBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="deposit-instructions">After making the transfer, click «I sent» button</p>
+      
+      <button class="confirm-btn" id="confirmBtn">I sent</button>
+    </div>
+  </div>
+
+  <!-- Withdraw Overlay -->
+  <div class="withdraw-overlay" id="withdrawOverlay">
+    <div class="withdraw-box">
+      <div class="withdraw-header">
+        <h2 class="withdraw-title">Withdraw</h2>
+        <button class="close-btn" id="closeWithdraw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <p class="withdraw-instructions">Enter the amount and wallet address to withdraw to:</p>
+      
+      <div class="input-group">
+        <label class="input-label">Amount (TON)</label>
+        <input type="number" class="input-field" id="withdrawAmount" placeholder="0.00" step="0.01">
+        <div class="error-message" id="amountError">Insufficient balance</div>
+      </div>
+      
+      <div class="input-group">
+        <label class="input-label">Wallet Address</label>
+        <input type="text" class="input-field" id="withdrawAddress" placeholder="Enter recipient address">
+      </div>
+      
+      <button class="action-btn" id="confirmWithdraw" disabled>Withdraw</button>
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copyNotification">Address copied!</div>
+  <div class="notification" id="notification">Notification message</div>
 
   <main class="container">
     <div class="filter-container">
@@ -1052,6 +1449,123 @@
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
         errorMessage.style.display = 'none';
+      }
+
+      // Deposit overlay functionality from index.html
+      const depositOverlay = document.getElementById("depositOverlay");
+      const showDepositBtn = document.getElementById("showDeposit");
+      const closeDepositBtn = document.getElementById("closeDeposit");
+      const walletAddress = document.getElementById("walletAddress");
+      const copyBtn = document.getElementById("copyBtn");
+      const copyNotification = document.getElementById("copyNotification");
+      const confirmBtn = document.getElementById("confirmBtn");
+      const fullAddress = "UQBiasModFullAddressf5eSDEitj"; // Full address for copying
+
+      showDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.add("active");
+      });
+
+      closeDepositBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+      });
+
+      depositOverlay.addEventListener("click", (e) => {
+        if (e.target === depositOverlay) {
+          depositOverlay.classList.remove("active");
+        }
+      });
+
+      function copyToClipboard() {
+        navigator.clipboard.writeText(fullAddress).then(() => {
+          copyNotification.classList.add("show");
+          setTimeout(() => {
+            copyNotification.classList.remove("show");
+          }, 2000);
+        });
+      }
+
+      walletAddress.addEventListener("click", copyToClipboard);
+      copyBtn.addEventListener("click", copyToClipboard);
+
+      confirmBtn.addEventListener("click", () => {
+        depositOverlay.classList.remove("active");
+        // Add your confirmation logic here
+      });
+
+      // Withdraw functionality from index.html
+      const withdrawOverlay = document.getElementById("withdrawOverlay");
+      const showWithdrawBtn = document.getElementById("showWithdraw");
+      const closeWithdrawBtn = document.getElementById("closeWithdraw");
+      const notification = document.getElementById("notification");
+      const withdrawAmount = document.getElementById("withdrawAmount");
+      const withdrawAddress = document.getElementById("withdrawAddress");
+      const amountError = document.getElementById("amountError");
+      const confirmWithdrawBtn = document.getElementById("confirmWithdraw");
+      const balanceAmount = 0.00; // Example balance
+
+      // Show/hide overlay
+      showWithdrawBtn.addEventListener("click", () => {
+        withdrawOverlay.classList.add("active");
+        // Reset form when opening
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
+        confirmWithdrawBtn.disabled = true;
+        amountError.style.display = "none";
+      });
+      
+      closeWithdrawBtn.addEventListener("click", () => withdrawOverlay.classList.remove("active"));
+      
+      withdrawOverlay.addEventListener("click", (e) => {
+        if (e.target === withdrawOverlay) withdrawOverlay.classList.remove("active");
+      });
+
+      // Validate form inputs
+      function validateForm() {
+        const amount = parseFloat(withdrawAmount.value);
+        const address = withdrawAddress.value.trim();
+        
+        // Check if amount is valid and not exceeding balance
+        if (isNaN(amount) || amount <= 0) {
+          confirmWithdrawBtn.disabled = true;
+          return;
+        }
+        
+        if (amount > balanceAmount) {
+          amountError.style.display = "block";
+          confirmWithdrawBtn.disabled = true;
+          return;
+        } else {
+          amountError.style.display = "none";
+        }
+        
+        // Check if address is not empty
+        if (address === "") {
+          confirmWithdrawBtn.disabled = true;
+          return;
+        }
+        
+        // If all validations pass
+        confirmWithdrawBtn.disabled = false;
+      }
+
+      // Add event listeners for input validation
+      withdrawAmount.addEventListener("input", validateForm);
+      withdrawAddress.addEventListener("input", validateForm);
+      
+      confirmWithdrawBtn.addEventListener("click", () => {
+        if (parseFloat(withdrawAmount.value) > balanceAmount) return;
+        
+        withdrawOverlay.classList.remove("active");
+        showNotification(`Withdrew ${withdrawAmount.value} TON`);
+        withdrawAmount.value = "";
+        withdrawAddress.value = "";
+      });
+
+      // Notification helper
+      function showNotification(message) {
+        notification.textContent = message;
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 2000);
       }
 
       // Initialize Telegram WebApp
