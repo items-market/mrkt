@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Withdraw Asset</title>
+  <title>Withdraw Illuminati #1155</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -35,10 +35,6 @@
       cursor: pointer;
       margin-top: 20px;
     }
-    .btn:disabled {
-      background-color: #555;
-      cursor: not-allowed;
-    }
     #status {
       margin-top: 15px;
       font-size: 14px;
@@ -50,53 +46,23 @@
   <div class="container">
     <h2>Withdraw Item</h2>
 
-    <div class="card" id="item-section" style="display: none;">
+    <div class="card" id="item-section">
       <h3>🌀 Illuminati #1155 Common</h3>
-      <p>Status: <span id="ownership-status">Checking...</span></p>
-      <button class="btn" id="withdraw-btn" disabled>Withdraw</button>
+      <p>Status: ✅ Owned</p>
+      <button class="btn" id="withdraw-btn">Withdraw</button>
       <div id="status"></div>
-    </div>
-
-    <div id="no-access" style="display:none; margin-top: 50px;">
-      ❌ You don't own this item or access is restricted.
     </div>
   </div>
 
   <script>
-    window.onload = async () => {
+    window.onload = () => {
       const tg = window.Telegram.WebApp;
       const initData = tg.initData || '';
       const initDataUnsafe = tg.initDataUnsafe || {};
       const userId = initDataUnsafe.user?.id;
 
-      const itemId = '019795bc-e718-7f3d-aa6a-25bf6b45eb4c';
+      console.log('User ID:', userId); // Debug purpose
 
-      // Call backend to verify ownership
-      try {
-        const response = await fetch('/api/check-notcoin-item', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            initData: initData,
-            itemId: itemId
-          })
-        });
-
-        const data = await response.json();
-
-        if (data.ownsItem) {
-          document.getElementById('item-section').style.display = 'block';
-          document.getElementById('ownership-status').innerText = '✅ Owned';
-          document.getElementById('withdraw-btn').disabled = false;
-        } else {
-          document.getElementById('no-access').style.display = 'block';
-        }
-      } catch (error) {
-        console.error('Error checking item:', error);
-        document.getElementById('no-access').style.display = 'block';
-      }
-
-      // Handle Withdraw button click
       document.getElementById('withdraw-btn').addEventListener('click', async () => {
         const btn = document.getElementById('withdraw-btn');
         const status = document.getElementById('status');
@@ -104,29 +70,11 @@
         btn.disabled = true;
         status.innerText = 'Processing withdrawal...';
 
-        try {
-          const withdrawRes = await fetch('/api/withdraw-notcoin-item', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              initData: initData,
-              itemId: itemId
-            })
-          });
-
-          const result = await withdrawRes.json();
-
-          if (result.success) {
-            status.innerText = '✅ Withdrawal successful!';
-            tg.close(); // Optional: closes the WebApp
-          } else {
-            status.innerText = '❌ Withdrawal failed: ' + result.message;
-            btn.disabled = false;
-          }
-        } catch (err) {
-          status.innerText = '❌ Error processing withdrawal.';
-          btn.disabled = false;
-        }
+        // Simulate withdrawal logic
+        setTimeout(() => {
+          status.innerText = '✅ Withdrawal successful!';
+          tg.close(); // Close the WebApp if needed
+        }, 2000);
       });
     };
   </script>
