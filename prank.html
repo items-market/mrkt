@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sticker Collections</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-start: #0e111a;
@@ -632,7 +632,7 @@
     // Initialize Telegram WebApp
     const tg = window.Telegram.WebApp;
     
-    // Expand the WebApp to full viewport
+    // Expand the app to full viewport
     tg.expand();
     
     // Collections grid functionality
@@ -796,32 +796,33 @@
       setTimeout(() => notification.classList.remove("show"), 2000);
     }
     
-    // Main initialization when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      // Check if we're running in Telegram WebApp
-      if (window.Telegram && window.Telegram.WebApp) {
-        // Set up the color scheme based on Telegram theme
-        if (tg.colorScheme === 'dark') {
-          document.documentElement.style.setProperty('--bg-start', '#0e111a');
-          document.documentElement.style.setProperty('--bg-end', '#1c1f2e');
-        } else {
-          document.documentElement.style.setProperty('--bg-start', '#f5f7ff');
-          document.documentElement.style.setProperty('--bg-end', '#e6e9f4');
-        }
-        
-        // Set up the back button behavior
-        tg.BackButton.onClick(() => {
-          // Handle back button click (close WebApp in this case)
-          tg.close();
-        });
-        
-        // Show back button if needed
-        // tg.BackButton.show();
+    // Handle back button in Telegram
+    tg.BackButton.onClick(() => {
+      if (depositOverlay.classList.contains("active")) {
+        depositOverlay.classList.remove("active");
+      } else if (withdrawOverlay.classList.contains("active")) {
+        withdrawOverlay.classList.remove("active");
+      } else {
+        tg.close();
       }
-      
-      // Initialize collections grid
-      renderCollections();
     });
+    
+    // Show back button when overlays are open
+    function toggleBackButton() {
+      if (depositOverlay.classList.contains("active") || withdrawOverlay.classList.contains("active")) {
+        tg.BackButton.show();
+      } else {
+        tg.BackButton.hide();
+      }
+    }
+    
+    // Observe overlay changes
+    const observer = new MutationObserver(toggleBackButton);
+    observer.observe(depositOverlay, { attributes: true });
+    observer.observe(withdrawOverlay, { attributes: true });
+    
+    // Initialize back button state
+    toggleBackButton();
   </script>
 </body>
 </html>
