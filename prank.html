@@ -602,6 +602,30 @@
       color: var(--text);
     }
 
+    /* Coming Soon styles */
+    .coming-soon-badge {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+    
+    .coming-soon {
+      opacity: 0.7;
+    }
+    
+    .coming-soon:hover {
+      transform: none !important;
+      border-color: var(--border) !important;
+      background: var(--card-bg) !important;
+    }
+
     /* Skeleton loader styles - Improved */
     .skeleton-loader {
       display: grid;
@@ -1011,7 +1035,7 @@
     const nftGrid = document.getElementById('nftGrid');
     const processingStatus = document.getElementById('processingStatus');
     
-    // Collections data
+    // Collections data - Only Void, Notcoin, and NotPixel are available
     const collections = [
       { 
         name: "Void", 
@@ -1031,22 +1055,22 @@
       { 
         name: "Lost Dogs", 
         img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", 
-        comingSoon: false
+        comingSoon: true
       },
       { 
         name: "Glance", 
         img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", 
-        comingSoon: false
+        comingSoon: true
       },
       { 
         name: "Disk Trickster", 
         img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", 
-        comingSoon: false
+        comingSoon: true
       },
       { 
         name: "Hitoku", 
         img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", 
-        comingSoon: false
+        comingSoon: true
       },
     ];
 
@@ -1078,10 +1102,11 @@
       
       nftGrid.innerHTML = filteredCollections
         .map(c => `
-          <div class="collection-card">
-            <a href="${getPageLink(c.name)}">
+          <div class="collection-card ${c.comingSoon ? 'coming-soon' : ''}">
+            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}">
               <div style="position: relative;">
                 <img src="${c.img}" alt="${c.name}" loading="lazy" />
+                ${c.comingSoon ? '<div class="coming-soon-badge">Coming Soon</div>' : ''}
               </div>
               <div class="collection-info">
                 <p class="collection-name">${c.name}</p>
