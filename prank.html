@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Notcoin Store Item</title>
+  <title>Launch Notcoin Store</title>
+  <meta charset="UTF-8" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body>
-  <h3>Launching Notcoin Store Item...</h3>
+<body style="font-family: sans-serif; text-align: center; padding: 50px;">
+  <h2>Launching Notcoin Store Item...</h2>
+  <p id="status">Please wait...</p>
+
   <script>
     window.addEventListener("load", () => {
-      const tg = window.Telegram?.WebApp;
+      const status = document.getElementById("status");
 
-      if (!tg || !tg.initData) {
-        document.body.innerHTML = `
-          <p style="color:red;">
-            ❌ Telegram initData is missing.<br>
-            Please open this link inside Telegram via a bot Web App.
-          </p>`;
+      if (!window.Telegram || !Telegram.WebApp) {
+        status.innerHTML = "❌ Telegram SDK not loaded. Open inside Telegram.";
+        return;
+      }
+
+      const tg = Telegram.WebApp;
+
+      if (!tg.initData || tg.initData.length === 0) {
+        status.innerHTML = "❌ Telegram initData not found.<br>Please open this link inside Telegram via your bot.";
         return;
       }
 
       tg.ready();
+      status.innerHTML = "✅ Telegram initData found. Redirecting...";
 
-      // Redirect to Notcoin store item
+      // Redirect to the Notcoin store item
       window.location.href = "https://webapp.notcoin.tg/store/1/01976114-3a22-7687-80c8-cdfaac87b384";
     });
   </script>
