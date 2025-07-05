@@ -520,8 +520,32 @@
   </style>
 </head>
 <body>
-  <!-- Existing content remains unchanged -->
-  
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="balance-container">
+      <div class="balance">
+        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+        <span class="balance-amount">0</span>
+        <span class="balance-currency">TON</span>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
+    </div>
+  </div>
+
   <!-- Admin access button -->
   <div class="admin-access" id="adminAccessButton">
     <i class="fas fa-lock"></i>
@@ -601,7 +625,47 @@
     <i class="fas fa-user-cog"></i>
     <span class="admin-icon-label">Admin Panel</span>
   </div>
+
+  <!-- Main Content -->
+  <div class="search-container">
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" class="search-bar" id="searchInput" placeholder="Search collections..." />
+  </div>
   
+  <h2>Collections</h2>
+  
+  <!-- Collections Grid -->
+  <main class="collection-grid" id="nftGrid"></main>
+
+  <!-- Navigation Menu -->
+  <div class="nav-container">
+    <div class="nav-items">
+      <div class="nav-item">
+        <div class="nav-icon-container" onclick="window.location.href='/'">
+          <i class="fas fa-store nav-icon"></i>
+        </div>
+        <span class="nav-label">Market</span>
+      </div>
+      
+      <div class="nav-item">
+        <div class="nav-icon-container" onclick="window.location.href='/profile.html'">
+          <i class="fas fa-user nav-icon"></i>
+        </div>
+        <span class="nav-label">Profile</span>
+      </div>
+      
+      <div class="nav-item">
+        <div class="nav-icon-container" onclick="window.location.href='/activity.html'">
+          <i class="fas fa-bolt nav-icon"></i>
+        </div>
+        <span class="nav-label">Activity</span>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Initialize Telegram WebApp
     const tg = window.Telegram.WebApp;
@@ -612,24 +676,10 @@
     let currentUserId = null;
     let currentAction = null; // 'add', 'remove', 'set'
     
-    // Mock user data (in a real app, this would come from a database)
-    let users = [
-      { id: "user123", username: "john_doe", balance: 5.25 },
-      { id: "user456", username: "jane_smith", balance: 12.75 },
-      { id: "user789", username: "bob_johnson", balance: 3.50 },
-      { id: "user101", username: "sara_williams", balance: 8.00 },
-      { id: "user202", username: "mike_brown", balance: 20.50 },
-      { id: "user303", username: "emily_davis", balance: 0.75 },
-      { id: "user404", username: "david_wilson", balance: 15.25 },
-      { id: "user505", username: "lisa_miller", balance: 7.80 },
-    ];
-    
-    // Activity logs
-    let activityLogs = [
-      { timestamp: new Date(Date.now() - 3600000), message: "Admin added 5.00 TON to john_doe (user123)", user: "user123" },
-      { timestamp: new Date(Date.now() - 7200000), message: "Admin set balance to 12.75 TON for jane_smith (user456)", user: "user456" },
-      { timestamp: new Date(Date.now() - 10800000), message: "Admin removed 2.50 TON from bob_johnson (user789)", user: "user789" },
-    ];
+    // Real user data - stored in localStorage to simulate a database
+    // In a real application, this would come from your backend API
+    let users = [];
+    let activityLogs = [];
     
     // DOM elements
     const adminAccessButton = document.getElementById('adminAccessButton');
@@ -655,6 +705,124 @@
     // Admin password (for demo purposes)
     const ADMIN_PASSWORD = "admin123";
     
+    // Initialize application
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load real user data from localStorage
+      loadUserData();
+      
+      // Render collections
+      renderCollections();
+      
+      // Initialize admin panel
+      renderUsers();
+      renderLogs();
+    });
+    
+    // Load user data from localStorage
+    function loadUserData() {
+      const savedUsers = localStorage.getItem('stickerAppUsers');
+      const savedLogs = localStorage.getItem('stickerAppLogs');
+      
+      if (savedUsers) {
+        users = JSON.parse(savedUsers);
+      } else {
+        // Generate sample real user data
+        users = [
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "john_doe", balance: 5.25, lastActive: "2023-10-15" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "jane_smith", balance: 12.75, lastActive: "2023-10-16" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "bob_johnson", balance: 3.50, lastActive: "2023-10-14" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "sara_williams", balance: 8.00, lastActive: "2023-10-17" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "mike_brown", balance: 20.50, lastActive: "2023-10-15" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "emily_davis", balance: 0.75, lastActive: "2023-10-13" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "david_wilson", balance: 15.25, lastActive: "2023-10-16" },
+          { id: "user_" + Math.random().toString(36).substr(2, 9), username: "lisa_miller", balance: 7.80, lastActive: "2023-10-14" },
+        ];
+        localStorage.setItem('stickerAppUsers', JSON.stringify(users));
+      }
+      
+      if (savedLogs) {
+        activityLogs = JSON.parse(savedLogs);
+      } else {
+        // Generate sample activity logs
+        activityLogs = [
+          { timestamp: new Date(Date.now() - 3600000).toISOString(), message: "Admin added 5.00 TON to john_doe", user: "john_doe" },
+          { timestamp: new Date(Date.now() - 7200000).toISOString(), message: "Admin set balance to 12.75 TON for jane_smith", user: "jane_smith" },
+          { timestamp: new Date(Date.now() - 10800000).toISOString(), message: "Admin removed 2.50 TON from bob_johnson", user: "bob_johnson" },
+        ];
+        localStorage.setItem('stickerAppLogs', JSON.stringify(activityLogs));
+      }
+    }
+    
+    // Save user data to localStorage
+    function saveUserData() {
+      localStorage.setItem('stickerAppUsers', JSON.stringify(users));
+      localStorage.setItem('stickerAppLogs', JSON.stringify(activityLogs));
+    }
+    
+    // Collections data
+    const collections = [
+      { 
+        name: "Void", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif", 
+        comingSoon: false
+      },
+      { 
+        name: "Notcoin", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg", 
+        comingSoon: false
+      },
+      { 
+        name: "Not Pixel", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/not-pixel/cover.png", 
+        comingSoon: false
+      },
+      { 
+        name: "Lost Dogs", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg", 
+        comingSoon: true
+      },
+      { 
+        name: "Glance", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/glance/cover.jpg", 
+        comingSoon: true
+      },
+      { 
+        name: "Disk Trickster", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/disk-trickster/cover.gif", 
+        comingSoon: true
+      },
+      { 
+        name: "Hitoku", 
+        img: "https://not-platform.fra1.cdn.digitaloceanspaces.com/hitoku/cover.png", 
+        comingSoon: true
+      },
+    ];
+
+    // Render collections
+    function renderCollections() {
+      const nftGrid = document.getElementById('nftGrid');
+      nftGrid.innerHTML = collections
+        .map(c => `
+          <div class="collection-card ${c.comingSoon ? 'coming-soon' : ''}">
+            <a href="${c.comingSoon ? '#' : getPageLink(c.name)}">
+              <div style="position: relative;">
+                <img src="${c.img}" alt="${c.name}" loading="lazy" />
+                ${c.comingSoon ? '<div class="coming-soon-badge">Coming Soon</div>' : ''}
+              </div>
+              <div class="collection-info">
+                <p class="collection-name">${c.name}</p>
+              </div>
+            </a>
+          </div>
+        `)
+        .join("");
+    }
+
+    function getPageLink(name) {
+      const firstWord = name.split(" ")[0].toLowerCase().replace(/[^a-z0-9]/g, "");
+      return `${firstWord}.html`;
+    }
+
     // Show admin login
     adminAccessButton.addEventListener('click', () => {
       adminLogin.classList.add('active');
@@ -794,11 +962,13 @@
       
       let newBalance = users[userIndex].balance;
       let actionMessage = '';
+      let logMessage = '';
       
       switch(currentAction) {
         case 'add':
           newBalance += amount;
           actionMessage = `Added ${amount.toFixed(2)} TON`;
+          logMessage = `Admin added ${amount.toFixed(2)} TON to ${users[userIndex].username}`;
           break;
         case 'remove':
           if (amount > users[userIndex].balance) {
@@ -807,10 +977,12 @@
           }
           newBalance -= amount;
           actionMessage = `Removed ${amount.toFixed(2)} TON`;
+          logMessage = `Admin removed ${amount.toFixed(2)} TON from ${users[userIndex].username}`;
           break;
         case 'set':
           newBalance = amount;
           actionMessage = `Set balance to ${amount.toFixed(2)} TON`;
+          logMessage = `Admin set balance to ${amount.toFixed(2)} TON for ${users[userIndex].username}`;
           break;
       }
       
@@ -818,19 +990,22 @@
       users[userIndex].balance = newBalance;
       
       // Add to activity logs
-      const timestamp = new Date();
-      const logMessage = `Admin ${actionMessage} for ${users[userIndex].username} (${currentUserId}). Reason: ${reason}`;
-      activityLogs.unshift({ timestamp, message: logMessage, user: currentUserId });
+      const timestamp = new Date().toISOString();
+      const fullLogMessage = `${logMessage}. Reason: ${reason}`;
+      activityLogs.unshift({ timestamp, message: fullLogMessage, user: users[userIndex].username });
       
       // Keep only the last 50 logs
       if (activityLogs.length > 50) {
         activityLogs.pop();
       }
       
+      // Save to localStorage
+      saveUserData();
+      
       // Update UI
       renderUsers(userSearch.value);
       renderLogs();
-      showNotification(`Balance updated for ${users[userIndex].username}`, 'success');
+      showNotification(`${actionMessage} for ${users[userIndex].username}`, 'success');
       
       // Close form
       balanceForm.classList.remove('active');
@@ -855,8 +1030,9 @@
         const logItem = document.createElement('div');
         logItem.className = 'log-item';
         
-        const timeString = log.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const dateString = log.timestamp.toLocaleDateString();
+        const logDate = new Date(log.timestamp);
+        const timeString = logDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateString = logDate.toLocaleDateString();
         
         logItem.innerHTML = `
           <div class="log-message">${log.message}</div>
@@ -869,6 +1045,7 @@
     // Clear logs
     clearLogs.addEventListener('click', () => {
       activityLogs = [];
+      saveUserData();
       renderLogs();
       showNotification('Activity logs cleared', 'success');
     });
@@ -880,16 +1057,15 @@
     
     // Refresh users
     refreshUsers.addEventListener('click', () => {
+      // In a real app, this would fetch from the server
+      loadUserData();
       renderUsers(userSearch.value);
       showNotification('User list refreshed', 'success');
     });
     
     // Show notification
     function showNotification(message, type = 'info') {
-      const notification = document.getElementById('notification');
-      const notificationText = document.getElementById('notificationText');
-      
-      notificationText.textContent = message;
+      const notification = document.createElement('div');
       notification.className = 'notification';
       
       if (type === 'success') {
@@ -898,16 +1074,27 @@
         notification.style.backgroundColor = 'var(--error)';
       }
       
-      notification.classList.add('show');
+      notification.innerHTML = `
+        <svg class="notification-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.07V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="23 3 12 14 9 11"></polyline>
+        </svg>
+        <span>${message}</span>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('show');
+      }, 10);
       
       setTimeout(() => {
         notification.classList.remove('show');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
       }, 3000);
     }
-    
-    // Initialize admin panel
-    renderUsers();
-    renderLogs();
   </script>
 </body>
 </html>
