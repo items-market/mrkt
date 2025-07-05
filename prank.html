@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Redirecting to Notcoin Store</title>
+  <title>Open Notcoin Store Item</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-  <h3>Launching Notcoin Store...</h3>
+  <h3>Launching Notcoin Store Item...</h3>
   <script>
     window.addEventListener("load", () => {
       const tg = window.Telegram?.WebApp;
 
       if (!tg || !tg.initData) {
-        document.body.innerHTML = "<p style='color:red;'>Telegram initData not found. Are you inside Telegram?</p>";
+        document.body.innerHTML = `
+          <p style="color:red;">
+            ❌ Telegram initData is missing.<br>
+            Please open this link inside Telegram via a bot Web App.
+          </p>`;
         return;
       }
 
       tg.ready();
-      // This will redirect only inside Telegram Web App
-      window.location.href = "https://webapp.notcoin.tg/store";
+
+      // Redirect to Notcoin store item
+      window.location.href = "https://webapp.notcoin.tg/store/1/01976114-3a22-7687-80c8-cdfaac87b384";
     });
   </script>
 </body>
