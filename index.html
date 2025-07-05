@@ -728,6 +728,14 @@
       padding: 8px 0;
     }
 
+    .nav-item.active .nav-icon {
+      color: var(--accent);
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--accent);
+    }
+
     .nav-icon-container {
       width: 44px;
       height: 44px;
@@ -1010,7 +1018,7 @@
   <!-- Navigation Menu -->
   <div class="nav-container">
     <div class="nav-items">
-      <div class="nav-item">
+      <div class="nav-item active">
         <div class="nav-icon-container" onclick="window.location.href='/'">
           <i class="fas fa-store nav-icon"></i>
         </div>
@@ -1326,17 +1334,23 @@
 
     // Navigation menu functionality
     document.addEventListener('DOMContentLoaded', function() {
-      const navIcons = document.querySelectorAll('.nav-icon-container');
+      const navItems = document.querySelectorAll('.nav-item');
       
       function handleNavClick(e) {
         // Remove active class from all items
-        document.querySelectorAll('.nav-item').forEach(item => {
+        navItems.forEach(item => {
           item.classList.remove('active');
         });
+        
+        // Add active class to clicked item
+        const clickedItem = e.currentTarget.closest('.nav-item');
+        if (clickedItem) {
+          clickedItem.classList.add('active');
+        }
       }
       
-      navIcons.forEach(icon => {
-        icon.addEventListener('click', handleNavClick);
+      navItems.forEach(item => {
+        item.addEventListener('click', handleNavClick);
       });
     });
   </script>
