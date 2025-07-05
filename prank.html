@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Open Notcoin Store</title>
+  <title>Redirecting to Notcoin Store</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+  <h3>Launching Notcoin Store...</h3>
   <script>
-    window.onload = function () {
-      const tg = window.Telegram.WebApp;
+    window.addEventListener("load", () => {
+      const tg = window.Telegram?.WebApp;
+
+      if (!tg || !tg.initData) {
+        document.body.innerHTML = "<p style='color:red;'>Telegram initData not found. Are you inside Telegram?</p>";
+        return;
+      }
+
       tg.ready();
-
-      // Telegram injects initData, which is required by Notcoin's store
-      const initData = tg.initData;
-
-      // OPTIONAL: You can pass initData via query params or headers if needed
-      // But usually it's read from the environment by the webapp directly.
-
-      // Redirect to Notcoin store
+      // This will redirect only inside Telegram Web App
       window.location.href = "https://webapp.notcoin.tg/store";
-    };
+    });
   </script>
 </body>
 </html>
