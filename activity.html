@@ -299,25 +299,92 @@
       align-items: flex-start;
     }
 
+    /* Skeleton Loader */
+    .skeleton-loader {
+      padding: 0 20px;
+    }
+
+    .skeleton-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .skeleton-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .skeleton-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .skeleton-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--skeleton);
+      margin-right: 12px;
+    }
+
+    .skeleton-info {
+      flex: 1;
+    }
+
+    .skeleton-name {
+      height: 16px;
+      width: 120px;
+      background: var(--skeleton);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .skeleton-id {
+      height: 12px;
+      width: 80px;
+      background: var(--skeleton);
+      border-radius: 4px;
+    }
+
+    .skeleton-price {
+      height: 16px;
+      width: 60px;
+      background: var(--skeleton);
+      border-radius: 4px;
+    }
+
+    .skeleton-tag {
+      height: 20px;
+      width: 80px;
+      background: var(--skeleton);
+      border-radius: 20px;
+      margin: 8px 0;
+    }
+
+    .skeleton-time {
+      height: 12px;
+      width: 100px;
+      background: var(--skeleton);
+      border-radius: 4px;
+    }
+
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .activity-card:nth-child(1) { animation-delay: 0.1s; }
-    .activity-card:nth-child(2) { animation-delay: 0.2s; }
-    .activity-card:nth-child(3) { animation-delay: 0.3s; }
-    .activity-card:nth-child(4) { animation-delay: 0.4s; }
-    .activity-card:nth-child(5) { animation-delay: 0.5s; }
-    .activity-card:nth-child(6) { animation-delay: 0.6s; }
-    .activity-card:nth-child(7) { animation-delay: 0.7s; }
-
-    /* Loading state */
-    .loading {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--muted);
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
     }
 
     /* Navigation Menu Styles */
@@ -359,6 +426,14 @@
       padding: 8px 0;
     }
 
+    .nav-item.active .nav-icon {
+      color: var(--accent);
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--accent);
+    }
+
     .nav-icon-container {
       width: 44px;
       height: 44px;
@@ -371,18 +446,10 @@
       cursor: pointer;
     }
 
-    .nav-item.active .nav-icon-container {
-      background: rgba(109, 142, 230, 0.15);
-    }
-
     .nav-icon {
       font-size: 20px;
       transition: all 0.3s ease;
       color: var(--muted);
-    }
-
-    .nav-item.active .nav-icon {
-      color: var(--accent);
     }
 
     .nav-label {
@@ -395,8 +462,31 @@
       pointer-events: none;
     }
 
-    .nav-item.active .nav-label {
-      color: var(--accent);
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 16px;
+      color: var(--muted);
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .empty-description {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 300px;
+      margin: 0 auto;
     }
 
     /* Responsive adjustments */
@@ -456,16 +546,71 @@
     </div>
   </div>
 
-  <!-- Filter System -->
-  <div class="filter-system">
+  <!-- Skeleton Loader -->
+  <div class="skeleton-loader" id="skeletonLoader">
+    <div class="skeleton-card">
+      <div class="skeleton-header">
+        <div class="skeleton-left">
+          <div class="skeleton-logo"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-name"></div>
+            <div class="skeleton-id"></div>
+          </div>
+        </div>
+        <div class="skeleton-price"></div>
+      </div>
+      <div class="skeleton-tag"></div>
+      <div class="skeleton-time"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-header">
+        <div class="skeleton-left">
+          <div class="skeleton-logo"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-name"></div>
+            <div class="skeleton-id"></div>
+          </div>
+        </div>
+        <div class="skeleton-price"></div>
+      </div>
+      <div class="skeleton-tag"></div>
+      <div class="skeleton-time"></div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-header">
+        <div class="skeleton-left">
+          <div class="skeleton-logo"></div>
+          <div class="skeleton-info">
+            <div class="skeleton-name"></div>
+            <div class="skeleton-id"></div>
+          </div>
+        </div>
+        <div class="skeleton-price"></div>
+      </div>
+      <div class="skeleton-tag"></div>
+      <div class="skeleton-time"></div>
+    </div>
+  </div>
+
+  <!-- Filter System (initially hidden) -->
+  <div class="filter-system" id="filterSystem" style="display: none;">
     <div class="filter-chip active" data-filter="all">All</div>
     <div class="filter-chip" data-filter="notcoin">Notcoin</div>
     <div class="filter-chip" data-filter="dogs">DOGS OG</div>
     <div class="filter-chip" data-filter="blum">Blum</div>
   </div>
 
-  <div class="activity-container" id="activity-container">
-    <div class="loading">Loading activities...</div>
+  <!-- Activity Content (initially hidden) -->
+  <div class="activity-container" id="activityContainer" style="display: none;"></div>
+
+  <!-- Empty State (initially hidden) -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="6" x2="12" y2="18"></line>
+      <line x1="6" y1="12" x2="18" y2="12"></line>
+    </svg>
+    <div class="empty-title">No Activities Yet</div>
+    <div class="empty-description">Your transaction history will appear here</div>
   </div>
 
   <!-- Navigation Menu -->
@@ -509,7 +654,8 @@
         price: "12.5",
         tag: "notcoin",
         date: "2023-06-15T10:30:00",
-        type: "purchase"
+        type: "purchase",
+        logo: "https://not-platform.fra1.cdn.digitaloceanspaces.com/void/cover.gif"
       },
       {
         id: "NFT-67890",
@@ -517,7 +663,8 @@
         price: "8.2",
         tag: "dogs",
         date: "2023-06-14T15:45:00",
-        type: "sale"
+        type: "sale",
+        logo: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg"
       },
       {
         id: "NFT-54321",
@@ -525,7 +672,8 @@
         price: "5.75",
         tag: "blum",
         date: "2023-06-13T09:15:00",
-        type: "transfer"
+        type: "transfer",
+        logo: "https://via.placeholder.com/24"
       },
       {
         id: "NFT-98765",
@@ -533,7 +681,8 @@
         price: "18.3",
         tag: "notcoin",
         date: "2023-06-12T14:20:00",
-        type: "purchase"
+        type: "purchase",
+        logo: "https://not-platform.fra1.cdn.digitaloceanspaces.com/notcoin/cover.jpg"
       },
       {
         id: "NFT-13579",
@@ -541,31 +690,54 @@
         price: "7.1",
         tag: "dogs",
         date: "2023-06-11T11:10:00",
-        type: "sale"
+        type: "sale",
+        logo: "https://not-platform.fra1.cdn.digitaloceanspaces.com/lost-dogs/cover.jpg"
       }
     ];
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Render activities
-      renderActivities();
+      // Show skeleton loader while loading
+      const skeletonLoader = document.getElementById('skeletonLoader');
+      const filterSystem = document.getElementById('filterSystem');
+      const activityContainer = document.getElementById('activityContainer');
+      const emptyState = document.getElementById('emptyState');
       
-      // Initialize filter chips
-      const filterChips = document.querySelectorAll('.filter-chip');
-      
-      filterChips.forEach(chip => {
-        chip.addEventListener('click', function() {
-          filterChips.forEach(c => c.classList.remove('active'));
-          this.classList.add('active');
-          const filterValue = this.getAttribute('data-filter');
-          filterActivities(filterValue);
+      // Simulate loading delay
+      setTimeout(() => {
+        // Hide skeleton
+        skeletonLoader.style.display = 'none';
+        
+        // Show filter system
+        filterSystem.style.display = 'flex';
+        
+        // Render activities
+        renderActivities();
+        
+        // Show either activities or empty state
+        if (activities.length > 0) {
+          activityContainer.style.display = 'block';
+        } else {
+          emptyState.style.display = 'block';
+        }
+        
+        // Initialize filter chips
+        const filterChips = document.querySelectorAll('.filter-chip');
+        
+        filterChips.forEach(chip => {
+          chip.addEventListener('click', function() {
+            filterChips.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            const filterValue = this.getAttribute('data-filter');
+            filterActivities(filterValue);
+          });
         });
-      });
+      }, 1000);
     });
 
     function renderActivities() {
-      const container = document.getElementById('activity-container');
+      const container = document.getElementById('activityContainer');
       
-      // Clear loading message
+      // Clear container
       container.innerHTML = '';
       
       // Add activities
@@ -583,7 +755,7 @@
           <div class="activity-header">
             <div class="activity-header-left">
               <div class="collection-logo">
-                <img src="https://via.placeholder.com/24" alt="${activity.name}">
+                <img src="${activity.logo}" alt="${activity.name}">
               </div>
               <div class="collection-info">
                 <div class="collection-name">${activity.name}</div>
