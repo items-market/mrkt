@@ -4,19 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Activity | Sticker Collections</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Remove focus outlines and tap highlights */
+    *:focus {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
     :root {
-      --bg-start: #0e111a;
-      --bg-end: #1c1f2e;
-      --glass-bg: rgba(255, 255, 255, 0.03);
-      --accent: #55d0ff;
-      --text: #fff;
-      --muted: #a0a4b8;
-      --radius: 18px;
-      --border: rgba(255, 255, 255, 0.08);
+      --bg-start: #0a0c12;
+      --bg-end: #161a24;
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --accent: #6d8ee6;
+      --accent-hover: #7d9df0;
+      --text: rgba(255, 255, 255, 0.95);
+      --muted: rgba(255, 255, 255, 0.6);
+      --radius: 16px;
+      --radius-lg: 20px;
+      --border: rgba(255, 255, 255, 0.1);
       --error: #ff6b6b;
+      --skeleton: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(20, 23, 34, 0.8);
+      --success: #6dcc95;
     }
 
     * {
@@ -30,7 +46,8 @@
       background: linear-gradient(to bottom, var(--bg-start), var(--bg-end));
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 72px;
+      padding-bottom: 80px;
+      line-height: 1.5;
     }
 
     .top-bar {
@@ -38,7 +55,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 14px 20px;
-      background: rgba(22, 26, 34, 0.95);
+      background: rgba(15, 18, 28, 0.95);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       position: sticky;
@@ -46,34 +63,93 @@
       z-index: 10;
     }
 
-    .logo-container {
+    .balance-container {
       display: flex;
       align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .balance {
+      font-size: 15px;
+      font-weight: 600;
+      background: rgba(109, 142, 230, 0.15);
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(109, 142, 230, 0.25);
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .ton-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    .balance-amount {
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 5px;
+      font-size: 16px;
+    }
+
+    .balance-currency {
+      font-size: 14px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .action-buttons {
+      display: flex;
       gap: 10px;
     }
 
-    .logo-icon {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, #55d0ff 0%, #2a9ef4 100%);
-      border-radius: 8px;
+    .deposit-btn {
+      background: linear-gradient(135deg, var(--accent) 0%, #5a7bd8 100%);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
-    }
-
-    .logo-icon i {
-      color: white;
+      gap: 6px;
+      transition: all 0.3s ease;
       font-size: 14px;
     }
 
-    .page-title {
-      font-size: 20px;
-      font-weight: 700;
-      background: linear-gradient(90deg, #55d0ff 0%, #2a9ef4 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+    .withdraw-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      padding: 9px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+
+    .deposit-btn:hover {
+      background: linear-gradient(135deg, var(--accent-hover) 0%, #6a8be8 100%);
+      transform: translateY(-1px);
+    }
+
+    .withdraw-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .button-icon {
+      width: 15px;
+      height: 15px;
     }
 
     /* Filter System */
@@ -103,7 +179,7 @@
     }
 
     .filter-chip.active {
-      background: rgba(85, 208, 255, 0.1);
+      background: rgba(109, 142, 230, 0.1);
       border-color: var(--accent);
       color: var(--accent);
     }
@@ -118,7 +194,7 @@
     }
 
     .activity-card {
-      background: var(--glass-bg);
+      background: var(--card-bg);
       border-radius: var(--radius);
       border: 1px solid var(--border);
       padding: 16px;
@@ -130,7 +206,7 @@
     }
 
     .activity-card:hover {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(109, 142, 230, 0.1);
       border-color: var(--accent);
       transform: translateY(-2px);
     }
@@ -178,7 +254,7 @@
 
     .collection-tag {
       display: inline-block;
-      background: rgba(85, 208, 255, 0.1);
+      background: rgba(109, 142, 230, 0.1);
       color: var(--accent);
       padding: 4px 10px;
       border-radius: 20px;
@@ -223,47 +299,6 @@
       align-items: flex-start;
     }
 
-    /* Bottom Navigation */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: rgba(22, 26, 34, 0.95);
-      backdrop-filter: blur(12px);
-      padding: 12px 0;
-      border-top: 1px solid var(--border);
-      z-index: 1000;
-    }
-
-    .bottom-nav a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .bottom-nav a.active {
-      color: var(--accent);
-    }
-
-    .bottom-nav a svg {
-      width: 24px;
-      height: 24px;
-      stroke: currentColor;
-    }
-
-    .bottom-nav a:hover:not(.active) {
-      color: rgba(160, 164, 184, 0.8);
-    }
-
     /* Animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -281,18 +316,143 @@
     /* Loading state */
     .loading {
       text-align: center;
-      padding: 20px;
+      padding: 40px 20px;
       color: var(--muted);
+    }
+
+    /* Navigation Menu Styles */
+    .nav-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 72px;
+      background: rgba(15, 18, 28, 0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .nav-items {
+      display: flex;
+      max-width: 480px;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .nav-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-decoration: none;
+      color: var(--muted);
+      transition: all 0.3s ease;
+      z-index: 1;
+      padding: 8px 0;
+    }
+
+    .nav-icon-container {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    .nav-item.active .nav-icon-container {
+      background: rgba(109, 142, 230, 0.15);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      transition: all 0.3s ease;
+      color: var(--muted);
+    }
+
+    .nav-item.active .nav-icon {
+      color: var(--accent);
+    }
+
+    .nav-label {
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 1;
+      transition: all 0.3s ease;
+      letter-spacing: 0.3px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .nav-item.active .nav-label {
+      color: var(--accent);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .balance {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+      
+      .deposit-btn, .withdraw-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+      }
+      
+      .top-bar {
+        padding: 12px 16px;
+      }
+      
+      .activity-card {
+        padding: 14px;
+      }
+      
+      .nav-icon-container {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .nav-icon {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="top-bar">
-    <div class="logo-container">
-      <div class="logo-icon">
-        <i class="fas fa-bolt"></i>
+    <div class="balance-container">
+      <div class="balance">
+        <img class="ton-icon" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+        <span class="balance-amount">0</span>
+        <span class="balance-currency">TON</span>
       </div>
-      <div class="page-title">Activity</div>
+    </div>
+    <div class="action-buttons">
+      <button class="deposit-btn" id="showDeposit">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Deposit
+      </button>
+      <button class="withdraw-btn" id="showWithdraw">
+        <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Withdraw
+      </button>
     </div>
   </div>
 
@@ -308,105 +468,190 @@
     <div class="loading">Loading activities...</div>
   </div>
 
-  <nav class="bottom-nav">
-    <a href="index.html">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-      </svg>
-      <span>Market</span>
-    </a>
-    <a href="profile.html">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-        <circle cx="12" cy="7" r="4"></circle>
-      </svg>
-      <span>Profile</span>
-    </a>
-    <a href="activity.html" class="active">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-      </svg>
-      <span>Activity</span>
-    </a>
-  </nav>
+  <!-- Navigation Menu -->
+  <div class="nav-container">
+    <div class="nav-items">
+      <div class="nav-item" onclick="window.location.href='/'">
+        <div class="nav-icon-container">
+          <i class="fas fa-store nav-icon"></i>
+        </div>
+        <span class="nav-label">Market</span>
+      </div>
+      
+      <div class="nav-item" onclick="window.location.href='/profile.html'">
+        <div class="nav-icon-container">
+          <i class="fas fa-user nav-icon"></i>
+        </div>
+        <span class="nav-label">Profile</span>
+      </div>
+      
+      <div class="nav-item active" onclick="window.location.href='/activity.html'">
+        <div class="nav-icon-container">
+          <i class="fas fa-bolt nav-icon"></i>
+        </div>
+        <span class="nav-label">Activity</span>
+      </div>
+    </div>
+  </div>
 
   <script>
+    // Initialize Telegram WebApp
+    const tg = window.Telegram.WebApp;
+    
+    // Expand the app to full viewport
+    tg.expand();
+    
+    // Sample activity data
+    const activities = [
+      {
+        id: "NFT-12345",
+        name: "Void #4567",
+        price: "12.5",
+        tag: "notcoin",
+        date: "2023-06-15T10:30:00",
+        type: "purchase"
+      },
+      {
+        id: "NFT-67890",
+        name: "DOGS OG #789",
+        price: "8.2",
+        tag: "dogs",
+        date: "2023-06-14T15:45:00",
+        type: "sale"
+      },
+      {
+        id: "NFT-54321",
+        name: "Blum #1234",
+        price: "5.75",
+        tag: "blum",
+        date: "2023-06-13T09:15:00",
+        type: "transfer"
+      },
+      {
+        id: "NFT-98765",
+        name: "Notcoin #5678",
+        price: "18.3",
+        tag: "notcoin",
+        date: "2023-06-12T14:20:00",
+        type: "purchase"
+      },
+      {
+        id: "NFT-13579",
+        name: "DOGS OG #2468",
+        price: "7.1",
+        tag: "dogs",
+        date: "2023-06-11T11:10:00",
+        type: "sale"
+      }
+    ];
+
     document.addEventListener('DOMContentLoaded', function() {
-      // Telegram WebApp Initialization
-      if (window.Telegram && window.Telegram.WebApp) {
-        Telegram.WebApp.expand();
-        Telegram.WebApp.enableClosingConfirmation();
-      }
-
-      // Load activity items from external file
-      function loadActivityItems() {
-        fetch('actisell.html')
-          .then(response => response.text())
-          .then(html => {
-            document.getElementById('activity-container').innerHTML = html;
-            initializeActivityCards();
-          })
-          .catch(err => {
-            console.error('Failed to load activity items:', err);
-            document.getElementById('activity-container').innerHTML = 
-              '<div class="loading">Failed to load activities. Please try again later.</div>';
-          });
-      }
-
-      // Initialize activity cards after loading
-      function initializeActivityCards() {
-        const filterChips = document.querySelectorAll('.filter-chip');
-        const activityCards = document.querySelectorAll('.activity-card');
-
-        // Set animation delays for loaded cards
-        activityCards.forEach((card, index) => {
-          card.style.animationDelay = `${0.1 * (index + 1)}s`;
+      // Render activities
+      renderActivities();
+      
+      // Initialize filter chips
+      const filterChips = document.querySelectorAll('.filter-chip');
+      
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          filterChips.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          const filterValue = this.getAttribute('data-filter');
+          filterActivities(filterValue);
         });
+      });
+    });
 
-        filterChips.forEach(chip => {
-          chip.addEventListener('click', function() {
-            filterChips.forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-            const filterValue = this.getAttribute('data-filter');
-            filterActivities(filterValue);
-          });
-        });
+    function renderActivities() {
+      const container = document.getElementById('activity-container');
+      
+      // Clear loading message
+      container.innerHTML = '';
+      
+      // Add activities
+      activities.forEach((activity, index) => {
+        const activityDate = new Date(activity.date);
+        const timeAgo = getTimeAgo(activityDate);
+        
+        const activityCard = document.createElement('div');
+        activityCard.className = 'activity-card';
+        activityCard.setAttribute('data-tags', activity.tag);
+        activityCard.setAttribute('data-date', activity.date);
+        activityCard.style.animationDelay = `${0.1 * (index + 1)}s`;
+        
+        activityCard.innerHTML = `
+          <div class="activity-header">
+            <div class="activity-header-left">
+              <div class="collection-logo">
+                <img src="https://via.placeholder.com/24" alt="${activity.name}">
+              </div>
+              <div class="collection-info">
+                <div class="collection-name">${activity.name}</div>
+                <div class="collection-id">${activity.id}</div>
+              </div>
+            </div>
+            <div class="ton-price">
+              <img class="ton-logo" src="https://ton.org/icons/custom/ton_logo.svg" alt="TON">
+              <span class="price-value">${activity.price}</span>
+            </div>
+          </div>
+          <div class="collection-tag">${activity.type}</div>
+          <div class="activity-time">
+            <i class="fas fa-clock"></i>
+            <span>${timeAgo}</span>
+          </div>
+        `;
+        
+        container.appendChild(activityCard);
+      });
+    }
 
-        function filterActivities(filter) {
-          activityCards.forEach(card => {
-            const tags = card.getAttribute('data-tags');
-            const date = card.getAttribute('data-date');
-            const now = new Date();
-            const cardDate = new Date(date);
-            const timeDiff = now - cardDate;
-            const hoursDiff = timeDiff / (1000 * 60 * 60);
-            
-            let shouldShow = true;
-            
-            if (filter === 'all') {
-              shouldShow = true;
-            } 
-            else if (filter === 'recent') {
-              shouldShow = hoursDiff <= 24;
-            } 
-            else if (filter === 'oldest') {
-              shouldShow = hoursDiff > 24;
-            }
-            else {
-              shouldShow = tags.includes(filter);
-            }
-            
-            card.style.display = shouldShow ? 'block' : 'none';
-          });
+    function filterActivities(filter) {
+      const activityCards = document.querySelectorAll('.activity-card');
+      const now = new Date();
+      
+      activityCards.forEach(card => {
+        const tags = card.getAttribute('data-tags');
+        const date = card.getAttribute('data-date');
+        const cardDate = new Date(date);
+        const timeDiff = now - cardDate;
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
+        
+        let shouldShow = true;
+        
+        if (filter === 'all') {
+          shouldShow = true;
+        } else {
+          shouldShow = tags.includes(filter);
         }
+        
+        card.style.display = shouldShow ? 'block' : 'none';
+      });
+    }
 
-        // Initialize with all activities shown
-        filterActivities('all');
+    function getTimeAgo(date) {
+      const now = new Date();
+      const diff = now - date;
+      
+      const seconds = Math.floor(diff / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      
+      if (days > 0) {
+        return `${days}d ago`;
+      } else if (hours > 0) {
+        return `${hours}h ago`;
+      } else if (minutes > 0) {
+        return `${minutes}m ago`;
+      } else {
+        return 'Just now';
       }
+    }
 
-      // Initial load
-      loadActivityItems();
+    // Handle back button in Telegram
+    tg.BackButton.onClick(() => {
+      tg.close();
     });
   </script>
 </body>
