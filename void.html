@@ -416,7 +416,7 @@
       display: flex;
       justify-content: center;
       gap: 1rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       flex-wrap: wrap;
       width: 100%;
       max-width: 800px;
@@ -456,7 +456,8 @@
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.5rem;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       width: 100%;
@@ -659,10 +660,10 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       width: 90%;
-      max-width: 400px;
+      max-width: 380px;
       max-height: 90vh;
       overflow-y: auto;
-      padding: 1.5rem;
+      padding: 1.25rem;
       position: relative;
       box-shadow: var(--shadow);
     }
@@ -686,7 +687,7 @@
     .modal-content {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .modal-image-container {
@@ -709,13 +710,13 @@
     .modal-details {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
 
     .modal-title {
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      margin: 0;
+      margin: 0 0 0.25rem 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -729,53 +730,49 @@
     }
 
     .modal-title-id {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       margin-left: 0.5rem;
       min-width: 60px;
       text-align: right;
     }
 
-    .modal-collection {
-      display: inline-block;
-      background: var(--glass-bg);
-      padding: 0.5rem 1rem;
+    .modal-collection,
+    .modal-rarity {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
       border-radius: var(--radius);
-      font-size: 0.9rem;
-      color: var(--accent);
+      font-weight: 500;
+      margin-right: 0.5rem;
     }
 
-    .modal-rarity {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius);
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-left: 0.5rem;
+    .modal-collection {
+      background: var(--glass-bg);
+      color: var(--accent);
     }
 
     .modal-price {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 700;
-      margin: 0.5rem 0;
+      margin: 0.25rem 0;
     }
 
     .modal-price img {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
 
     .modal-actions {
       display: flex;
-      gap: 1rem;
-      margin-top: 0.5rem;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
     }
 
     .btn {
-      padding: 0.75rem 1.5rem;
+      padding: 0.65rem 1rem;
       border-radius: var(--radius);
       font-weight: 600;
       cursor: pointer;
@@ -786,6 +783,7 @@
       justify-content: center;
       gap: 0.5rem;
       flex: 1;
+      font-size: 0.85rem;
     }
 
     .btn-primary {
@@ -810,12 +808,12 @@
 
     .error-message {
       color: #fff;
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       text-align: center;
       display: none;
-      padding: 0.75rem;
+      padding: 0.5rem;
       border-radius: var(--radius);
       background: rgba(255, 107, 107, 0.2);
       border: 1px solid #ff6b6b;
@@ -1105,15 +1103,15 @@
         <h4>Filter by Collection</h4>
         <div class="filter-options">
           <div class="filter-option active" data-filter="collection" data-value="all">All Collections</div>
-          <div class="filter-option" data-filter="collection" data-value="pengu">Skin</div>
-          <div class="filter-option" data-filter="collection" data-value="winter">Lootbox</div>
+          <div class="filter-option" data-filter="collection" data-value="skin">Skin</div>
+          <div class="filter-option" data-filter="collection" data-value="lootbox">Lootbox</div>
         </div>
       </div>
     </div>
     
     <div class="grid" id="nft-grid">
       <!-- Common -->
-      <div class="card" data-collection="pengu" data-price="95.50" data-rarity="common" data-id="00001">
+      <div class="card" data-collection="skin" data-price="95.50" data-rarity="common" data-id="00001">
         <div class="card-image-container">
           <div class="rarity-label rarity-common">Common</div>
           <img src="https://not-platform.fra1.cdn.digitaloceanspaces.com/item/50c531cb-7afa-4dd4-acad-76a97b9e4cb1.png" alt="Pengu #00001" class="card-image" loading="lazy">
@@ -1133,7 +1131,7 @@
       </div>
       
       <!-- Rare -->
-      <div class="card" data-collection="pengu" data-price="115.50" data-rarity="rare" data-id="00002">
+      <div class="card" data-collection="skin" data-price="115.50" data-rarity="rare" data-id="00002">
         <div class="card-image-container">
           <div class="rarity-label rarity-rare">Rare</div>
           <img src="https://not-platform-dev.fra1.cdn.digitaloceanspaces.com/item/b9b6fbd1-d431-4bef-9607-3dcdffe91f35.png" alt="Pengu #00002" class="card-image" loading="lazy">
@@ -1153,7 +1151,7 @@
       </div>
       
       <!-- Epic -->
-      <div class="card" data-collection="winter" data-price="128.00" data-rarity="epic" data-id="00003">
+      <div class="card" data-collection="lootbox" data-price="128.00" data-rarity="epic" data-id="00003">
         <div class="card-image-container">
           <div class="rarity-label rarity-epic">Epic</div>
           <img src="https://i.imgur.com/vVp3nYQ.png" alt="Pengu #00003" class="card-image" loading="lazy">
@@ -1173,7 +1171,7 @@
       </div>
       
       <!-- Legendary -->
-      <div class="card" data-collection="golden" data-price="450.00" data-rarity="legendary" data-id="00004">
+      <div class="card" data-collection="lootbox" data-price="450.00" data-rarity="legendary" data-id="00004">
         <div class="card-image-container">
           <div class="rarity-label rarity-legendary">Legendary</div>
           <img src="https://i.imgur.com/5tQb9Jx.png" alt="Pengu #00004" class="card-image" loading="lazy">
@@ -1193,7 +1191,7 @@
       </div>
       
       <!-- Additional cards -->
-      <div class="card" data-collection="space" data-price="105.75" data-rarity="rare" data-id="00005">
+      <div class="card" data-collection="skin" data-price="105.75" data-rarity="rare" data-id="00005">
         <div class="card-image-container">
           <div class="rarity-label rarity-rare">Rare</div>
           <img src="https://i.imgur.com/LkZ3WnD.png" alt="Pengu #00005" class="card-image" loading="lazy">
@@ -1212,7 +1210,7 @@
         </div>
       </div>
       
-      <div class="card" data-collection="winter" data-price="88.25" data-rarity="common" data-id="00006">
+      <div class="card" data-collection="lootbox" data-price="88.25" data-rarity="common" data-id="00006">
         <div class="card-image-container">
           <div class="rarity-label rarity-common">Common</div>
           <img src="https://i.imgur.com/9jQ2Xqy.png" alt="Pengu #00006" class="card-image" loading="lazy">
@@ -1231,7 +1229,7 @@
         </div>
       </div>
       
-      <div class="card" data-collection="golden" data-price="375.00" data-rarity="epic" data-id="00007">
+      <div class="card" data-collection="lootbox" data-price="375.00" data-rarity="epic" data-id="00007">
         <div class="card-image-container">
           <div class="rarity-label rarity-epic">Epic</div>
           <img src="https://i.imgur.com/7tQb4Jx.png" alt="Pengu #00007" class="card-image" loading="lazy">
@@ -1250,7 +1248,7 @@
         </div>
       </div>
       
-      <div class="card" data-collection="space" data-price="142.50" data-rarity="epic" data-id="00008">
+      <div class="card" data-collection="skin" data-price="142.50" data-rarity="epic" data-id="00008">
         <div class="card-image-container">
           <div class="rarity-label rarity-epic">Epic</div>
           <img src="https://i.imgur.com/MkZ3WqD.png" alt="Pengu #00008" class="card-image" loading="lazy">
@@ -1287,8 +1285,10 @@
               <span class="modal-title-name" id="modal-nft-name"></span>
               <span class="modal-title-id" id="modal-nft-id"></span>
             </h2>
-            <span class="modal-collection" id="modal-nft-collection"></span>
-            <span class="modal-rarity" id="modal-nft-rarity"></span>
+            <div style="margin-top: 0.25rem;">
+              <span class="modal-collection" id="modal-nft-collection"></span>
+              <span class="modal-rarity" id="modal-nft-rarity"></span>
+            </div>
           </div>
           
           <div class="modal-price">
@@ -1306,7 +1306,7 @@
           </div>
           
           <div class="error-message" id="error-message">
-            <i class="fas fa-exclamation-circle"></i> Insufficient balance to complete this purchase
+            <i class="fas fa-exclamation-circle"></i> Insufficient balance
           </div>
         </div>
       </div>
@@ -1471,13 +1471,12 @@
         document.getElementById('modal-nft-id').textContent = `#${id}`;
         document.getElementById('modal-nft-price').textContent = price;
         
-        // Format collection name
+        // Format collection name based on filter selection
         let collectionName = '';
         switch(collection) {
-          case 'pengu': collectionName = 'Pengu Originals'; break;
-          case 'winter': collectionName = 'Winter Pengus'; break;
-          case 'space': collectionName = 'Space Pengus'; break;
-          case 'golden': collectionName = 'Golden Pengus'; break;
+          case 'skin': collectionName = 'Skin'; break;
+          case 'lootbox': collectionName = 'Lootbox'; break;
+          default: collectionName = collection;
         }
         document.getElementById('modal-nft-collection').textContent = collectionName;
         
